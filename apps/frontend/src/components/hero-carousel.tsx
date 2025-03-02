@@ -6,7 +6,8 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselNext,
-  CarouselPrevious
+  CarouselPrevious,
+  type CarouselApi
 } from '@/components/ui/carousel'
 import Image from 'next/image'
 import Autoplay from 'embla-carousel-autoplay'
@@ -45,14 +46,47 @@ const images = [
 ]
 
 export default function HeroCarousel() {
+  const [api, setApi] = React.useState<CarouselApi>()
+  const [current, setCurrent] = React.useState(0)
   const plugin = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: false })
+    Autoplay({ 
+      delay: 3000, 
+      stopOnInteraction: true,
+      stopOnMouseEnter: true,
+      stopOnFocusIn: true,
+      playOnInit: true
+    })
   )
+
+  React.useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    setCurrent(api.selectedScrollSnap())
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap())
+    })
+
+    // 監聽滑鼠離開事件來重新啟動自動播放
+    const handleMouseLeave = () => {
+      plugin.current.play()
+    }
+
+    const root = api.rootNode()
+    root.addEventListener('mouseleave', handleMouseLeave)
+
+    return () => {
+      root.removeEventListener('mouseleave', handleMouseLeave)
+    }
+  }, [api])
 
   return (
     <section className="relative flex items-center justify-center px-[8vw] py-8 text-[#5C4B51] bg-[url('/story.png')] bg-cover bg-center">
       <Carousel
         plugins={[plugin.current]}
+        setApi={setApi}
         className="w-full max-w-2xl h-1/2"
         opts={{
           align: 'center',
@@ -81,6 +115,17 @@ export default function HeroCarousel() {
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                current === index ? 'bg-white' : 'bg-white/50'
+              }`}
+              onClick={() => api?.scrollTo(index)}
+            />
+          ))}
+        </div>
       </Carousel>
     </section>
   )
