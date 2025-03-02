@@ -1,18 +1,18 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 
 const newsItems = [
   {
     id: 1,
-    title: "夏日特別菜單上市",
-    content: "清爽消暑的夏日特別菜單現已推出，快來品嚐吧！",
-    date: "2023-06-01",
+    title: '夏日特別菜單上市',
+    content: '清爽消暑的夏日特別菜單現已推出，快來品嚐吧！',
+    date: '2023-06-01'
   },
   {
     id: 2,
-    title: "週年慶優惠活動",
-    content: "慶祝我們開業一週年，全店餐點享8折優惠！",
-    date: "2023-05-15",
-  },
+    title: '週年慶優惠活動',
+    content: '慶祝我們開業一週年，全店餐點享8折優惠！',
+    date: '2023-05-15'
+  }
 ]
 
 export default function LatestNews() {
@@ -27,7 +27,10 @@ export default function LatestNews() {
               <p className="text-gray-600 mb-4">{item.content}</p>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500">{item.date}</span>
-                <Button variant="outline" className="text-tgi-red border-tgi-red hover:bg-tgi-red hover:text-white">
+                <Button
+                  variant="outline"
+                  className="text-tgi-red border-tgi-red hover:bg-tgi-red hover:text-gray-500"
+                >
                   了解更多
                 </Button>
               </div>
@@ -38,4 +41,3 @@ export default function LatestNews() {
     </section>
   )
 }
-

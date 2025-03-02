@@ -1,9 +1,9 @@
-"use client"
-import { useState, useEffect } from "react"
-import HeroCarousel from "@/components/hero-carousel"
-import FeaturedMenu from "@/components/featured-menu"
-import LatestNews from "@/components/latest-news"
-import Loading from "@/components/loading"
+'use client'
+import { useState, useEffect } from 'react'
+import HeroCarousel from '@/components/hero-carousel'
+import FeaturedMenu from '@/components/featured-menu'
+import LatestNews from '@/components/latest-news'
+import Loading from '@/components/loading'
 
 export default function Home() {
   const [loading, setLoading] = useState(true)
@@ -21,15 +21,15 @@ export default function Home() {
   }, [])
 
   if (loading) {
-    return (
-      <Loading />
-    )
+    return <Loading />
   }
 
   return (
-    <main className={`flex min-h-screen flex-col overflow-hidden transition-transform duration-500 ease-out will-change-transform ${
-      expand ? "scale-x-100" : "scale-x-0"
-    }`}>
+    <main
+      className={`flex min-h-screen flex-col overflow-hidden transition-transform duration-500 ease-out will-change-transform ${
+        expand ? 'scale-x-100' : 'scale-x-0'
+      }`}
+    >
       <HeroCarousel />
       <FeaturedMenu />
       <LatestNews />
