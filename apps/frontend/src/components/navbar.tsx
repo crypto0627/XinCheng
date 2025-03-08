@@ -51,6 +51,12 @@ export default function Navbar() {
               </span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
             </Link>
+            <Link href="/pre-order" className="relative group">
+              <span className="text-gray-700 hover:text-orange-600 transition-colors duration-200">
+                團購預訂
+              </span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
             <Link
               href="https://www.facebook.com/people/%E6%98%9F%E6%A9%99-%E8%BC%95%E9%A3%9F%E5%92%96%E5%95%A1/100093377431697/"
               target="_blank"
@@ -138,6 +144,13 @@ export default function Navbar() {
               className="text-gray-700 hover:text-orange-600 transition-colors duration-200"
             >
               關於我們
+            </Link>
+            <Link
+              href="/pre-order"
+              onClick={() => setIsOpen(false)}
+              className="text-gray-700 hover:text-orange-600 transition-colors duration-200"
+            >
+              團購預訂
             </Link>
             <Link
               href="https://www.facebook.com/people/%E6%98%9F%E6%A9%99-%E8%BC%95%E9%A3%9F%E5%92%96%E5%95%A1/100093377431697/"

@@ -1,4 +1,4 @@
-export type FeaturedItem = {
+export interface FeaturedItem {
   id: number
   name: string
   type: string
@@ -11,4 +11,16 @@ export type FeaturedItem = {
     fat: number
   }
   price: number
+}
+
+export interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  image: string
+}
+
+export interface CartItem extends Product {
+  quantity: number
 }

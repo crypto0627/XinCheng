@@ -11,9 +11,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 45,
       protein: 35,
-      fat: 15
+      fat: 15,
     },
-    price: 150
+    price: 150,
   },
   {
     id: 2,
@@ -25,9 +25,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 40,
       protein: 32,
-      fat: 28
+      fat: 28,
     },
-    price: 180
+    price: 180,
   },
   {
     id: 3,
@@ -39,9 +39,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 20,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 140
+    price: 140,
   },
   {
     id: 4,
@@ -53,9 +53,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 20,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 140
+    price: 140,
   },
   {
     id: 5,
@@ -67,9 +67,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 20,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 140
+    price: 140,
   },
   {
     id: 6,
@@ -81,9 +81,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 20,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 140
+    price: 140,
   },
   {
     id: 7,
@@ -95,9 +95,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 20,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 140
+    price: 140,
   },
   {
     id: 8,
@@ -109,9 +109,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 20,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 140
+    price: 140,
   },
   {
     id: 9,
@@ -123,9 +123,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 20,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 140
+    price: 140,
   },
   {
     id: 10,
@@ -137,9 +137,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 20,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 140
+    price: 140,
   },
   {
     id: 11,
@@ -151,9 +151,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 35,
       protein: 15,
-      fat: 22
+      fat: 22,
     },
-    price: 120
+    price: 120,
   },
   {
     id: 12,
@@ -165,9 +165,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 48,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 100
+    price: 100,
   },
   {
     id: 13,
@@ -179,9 +179,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 48,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 100
+    price: 100,
   },
   {
     id: 14,
@@ -193,9 +193,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 48,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 100
+    price: 100,
   },
   {
     id: 15,
@@ -207,9 +207,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 48,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 100
+    price: 100,
   },
   {
     id: 16,
@@ -221,9 +221,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 48,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 100
+    price: 100,
   },
   {
     id: 17,
@@ -235,9 +235,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 48,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 100
+    price: 100,
   },
   {
     id: 18,
@@ -249,9 +249,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 48,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 100
+    price: 100,
   },
   {
     id: 19,
@@ -263,9 +263,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 48,
       protein: 12,
-      fat: 24
+      fat: 24,
     },
-    price: 100
+    price: 100,
   },
   {
     id: 20,
@@ -277,9 +277,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 24,
       protein: 8,
-      fat: 6
+      fat: 6,
     },
-    price: 130
+    price: 130,
   },
   {
     id: 21,
@@ -291,9 +291,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 22,
@@ -305,9 +305,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 23,
@@ -319,9 +319,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 24,
@@ -333,9 +333,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 25,
@@ -347,9 +347,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 26,
@@ -361,9 +361,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 27,
@@ -375,9 +375,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 28,
@@ -389,9 +389,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 29,
@@ -403,9 +403,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 0,
-      fat: 0
+      fat: 0,
     },
-    price: 110
+    price: 110,
   },
   {
     id: 30,
@@ -417,9 +417,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 42,
       protein: 4,
-      fat: 16
+      fat: 16,
     },
-    price: 80
+    price: 80,
   },
   {
     id: 31,
@@ -431,9 +431,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 32,
@@ -445,9 +445,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 33,
@@ -459,9 +459,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 34,
@@ -473,9 +473,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 35,
@@ -487,9 +487,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 36,
@@ -501,9 +501,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 37,
@@ -515,9 +515,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 38,
@@ -529,9 +529,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 39,
@@ -543,9 +543,9 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
+    price: 90,
   },
   {
     id: 40,
@@ -557,8 +557,8 @@ export const featuredItems: FeaturedItem[] = [
     nutrition: {
       carbs: 28,
       protein: 12,
-      fat: 8
+      fat: 8,
     },
-    price: 90
-  }
+    price: 90,
+  },
 ]
