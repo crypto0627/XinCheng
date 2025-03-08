@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "xincheng-backend",
+  "main": "src/index.ts",
+  "minify": true,
+  "compatibility_date": "2025-03-02",
+  "kv_namespaces": [
+    {
+      "binding": "ORDERS",
+      "id": "db9be49eb6ad4f999ed60897a211d617"
+    }
+  ],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "vars": {
+    "RESEND_API_KEY": "re_Ftn14WnN_QBuEMja8KJ3nUma2XyG5YAQd"
+  }
+  // ],
+  // "r2_buckets": [
+  //   {
+  //     "binding": "MY_BUCKET",
+  //     "bucket_name": "my-bucket"
+  //   }
+  // ],
+  // "d1_databases": [
+  //   {
+  //     "binding": "MY_DB",
+  //     "database_name": "my-database",
+  //     "database_id": ""
+  //   }
+  // ],
+  // "ai": {
+  //   "binding": "AI"
+  // },
+  // "observability": {
+  //   "enabled": true,
+  //   "head_sampling_rate": 1
+  // }
+}
