@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Hono KV serverless
 
 on:
   push:
@@ -8,7 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy
+    timeout-minutes: 60
+    name: Deploy Hono
     steps:
       - uses: actions/checkout@v4
 
@@ -24,8 +25,9 @@ jobs:
       - name: Install wrangler
         run: pnpm add wrangler@3.109.2
 
-      - name: Deploy
+      - name: Build and Deploy Worker
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/xincheng-backend
