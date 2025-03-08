@@ -1,20 +1,14 @@
+// 訂單提交 POST API
 export interface Order {
   id: string
   name: string
   phone: string
   email: string
   address: string
-  items: { productId: number; quantity: number }[]
+  items: { productId: number; name: string; price: number; quantity: number }[]
   paymentMethod: string
-  paymentStatus: string
-  orderStatus: string
+  totalPrice: number  // 計算總金額
+  orderStatus: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'canceled'  // 訂單狀態
   createdAt: string
   updatedAt: string
-}
-
-export interface Product {
-  id: number
-  name: string
-  price: number
-  available: boolean
 }

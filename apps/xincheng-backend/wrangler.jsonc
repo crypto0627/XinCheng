@@ -14,7 +14,8 @@
     "nodejs_compat"
   ],
   "vars": {
-    "RESEND_API_KEY": "re_Ftn14WnN_QBuEMja8KJ3nUma2XyG5YAQd"
+    "RESEND_API_KEY": "re_Ftn14WnN_QBuEMja8KJ3nUma2XyG5YAQd",
+    "X_API_KEY": "xincheng-backend-0x12aej2-j3e-ej1-2ej"
   }
   // ],
   // "r2_buckets": [

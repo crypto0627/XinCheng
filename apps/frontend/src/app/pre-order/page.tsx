@@ -1,13 +1,13 @@
 'use client'
 
-import Image from 'next/image'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useState, useCallback, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
-import { Product, CartItem } from '@/types'
-import Swal from 'sweetalert2'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { CartItem, Product } from '@/types'
 import Head from 'next/head'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useCallback, useMemo, useState } from 'react'
+import Swal from 'sweetalert2'
 
 export default function PreOrderPage() {
   const router = useRouter()
@@ -17,21 +17,21 @@ export default function PreOrderPage() {
 
   const products: Product[] = useMemo(() => [
     {
-      id: '1',
+      productId: '1',
       name: '原味雞胸肉',
       description: '低脂高蛋白，清淡爽口的原味雞胸肉',
       price: 150,
       image: '/chicken-breast-1.jpg'
     },
     {
-      id: '2', 
+      productId: '2', 
       name: '黑胡椒雞胸肉',
       description: '香濃黑胡椒醬汁，風味十足的雞胸肉',
       price: 160,
       image: '/chicken-breast-2.jpg'
     },
     {
-      id: '3',
+      productId: '3',
       name: '照燒雞胸肉',
       description: '日式照燒醬汁，甜鹹適中的雞胸肉',
       price: 160,
@@ -41,10 +41,10 @@ export default function PreOrderPage() {
 
   const addToCart = useCallback((product: Product) => {
     setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id)
+      const existingItem = prevCart.find(item => item.productId === product.productId)
       if (existingItem) {
         return prevCart.map(item =>
-          item.id === product.id
+          item.productId === product.productId
             ? { ...item, quantity: item.quantity + 1 }
             : item
         )
@@ -54,14 +54,14 @@ export default function PreOrderPage() {
     
     setQuantities(prev => ({
       ...prev,
-      [product.id]: (prev[product.id] || 0) + 1
+      [product.productId]: (prev[product.productId] || 0) + 1
     }))
   }, [])
 
   const decreaseQuantity = useCallback((productId: string) => {
     setCart(prevCart => {
       return prevCart.map(item => {
-        if (item.id === productId && item.quantity > 0) {
+        if (item.productId === productId && item.quantity > 0) {
           return { ...item, quantity: item.quantity - 1 }
         }
         return item
@@ -88,7 +88,20 @@ export default function PreOrderPage() {
         })
         return
       }
-      router.push('/checkout')
+
+      // 準備購物車資料
+      const cartData = cart
+        .filter(item => item.quantity > 0)
+        .map(item => ({
+          productId: item.productId,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity
+        }))
+
+      // 將購物車資料編碼並加到URL
+      const cartParam = encodeURIComponent(JSON.stringify(cartData))
+      router.push(`/pre-order/checkout?cart=${cartParam}`)
     } catch (error) {
       console.error('處理錯誤:', error)
       await Swal.fire({
@@ -128,7 +141,7 @@ export default function PreOrderPage() {
             
             <div className="grid md:grid-cols-3 gap-8">
               {products.map(product => (
-                <Card key={product.id}>
+                <Card key={product.productId}>
                   <CardHeader>
                     <div className="relative h-48 rounded-lg overflow-hidden mb-4">
                       <Image
@@ -153,13 +166,13 @@ export default function PreOrderPage() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={() => decreaseQuantity(product.id)}
+                        onClick={() => decreaseQuantity(product.productId)}
                         aria-label={`減少${product.name}數量`}
                       >
                         -
                       </Button>
                       <span className="w-8 text-center" role="status" aria-live="polite">
-                        {quantities[product.id] || 0}
+                        {quantities[product.productId] || 0}
                       </span>
                       <Button 
                         variant="outline" 
