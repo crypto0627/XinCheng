@@ -76,7 +76,7 @@ ${orderDetails}
   try {
     const resend = new Resend(c.env.RESEND_API_KEY)
     const { data, error } = await resend.emails.send({
-      from: '星橙輕食餐盒 <jake0627a1@gmail.com>',
+      from: '星橙輕食餐盒 <xincheng@jakekuo.com>',
       to: body.email,
       subject: `訂單已確認 #${orderId}`,
       text: emailBody,
