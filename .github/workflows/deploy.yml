@@ -16,6 +16,14 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
+      # 忽略 workspace 根目錄檢查
+      - name: Set pnpm config
+        run: pnpm config set ignore-workspace-root-check true
+
+      # 安裝 wrangler
+      - name: Install wrangler
+        run: pnpm add wrangler@3.109.2
+
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
