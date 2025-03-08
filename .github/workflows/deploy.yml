@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - '**'
+      - main
 
 jobs:
   deploy:
@@ -11,6 +11,11 @@ jobs:
     name: Deploy
     steps:
       - uses: actions/checkout@v4
+
+      # 安裝 pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
