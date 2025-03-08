@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { csrf } from 'hono/csrf'
 import { Bindings } from 'hono/types'
 import { nanoid } from 'nanoid'
-import { Resend } from 'resend'
-import { securityMiddleware } from './config/security'
 import { apiKeyAuth } from './middleware/auth'
 import { Order } from './types'
 
@@ -14,9 +14,15 @@ interface ENV extends Bindings {
 
 const app = new Hono<{ Bindings: ENV }>()
 
-app.use('*', ...securityMiddleware)
+app.use('/api/*', cors({
+  origin: ['https://xincheng.jakekuo.com', 'http://localhost:3001'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowHeaders: ['Content-Type', 'X-API-Key', 'X-CSRF-Token', 'Authorization'],
+  maxAge: 600,
+  credentials: true,
+}))
 app.use('*', apiKeyAuth)
-
+app.use(csrf({origin: ['https://xincheng.jakekuo.com', 'http://localhost:3001']}))
 // 計算總金額
 const calculateTotalPrice = (items: { price: number; quantity: number }[]) => {
   return items.reduce((total, item) => total + item.price * item.quantity, 0)
@@ -90,18 +96,18 @@ app.post('/api/orders', async (c) => {
       </footer>
     </div>
     `
-    // 使用 Resend API 發送 HTML 郵件
-    const resend = new Resend(c.env.RESEND_API_KEY)
-    const { error } = await resend.emails.send({
-      from: '星橙輕食餐盒 <xincheng@jakekuo.com>',
-      to: body.email,
-      subject: `🍊 星橙輕食餐盒 - 訂單確認 #${orderId}`,
-      html: emailBody,  // 改為 html
-    })
+    // // 使用 Resend API 發送 HTML 郵件
+    // const resend = new Resend(c.env.RESEND_API_KEY)
+    // const { error } = await resend.emails.send({
+    //   from: '星橙輕食餐盒 <xincheng@jakekuo.com>',
+    //   to: body.email,
+    //   subject: `🍊 星橙輕食餐盒 - 訂單確認 #${orderId}`,
+    //   html: emailBody,  // 改為 html
+    // })
   
-    if (error) {
-      return c.json(error, 400)
-    }
+    // if (error) {
+    //   return c.json(error, 400)
+    // }
   
     return c.json({ message: '訂單已成功送出', orderId: newOrder.id })
   

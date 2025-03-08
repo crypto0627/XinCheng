@@ -1,5 +1,6 @@
 'use client'
 
+import { OrderService } from '@/api'
 import { Button } from '@/components/ui/button'
 import {
     Dialog,
@@ -17,12 +18,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { useSearchParams } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { CartItem, Order } from '@/types'
+import { Loader2 } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useMemo, useState } from 'react'
+import Swal from 'sweetalert2'
 
-export default function CheckoutPage() {
+function CheckoutContent() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -30,9 +36,16 @@ export default function CheckoutPage() {
     address: '',
     paymentMethod: ''
   })
+  const [errors, setErrors] = useState({
+    name: false,
+    phone: false,
+    email: false,
+    address: false,
+    paymentMethod: false
+  })
 
   // 從URL參數解析購物車內容
-  const cart = JSON.parse(decodeURIComponent(searchParams.get('cart') || '[]'))
+  const cart: CartItem[] = JSON.parse(decodeURIComponent(searchParams.get('cart') || '[]'))
 
   // 計算總金額
   const totalAmount = useMemo(() => {
@@ -53,15 +66,79 @@ export default function CheckoutPage() {
       ...prev,
       [name]: value
     }))
+    setErrors(prev => ({
+      ...prev,
+      [name]: value.trim() === ''
+    }))
+  }
+
+  const validateForm = () => {
+    const newErrors = {
+      name: formData.name.trim() === '',
+      phone: formData.phone.trim() === '',
+      email: formData.email.trim() === '',
+      address: formData.address.trim() === '',
+      paymentMethod: formData.paymentMethod === ''
+    }
+    setErrors(newErrors)
+    return !Object.values(newErrors).some(error => error)
   }
 
   const handleSubmit = async () => {
-    const orderData = {
-      ...formData,
-      items: cart
+    if (!validateForm()) {
+      return
     }
-    console.log('訂單資料:', orderData)
-    // TODO: 送出訂單到後端
+
+    setLoading(true)
+    try {
+      const orderData: Order = {
+        ...formData,
+        items: cart,
+        totalAmount
+      }
+
+      const response = await OrderService.createOrder(orderData)
+      console.log('API回應:', response)
+      
+      // 修改判斷邏輯,不再檢查response.ok
+      if (response.error) {
+        throw new Error(response.error || '訂單提交失敗')
+      }
+      
+      setOpen(false) // 先關閉對話框
+      
+      await Swal.fire({
+        title: '訂單已成功送出!',
+        text: '感謝您的訂購，我們將盡快為您準備訂單，詳細資訊已發送至您的Email，如有任何問題，歡迎隨時與我們聯繫！',
+        icon: 'success',
+        confirmButtonText: '確定',
+        background: '#FFF9F0',
+        iconColor: '#F97316',
+        confirmButtonColor: '#F97316',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+        }
+      }).then(() => {
+        router.push('/pre-order') // 導回預訂頁面
+      })
+      
+    } catch (error) {
+      console.error('訂單提交錯誤:', error)
+      await Swal.fire({
+        title: '訂單提交失敗',
+        text: error instanceof Error ? error.message : '抱歉，請稍後再試',
+        icon: 'error',
+        confirmButtonText: '確定',
+        background: '#FFF9F0',
+        iconColor: '#DC2626',
+        confirmButtonColor: '#F97316'
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -94,7 +171,10 @@ export default function CheckoutPage() {
             填寫訂購資料
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent 
+          className="sm:max-w-[425px]"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle>訂購資料</DialogTitle>
           </DialogHeader>
@@ -106,7 +186,9 @@ export default function CheckoutPage() {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                className={errors.name ? 'border-red-500' : ''}
               />
+              {errors.name && <p className="text-red-500 text-sm">請填寫姓名</p>}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="phone">電話</Label>
@@ -115,7 +197,9 @@ export default function CheckoutPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
+                className={errors.phone ? 'border-red-500' : ''}
               />
+              {errors.phone && <p className="text-red-500 text-sm">請填寫電話</p>}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -125,7 +209,9 @@ export default function CheckoutPage() {
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
+                className={errors.email ? 'border-red-500' : ''}
               />
+              {errors.email && <p className="text-red-500 text-sm">請填寫Email</p>}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="address">地址</Label>
@@ -134,16 +220,19 @@ export default function CheckoutPage() {
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
+                className={errors.address ? 'border-red-500' : ''}
               />
+              {errors.address && <p className="text-red-500 text-sm">請填寫地址</p>}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="payment">付款方式</Label>
               <Select
-                onValueChange={(value) => 
+                onValueChange={(value: any) => {
                   setFormData(prev => ({ ...prev, paymentMethod: value }))
-                }
+                  setErrors(prev => ({ ...prev, paymentMethod: false }))
+                }}
               >
-                <SelectTrigger>
+                <SelectTrigger className={errors.paymentMethod ? 'border-red-500' : ''}>
                   <SelectValue placeholder="選擇付款方式" />
                 </SelectTrigger>
                 <SelectContent>
@@ -151,13 +240,33 @@ export default function CheckoutPage() {
                   <SelectItem value="transfer">銀行轉帳</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.paymentMethod && <p className="text-red-500 text-sm">請選擇付款方式</p>}
             </div>
           </div>
-          <Button onClick={handleSubmit} className="bg-orange-600 hover:bg-orange-700">
-            確認送出
+          <Button 
+            onClick={handleSubmit} 
+            className="bg-orange-600 hover:bg-orange-700"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                處理中...
+              </>
+            ) : (
+              '確認送出'
+            )}
           </Button>
         </DialogContent>
       </Dialog>
     </div>
+  )
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div>載入中...</div>}>
+      <CheckoutContent />
+    </Suspense>
   )
 }

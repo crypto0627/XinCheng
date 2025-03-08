@@ -24,3 +24,13 @@ export interface Product {
 export interface CartItem extends Product {
   quantity: number
 }
+
+export interface Order {
+  name: string
+  phone: string
+  email: string
+  address: string
+  paymentMethod: string
+  items: CartItem[]
+  totalAmount: number
+}
