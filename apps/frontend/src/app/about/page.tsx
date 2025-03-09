@@ -15,7 +15,7 @@ export default function AboutPage() {
             </p>
             <div className="relative h-80 rounded-xl overflow-hidden my-8">
               <Image
-                src="/store-front.jpg"
+                src="/store.png"
                 alt="星橙店面"
                 fill
                 className="object-cover"
