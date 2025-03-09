@@ -3,20 +3,20 @@
 import { OrderService } from '@/api'
 import { Button } from '@/components/ui/button'
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
 import { CartItem, Order } from '@/types'
 import { Loader2 } from 'lucide-react'
@@ -89,6 +89,38 @@ function CheckoutContent() {
       return
     }
 
+    // 顯示訂單確認對話框
+    const confirmResult = await Swal.fire({
+      title: '請確認您的訂單內容',
+      html: `
+        <div class="text-left">
+          <p><strong>姓名:</strong> ${formData.name}</p>
+          <p><strong>電話:</strong> ${formData.phone}</p>
+          <p><strong>Email:</strong> ${formData.email}</p>
+          <p><strong>地址:</strong> ${formData.address}</p>
+          <p><strong>付款方式:</strong> ${formData.paymentMethod === 'cash' ? '現金' : '銀行轉帳'}</p>
+          <p><strong>總金額:</strong> NT$ ${totalAmount}</p>
+          <div class="mt-4 p-3 bg-orange-100 text-orange-700 rounded">
+            <p class="font-bold">重要提醒：</p>
+            <p>• 此為預購商品，訂單成立後即無法取消或退貨</p>
+            <p>• 請確認收貨資訊正確無誤</p>
+            <p>• 若有特殊需求請事先聯繫客服</p>
+          </div>
+        </div>
+      `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '確認送出',
+      cancelButtonText: '返回修改',
+      confirmButtonColor: '#F97316',
+      cancelButtonColor: '#6B7280',
+      background: '#FFF9F0',
+    })
+
+    if (!confirmResult.isConfirmed) {
+      return
+    }
+
     setLoading(true)
     try {
       const orderData: Order = {
@@ -142,7 +174,7 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="container mx-auto px-4 pt-24">
+    <div className="container mx-auto px-4 pt-24 min-h-screen flex flex-col justify-center">
       <h1 className="text-3xl font-bold text-orange-600 mb-8">確認訂單</h1>
       
       <div className="bg-white rounded-lg p-6 shadow-md mb-8">
