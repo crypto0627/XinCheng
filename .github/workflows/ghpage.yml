@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  build:
+  build-frontend:
     name: Build Frontend
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -31,8 +31,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-        working-directory: apps/frontend
 
       - name: Build frontend
         run: pnpm run build
         working-directory: apps/frontend
+
+      - name: Build manager-frontend
+        run: pnpm run build
+        working-directory: apps/manager-frontend
