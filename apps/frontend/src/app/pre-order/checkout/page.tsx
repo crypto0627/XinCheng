@@ -268,8 +268,7 @@ function CheckoutContent() {
                   <SelectValue placeholder="選擇付款方式" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="cash">現金</SelectItem>
-                  <SelectItem value="transfer">銀行轉帳</SelectItem>
+                  <SelectItem value="cash">到店付款</SelectItem>
                 </SelectContent>
               </Select>
               {errors.paymentMethod && <p className="text-red-500 text-sm">請選擇付款方式</p>}
