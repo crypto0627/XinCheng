@@ -130,7 +130,7 @@ export default function PreOrderPage() {
                 團購預訂
               </h1>
               <Button 
-                className="bg-orange-600 text-white hover:bg-orange-700"
+                className="bg-orange-600 text-white hover:bg-orange-700 hidden md:block"
                 onClick={handleCheckout}
                 disabled={isLoading || cart.length === 0}
                 aria-label={isLoading ? '處理中' : `前往結帳，目前${totalQuantity}件商品`}
@@ -204,6 +204,17 @@ export default function PreOrderPage() {
                 </ul>
               </CardContent>
             </Card>
+            
+            <div className="mt-8 md:hidden">
+              <Button 
+                className="bg-orange-600 text-white hover:bg-orange-700 w-full"
+                onClick={handleCheckout}
+                disabled={isLoading || cart.length === 0}
+                aria-label={isLoading ? '處理中' : `前往結帳，目前${totalQuantity}件商品`}
+              >
+                {isLoading ? '處理中...' : `前往結帳 (${totalQuantity} 件)`}
+              </Button>
+            </div>
           </section>
         </div>
       </main>

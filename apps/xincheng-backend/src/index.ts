@@ -82,8 +82,6 @@ app.post('/api/orders', async (c) => {
   
       <p>💰 <strong>總金額:</strong> NT$${totalPrice}</p>
   
-      <h3>【配送資訊】</h3>
-      <p>📍 <strong>配送地址:</strong> ${body.address}</p>
       <p>💳 <strong>付款方式:</strong> ${body.paymentMethod}</p>
   
       <p>✨ 我們將用心準備您的餐點。如有任何問題，歡迎隨時與我們聯繫！</p>
@@ -92,8 +90,8 @@ app.post('/api/orders', async (c) => {
       <footer>
         <p>─────────────────────────</p>
         <p>🌟 星橙輕食餐盒 敬上</p>
-        <p>📞 客服專線: 0800-888-888</p>
-        <p>🌐 官方網站: <a href="https://xincheng-8i1.pages.dev/" target="_blank">xincheng.jakekuo.com</a></p>
+        <p>📞 客服專線: 0905853711</p>
+        <p>🌐 官方網站: <a href="https://xincheng.jakekuo.com" target="_blank">xincheng.jakekuo.com</a></p>
       </footer>
     </div>
     `

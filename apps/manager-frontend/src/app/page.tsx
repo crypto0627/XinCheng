@@ -1,7 +1,7 @@
 'use client'
 import { OrderService } from "@/api";
 import { OrderFilter } from "@/utils/filterDate";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Order } from "../types";
 
 export default function Home() {
@@ -10,7 +10,9 @@ export default function Home() {
   const [popularItem, setPopularItem] = useState("");
   const [orderFilter, setOrderFilter] = useState<OrderFilter | null>(null);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
-  const [filterType, setFilterType] = useState<"today" | "month" | "quarter" | "year">("today");
+  const [filterType, setFilterType] = useState<"all" | "today" | "month" | "quarter" | "year">("all");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
     
   useEffect(() => {
     const fetchOrders = async () => {
@@ -20,6 +22,7 @@ export default function Home() {
         
         const newFilter = new OrderFilter(data);
         setOrderFilter(newFilter);
+        setFilteredOrders(data); // 預設顯示所有訂單
 
         const revenue = data.reduce((sum: number, order: Order) => sum + order.totalPrice, 0);
         setTotalRevenue(revenue);
@@ -43,6 +46,9 @@ export default function Home() {
   useEffect(() => {
     if (!orderFilter) return;
     switch (filterType) {
+        case "all":
+            setFilteredOrders(orders);
+            break;
         case "today":
             setFilteredOrders(orderFilter.filterByToday());
             break;
@@ -58,7 +64,32 @@ export default function Home() {
         default:
             setFilteredOrders([]);
     }
-  }, [filterType, orderFilter])
+  }, [filterType, orderFilter, orders])
+
+  // 點擊外部關閉下拉選單
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const getFilterTypeText = (type: string) => {
+    const typeMap: {[key: string]: string} = {
+      all: '所有訂單',
+      today: '今日訂單',
+      month: '本月訂單',
+      quarter: '本季訂單',
+      year: '本年訂單'
+    };
+    return typeMap[type] || type;
+  };
 
   const getOrderStatusColor = (status: string) => {
     switch(status) {
@@ -74,9 +105,7 @@ export default function Home() {
   const getOrderStatusText = (status: string) => {
     const statusMap: {[key: string]: string} = {
       pending: '待處理',
-      confirmed: '已確認',
-      shipped: '配送中',
-      delivered: '已送達',
+      completed: '已完成',
       canceled: '已取消'
     };
     return statusMap[status] || status;
@@ -119,16 +148,69 @@ export default function Home() {
           <div className="mt-8">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-semibold text-gray-800">訂單列表</h1>
-              <select 
-                value={filterType} 
-                onChange={(e) => setFilterType(e.target.value as any)}
-                className="p-2 border border-gray-300 rounded-md bg-white text-gray-800"
-              >
-                <option value="today">今日訂單</option>
-                <option value="month">本月訂單</option>
-                <option value="quarter">本季訂單</option>
-                <option value="year">本年訂單</option>
-              </select>
+              <div className="relative" ref={dropdownRef}>
+                <button 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="p-2 border border-gray-300 rounded-md bg-white text-gray-800 flex items-center justify-between min-w-[120px]"
+                >
+                  <span>{getFilterTypeText(filterType)}</span>
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-1 w-full bg-white border border-gray-300 text-gray-800 rounded-md shadow-lg z-10">
+                    <ul className="py-1">
+                      <li 
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${filterType === "all" ? "bg-gray-100" : ""}`}
+                        onClick={() => {
+                          setFilterType("all");
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        所有訂單
+                      </li>
+                      <li 
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${filterType === "today" ? "bg-gray-100" : ""}`}
+                        onClick={() => {
+                          setFilterType("today");
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        今日訂單
+                      </li>
+                      <li 
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${filterType === "month" ? "bg-gray-100" : ""}`}
+                        onClick={() => {
+                          setFilterType("month");
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        本月訂單
+                      </li>
+                      <li 
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${filterType === "quarter" ? "bg-gray-100" : ""}`}
+                        onClick={() => {
+                          setFilterType("quarter");
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        本季訂單
+                      </li>
+                      <li 
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${filterType === "year" ? "bg-gray-100" : ""}`}
+                        onClick={() => {
+                          setFilterType("year");
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        本年訂單
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
             
             <div className="bg-white rounded-lg shadow overflow-hidden">

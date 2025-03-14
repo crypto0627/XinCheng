@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutDashboard, MenuSquare, Receipt } from "lucide-react"
+import { BarChart, LayoutDashboard, MenuSquare, Receipt } from "lucide-react"
 import Image from "next/image"
 
 interface SidebarProps {
@@ -24,6 +24,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       href: "/orders",
       icon: <Receipt className="w-5 h-5" />, 
       text: "訂單管理"
+    },
+    {
+      href: "/reports",
+      icon: <BarChart className="w-5 h-5" />,
+      text: "財務報表"
     }
   ]
 

@@ -1,16 +1,22 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { OrderService } from '@/api'
+import EditOrder from '@/components/orders/edit-order'
+import ToggleBox from '@/components/orders/order-togglebox'
 import { Order } from '@/types'
 import { OrderFilter } from '@/utils/filterDate'
+import { useEffect, useState } from 'react'
+import Swal from 'sweetalert2'
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>([])
-    const [filterType, setFilterType] = useState<"today" | "month" | "quarter" | "year">("today")
+    const [filterType, setFilterType] = useState<"all" | "today" | "month" | "quarter" | "year">("all")
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
     const [orderFilter, setOrderFilter] = useState<OrderFilter | null>(null)
-
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [currentOrder, setCurrentOrder] = useState<Order | null>(null)
+    const [statusDropdownOpen, setStatusDropdownOpen] = useState<string | null>(null)
+    
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -28,6 +34,9 @@ export default function OrdersPage() {
     useEffect(() => {
         if (!orderFilter) return
         switch (filterType) {
+            case "all":
+                setFilteredOrders(orders)
+                break
             case "today":
                 setFilteredOrders(orderFilter.filterByToday())
                 break
@@ -43,14 +52,12 @@ export default function OrdersPage() {
             default:
                 setFilteredOrders([])
         }
-    }, [filterType, orderFilter])
+    }, [filterType, orderFilter, orders])
 
     const getOrderStatusColor = (status: string) => {
         switch(status) {
             case 'pending': return 'bg-yellow-100 text-yellow-800'
-            case 'confirmed': return 'bg-blue-100 text-blue-800'
-            case 'shipped': return 'bg-purple-100 text-purple-800'
-            case 'delivered': return 'bg-green-100 text-green-800'
+            case 'completed': return 'bg-green-100 text-green-800'
             case 'canceled': return 'bg-red-100 text-red-800'
             default: return 'bg-gray-100 text-gray-800'
         }
@@ -59,28 +66,134 @@ export default function OrdersPage() {
     const getOrderStatusText = (status: string) => {
         const statusMap: {[key: string]: string} = {
             pending: '待處理',
-            confirmed: '已確認',
-            shipped: '配送中',
-            delivered: '已送達',
+            completed: '已完成',
             canceled: '已取消'
         }
         return statusMap[status] || status
+    }
+
+    const handleEditClick = (order: Order) => {
+        setCurrentOrder(order)
+        setIsEditModalOpen(true)
+    }
+
+    const handleDeleteClick = async (orderId: string) => {
+        const result = await Swal.fire({
+            title: '確定要刪除此訂單嗎？',
+            text: "此操作將無法復原！",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: '確認刪除',
+            cancelButtonText: '取消操作'
+        })
+
+        if (!result.isConfirmed) return
+
+        try {
+            await OrderService.deleteOrder(orderId)
+            const updatedOrders = orders.filter(order => order.id !== orderId)
+            setOrders(updatedOrders)
+            const newFilter = new OrderFilter(updatedOrders)
+            setOrderFilter(newFilter)
+            
+            await Swal.fire({
+                title: '已刪除！',
+                text: '訂單已成功刪除',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: '確定'
+            })
+        } catch (error) {
+            console.error('刪除訂單時發生錯誤:', error)
+            Swal.fire({
+                title: '刪除失敗',
+                text: '刪除訂單失敗，請稍後再試',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: '確定'
+            })
+        }
+    }
+
+    const handleOrderUpdate = (updatedOrder: Order) => {
+        // 更新本地訂單列表
+        const updatedOrders = orders.map(order => 
+            order.id === updatedOrder.id ? updatedOrder : order
+        )
+        setOrders(updatedOrders)
+        const newFilter = new OrderFilter(updatedOrders)
+        setOrderFilter(newFilter)
+        setIsEditModalOpen(false)
+    }
+
+    const toggleStatusDropdown = (orderId: string) => {
+        if (statusDropdownOpen === orderId) {
+            setStatusDropdownOpen(null)
+        } else {
+            setStatusDropdownOpen(orderId)
+        }
+    }
+
+    const updateOrderStatus = async (orderId: string, newStatus: string) => {
+        try {
+            await OrderService.updateOrder(orderId, { orderStatus: newStatus })
+            
+            // 更新本地訂單列表
+            const updatedOrders = orders.map(order => 
+                order.id === orderId ? { ...order, orderStatus: newStatus } : order
+            )
+            setOrders(updatedOrders as Order[])
+            const newFilter = new OrderFilter(updatedOrders as Order[])
+            setOrderFilter(newFilter)
+            
+            setStatusDropdownOpen(null)
+            
+            await Swal.fire({
+                title: '已更新！',
+                text: '訂單狀態已成功更新',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: '確定'
+            })
+        } catch (error) {
+            console.error('更新訂單狀態時發生錯誤:', error)
+            Swal.fire({
+                title: '更新失敗',
+                text: '更新訂單狀態失敗，請稍後再試',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: '確定'
+            })
+        }
     }
 
     return (
         <div className="p-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-semibold text-gray-800">訂單管理</h1>
-                <select 
-                    value={filterType} 
-                    onChange={(e) => setFilterType(e.target.value as any)}
-                    className="p-2 border border-gray-300 rounded-md bg-white text-gray-800"
-                >
-                    <option value="today">今日訂單</option>
-                    <option value="month">本月訂單</option>
-                    <option value="quarter">本季訂單</option>
-                    <option value="year">本年訂單</option>
-                </select>
+                <ToggleBox<"all" | "today" | "month" | "quarter" | "year">
+                    value={filterType}
+                    options={[
+                        { value: "all", label: "所有訂單" },
+                        { value: "today", label: "今日訂單" },
+                        { value: "month", label: "本月訂單" },
+                        { value: "quarter", label: "本季訂單" },
+                        { value: "year", label: "本年訂單" }
+                    ]}
+                    displayText={(value) => {
+                        switch(value) {
+                            case "all": return "所有訂單"
+                            case "today": return "今日訂單"
+                            case "month": return "本月訂單"
+                            case "quarter": return "本季訂單"
+                            case "year": return "本年訂單"
+                            default: return "所有訂單"
+                        }
+                    }}
+                    onSelect={setFilterType}
+                />
             </div>
             
             <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -95,6 +208,7 @@ export default function OrdersPage() {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金額</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建立時間</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -118,13 +232,54 @@ export default function OrdersPage() {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             ${order.totalPrice.toLocaleString()}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getOrderStatusColor(order.orderStatus)}`}>
-                                                {getOrderStatusText(order.orderStatus)}
-                                            </span>
+                                        <td className="px-6 py-4 whitespace-nowrap relative">
+                                            <div className="relative">
+                                                <span 
+                                                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getOrderStatusColor(order.orderStatus)} cursor-pointer`}
+                                                    onClick={() => toggleStatusDropdown(order.id)}
+                                                >
+                                                    {getOrderStatusText(order.orderStatus)}
+                                                </span>
+                                                {statusDropdownOpen === order.id && (
+                                                    <div className="absolute z-10 mt-1 w-36 bg-white shadow-lg rounded-md py-1 text-sm">
+                                                        <div 
+                                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                            onClick={() => updateOrderStatus(order.id, 'pending')}
+                                                        >
+                                                            待處理
+                                                        </div>
+                                                        <div 
+                                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                            onClick={() => updateOrderStatus(order.id, 'completed')}
+                                                        >
+                                                            已完成
+                                                        </div>
+                                                        <div 
+                                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                            onClick={() => updateOrderStatus(order.id, 'canceled')}
+                                                        >
+                                                            已取消
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {order.createdAt}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button 
+                                                onClick={() => handleEditClick(order)}
+                                                className="text-indigo-600 hover:text-indigo-900 mr-3"
+                                            >
+                                                編輯
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDeleteClick(order.id)}
+                                                className="text-red-600 hover:text-red-900"
+                                            >
+                                                刪除
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -137,6 +292,14 @@ export default function OrdersPage() {
                     </div>
                 )}
             </div>
+
+            {/* 編輯訂單彈窗 */}
+            <EditOrder 
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                order={currentOrder}
+                onOrderUpdate={handleOrderUpdate}
+            />
         </div>
     )
 }

@@ -8,7 +8,7 @@ export interface Order {
   items: { productId: number; name: string; price: number; quantity: number }[]
   paymentMethod: string
   totalPrice: number  // 計算總金額
-  orderStatus: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'canceled'  // 訂單狀態
+  orderStatus: 'pending' | 'completed' | 'canceled'  // 訂單狀態
   createdAt: string
   updatedAt: string
 }
