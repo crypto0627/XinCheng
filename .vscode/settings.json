@@ -1,5 +1,5 @@
 {
-  "eslint.workingDirectories": ["./apps/backend", "./apps/frontend"],
+  "eslint.workingDirectories": ["./apps/backend", "./apps/frontend", "./apps/manager-frontend"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"

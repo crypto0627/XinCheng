@@ -2,11 +2,13 @@
   "name": "manager-frontend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint -c eslint.config.js",
+    "lint:fix": "eslint --fix -c eslint.config.js"
   },
   "dependencies": {
     "lucide-react": "^0.476.0",
@@ -19,6 +21,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "jakelint": "^1.0.13",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
