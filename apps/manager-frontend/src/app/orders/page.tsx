@@ -170,9 +170,9 @@ export default function OrdersPage() {
     }
 
     return (
-        <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-semibold text-gray-800">訂單管理</h1>
+        <div className="p-4 md:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6">
+                <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-3 sm:mb-0">訂單管理</h1>
                 <ToggleBox<"all" | "today" | "month" | "quarter" | "year">
                     value={filterType}
                     options={[
@@ -202,26 +202,26 @@ export default function OrdersPage() {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">訂單編號</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">客戶資訊</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">訂單內容</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金額</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建立時間</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                    <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">訂單編號</th>
+                                    <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">客戶資訊</th>
+                                    <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">訂單內容</th>
+                                    <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金額</th>
+                                    <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
+                                    <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建立時間</th>
+                                    <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredOrders.map(order => (
                                     <tr key={order.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order.id}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{order.name}</div>
-                                            <div className="text-sm text-gray-500">{order.phone}</div>
-                                            <div className="text-sm text-gray-500">{order.email}</div>
+                                        <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm font-medium text-gray-900">#{order.id}</td>
+                                        <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                                            <div className="text-xs md:text-sm text-gray-900">{order.name}</div>
+                                            <div className="text-xs md:text-sm text-gray-500">{order.phone}</div>
+                                            <div className="text-xs md:text-sm text-gray-500">{order.email}</div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm text-gray-900">
+                                        <td className="px-3 md:px-6 py-3 md:py-4">
+                                            <div className="text-xs md:text-sm text-gray-900">
                                                 {order.items.map((item, index) => (
                                                     <div key={index}>
                                                         {item.name} x {item.quantity}
@@ -229,10 +229,10 @@ export default function OrdersPage() {
                                                 ))}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-900">
                                             ${order.totalPrice.toLocaleString()}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap relative">
+                                        <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap relative">
                                             <div className="relative">
                                                 <span 
                                                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getOrderStatusColor(order.orderStatus)} cursor-pointer`}
@@ -241,21 +241,21 @@ export default function OrdersPage() {
                                                     {getOrderStatusText(order.orderStatus)}
                                                 </span>
                                                 {statusDropdownOpen === order.id && (
-                                                    <div className="absolute z-10 mt-1 w-36 bg-white shadow-lg rounded-md py-1 text-sm">
+                                                    <div className="absolute z-10 mt-1 w-28 md:w-36 bg-white shadow-lg rounded-md py-1 text-xs md:text-sm">
                                                         <div 
-                                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                            className="px-3 md:px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                                             onClick={() => updateOrderStatus(order.id, 'pending')}
                                                         >
                                                             待處理
                                                         </div>
                                                         <div 
-                                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                            className="px-3 md:px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                                             onClick={() => updateOrderStatus(order.id, 'completed')}
                                                         >
                                                             已完成
                                                         </div>
                                                         <div 
-                                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                            className="px-3 md:px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                                             onClick={() => updateOrderStatus(order.id, 'canceled')}
                                                         >
                                                             已取消
@@ -264,13 +264,13 @@ export default function OrdersPage() {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-500">
                                             {order.createdAt}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm font-medium">
                                             <button 
                                                 onClick={() => handleEditClick(order)}
-                                                className="text-indigo-600 hover:text-indigo-900 mr-3"
+                                                className="text-indigo-600 hover:text-indigo-900 mr-2 md:mr-3"
                                             >
                                                 編輯
                                             </button>
@@ -287,7 +287,7 @@ export default function OrdersPage() {
                         </table>
                     </div>
                 ) : (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-6 md:py-8 text-gray-500 text-sm md:text-base">
                         此時段尚無訂單
                     </div>
                 )}

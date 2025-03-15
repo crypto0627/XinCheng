@@ -16,7 +16,7 @@ interface ENV extends Bindings {
 const app = new Hono<{ Bindings: ENV }>()
 
 app.use('/api/*', cors({
-  origin: ['https://www.xincheng.jakekuo.com', 'http://localhost:3001', 'https://xincheng-manager.pages.dev/'],
+  origin: ['https://www.xincheng.jakekuo.com', 'http://localhost:3001', 'https://xincheng-manager.pages.dev'],
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'X-API-Key', 'X-CSRF-Token', 'Authorization'],
   maxAge: 600,

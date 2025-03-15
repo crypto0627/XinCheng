@@ -120,9 +120,18 @@ export default function EditOrder({ isOpen, onClose, order, onOrderUpdate }: Edi
     if (!isOpen || !order) return null
 
     return (
-        <div className="fixed inset-0 bg-gray-600 text-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <h2 className="text-xl font-semibold mb-4">編輯訂單 #{order.id}</h2>
+        <div className="fixed inset-0 bg-gray-600/20 text-black bg-opacity-50 flex items-center justify-center z-50 p-4 sm:p-0">
+            <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+                <button 
+                    onClick={onClose}
+                    className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+                    aria-label="關閉"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h2 className="text-xl font-semibold mb-4 pr-8">編輯訂單 #{order.id}</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <h3 className="font-medium mb-2">客戶資訊</h3>
@@ -161,9 +170,9 @@ export default function EditOrder({ isOpen, onClose, order, onOrderUpdate }: Edi
                     </div>
 
                     <div className="mb-4">
-                        <div className="flex justify-between items-center mb-2">
-                            <h3 className="font-medium">訂單內容 (可選擇性增加 總數量最多20份)</h3>
-                            <div className="flex space-x-2">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+                            <h3 className="font-medium mb-2 sm:mb-0">訂單內容 (可選擇性增加 總數量最多20份)</h3>
+                            <div className="flex flex-wrap gap-2">
                                 {!editFormData.items?.some(item => item.name === '原味雞胸肉') && (
                                     <button
                                         type="button"
@@ -194,16 +203,16 @@ export default function EditOrder({ isOpen, onClose, order, onOrderUpdate }: Edi
                             </div>
                         </div>
                         {editFormData.items?.map((item, index) => (
-                            <div key={index} className="flex items-center space-x-2 mb-2">
-                                <div className="flex-grow p-2 bg-gray-100 border border-gray-300 rounded-md">
+                            <div key={index} className="flex flex-wrap sm:flex-nowrap items-center gap-2 mb-2">
+                                <div className="flex-grow p-2 bg-gray-100 border border-gray-300 rounded-md w-full sm:w-auto">
                                     {item.name}
                                 </div>
-                                <span>x</span>
+                                <span className="mx-1">x</span>
                                 <input
                                     type="text"
                                     value={item.quantity}
                                     onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                                    className="w-20 border border-gray-300 rounded-md shadow-sm p-2"
+                                    className="w-16 sm:w-20 border border-gray-300 rounded-md shadow-sm p-2"
                                     min="0"
                                     max="20"
                                 />
@@ -250,13 +259,13 @@ export default function EditOrder({ isOpen, onClose, order, onOrderUpdate }: Edi
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                            className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 text-sm sm:text-base"
                         >
                             取消
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                            className="px-3 py-1.5 sm:px-4 sm:py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 text-sm sm:text-base"
                         >
                             保存
                         </button>

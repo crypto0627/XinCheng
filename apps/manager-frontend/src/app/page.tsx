@@ -114,44 +114,44 @@ export default function Home() {
   return (
     <div className="flex min-h-screen bg-white">
       <div className="flex-1 bg-orange-50">
-        <main className="p-6">
-          <h1 className="text-2xl font-semibold text-gray-800">歡迎使用星橙輕食餐盒管理系統</h1>
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-lg font-medium text-gray-800">總訂單</h2>
-              <p className="mt-2 text-3xl font-bold text-orange-600">
+        <main className="p-4 md:p-6">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800">歡迎使用星橙輕食餐盒管理系統</h1>
+          <div className="mt-4 md:mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+              <h2 className="text-base md:text-lg font-medium text-gray-800">總訂單</h2>
+              <p className="mt-2 text-2xl md:text-3xl font-bold text-orange-600">
                 {orders.length}
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-lg font-medium text-gray-800">今日訂單</h2>
-              <p className="mt-2 text-3xl font-bold text-orange-600">
+            <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+              <h2 className="text-base md:text-lg font-medium text-gray-800">今日訂單</h2>
+              <p className="mt-2 text-2xl md:text-3xl font-bold text-orange-600">
                 {orders.filter(order => 
                   new Date(order.createdAt).toDateString() === new Date().toDateString()
                 ).length}
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-lg font-medium text-gray-800">本月營收</h2>
-              <p className="mt-2 text-3xl font-bold text-orange-600">
+            <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+              <h2 className="text-base md:text-lg font-medium text-gray-800">本月營收</h2>
+              <p className="mt-2 text-2xl md:text-3xl font-bold text-orange-600">
                 ${totalRevenue.toLocaleString()}
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-lg font-medium text-gray-800">熱門商品</h2>
-              <p className="mt-2 text-xl font-bold text-orange-600">
+            <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+              <h2 className="text-base md:text-lg font-medium text-gray-800">熱門商品</h2>
+              <p className="mt-2 text-lg md:text-xl font-bold text-orange-600 truncate">
                 {popularItem}
               </p>
             </div>
           </div>
 
-          <div className="mt-8">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-semibold text-gray-800">訂單列表</h1>
-              <div className="relative" ref={dropdownRef}>
+          <div className="mt-6 md:mt-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6">
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-3 sm:mb-0">訂單列表</h1>
+              <div className="relative w-full sm:w-auto" ref={dropdownRef}>
                 <button 
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="p-2 border border-gray-300 rounded-md bg-white text-gray-800 flex items-center justify-between min-w-[120px]"
+                  className="w-full sm:w-auto p-2 border border-gray-300 rounded-md bg-white text-gray-800 flex items-center justify-between min-w-[120px]"
                 >
                   <span>{getFilterTypeText(filterType)}</span>
                   <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -219,25 +219,25 @@ export default function Home() {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">訂單編號</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">客戶資訊</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">訂單內容</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金額</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建立時間</th>
+                        <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">訂單編號</th>
+                        <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">客戶資訊</th>
+                        <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">訂單內容</th>
+                        <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金額</th>
+                        <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
+                        <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建立時間</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {filteredOrders.map(order => (
                         <tr key={order.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order.id}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{order.name}</div>
-                            <div className="text-sm text-gray-500">{order.phone}</div>
-                            <div className="text-sm text-gray-500">{order.email}</div>
+                          <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm font-medium text-gray-900">#{order.id}</td>
+                          <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                            <div className="text-xs md:text-sm text-gray-900">{order.name}</div>
+                            <div className="text-xs md:text-sm text-gray-500">{order.phone}</div>
+                            <div className="text-xs md:text-sm text-gray-500">{order.email}</div>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900">
+                          <td className="px-3 md:px-6 py-3 md:py-4">
+                            <div className="text-xs md:text-sm text-gray-900">
                               {order.items.map((item, index) => (
                                 <div key={index}>
                                   {item.name} x {item.quantity}
@@ -245,15 +245,15 @@ export default function Home() {
                               ))}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-900">
                             ${order.totalPrice.toLocaleString()}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getOrderStatusColor(order.orderStatus)}`}>
                               {getOrderStatusText(order.orderStatus)}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-500">
                             {order.createdAt}
                           </td>
                         </tr>
