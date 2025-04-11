@@ -1,0 +1,33 @@
+name: Deploy Hono KV serverless
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    name: Deploy Hono
+    steps:
+      - uses: actions/checkout@v4
+
+      # 安裝 pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # 忽略 workspace 根目錄檢查
+      - name: Set pnpm config
+        run: pnpm config set ignore-workspace-root-check true
+
+      # 安裝 wrangler
+      - name: Install wrangler
+        run: pnpm add wrangler@3.109.2
+
+      - name: Build and Deploy Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/xincheng-backend
