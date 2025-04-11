@@ -25,7 +25,24 @@ router.post('/logout', apiKeyAuth, logout);
 router.post('/verify-email', apiKeyAuth, verifyEmail);
 router.post('/request-password-reset', apiKeyAuth, requestPasswordReset);
 router.post('/reset-password', apiKeyAuth, resetPassword);
-router.get('/me', apiKeyAuth, jwtAuthMiddleware);
+router.get('/me', apiKeyAuth, jwtAuthMiddleware, async (c: Context<{ Bindings: ENV }>) => {
+  try {
+    const db = getDB(c);
+    const jwtPayload = c.get('jwtPayload');
+    const userId = jwtPayload.userId;
+
+    const user = await db.select().from(users).where(eq(users.id, userId)).limit(1).then(rows => rows[0]);
+    
+    if (!user) {
+      return c.json({ error: 'User not found' }, 404);
+    }
+
+    return c.json(user);
+  } catch (error) {
+    console.error('Error in /me route:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
 
 // Google OAuth
 router.get('/google/login', async (c: Context<{ Bindings: ENV }>) => {
