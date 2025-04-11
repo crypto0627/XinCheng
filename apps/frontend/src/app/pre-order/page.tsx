@@ -3,9 +3,12 @@
 import { AuthPage } from '@/components/pre-order/auth-page'
 import { useRouter } from 'next/navigation'
 import Swal from 'sweetalert2'
+import { useAuthStore } from '@/store/useAuthStore'
+import { useEffect } from 'react'
 
 export default function PreOrderPage() {
   const router = useRouter()
+  const { setIsAuth } = useAuthStore()
 
   const handleAuthSuccess = async () => {
     await Swal.fire({
@@ -13,6 +16,7 @@ export default function PreOrderPage() {
       icon: 'success',
       confirmButtonText: '確定'
     })
+    setIsAuth(true)
     router.push('/checkout')
   }
 
@@ -25,6 +29,9 @@ export default function PreOrderPage() {
     })
   }
 
+  useEffect(()=>{
+    
+  })
   return (
     <main className="pt-24 bg-[#FFF8E7] min-h-screen">
       <div className="container mx-auto px-4">

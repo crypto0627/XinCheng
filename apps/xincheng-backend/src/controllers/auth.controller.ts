@@ -1,5 +1,5 @@
 import { sign, verify } from 'hono/jwt';
-import { setCookie, deleteCookie } from 'hono/cookie';
+import { setCookie, deleteCookie, getCookie } from 'hono/cookie';
 import { Context } from 'hono';
 import { eq, and, gt } from 'drizzle-orm';
 import { users, passwordResetTokens } from '../db/schema';

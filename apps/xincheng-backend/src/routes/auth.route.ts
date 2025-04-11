@@ -7,7 +7,7 @@ import {
   requestPasswordReset,
   resetPassword
 } from '../controllers/auth.controller';
-import { apiKeyAuth } from '../middleware/auth';
+import { apiKeyAuth, jwtAuthMiddleware } from '../middleware/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { sign } from 'hono/jwt';
 import { setCookie, getCookie } from 'hono/cookie';
@@ -25,13 +25,7 @@ router.post('/logout', apiKeyAuth, logout);
 router.post('/verify-email', apiKeyAuth, verifyEmail);
 router.post('/request-password-reset', apiKeyAuth, requestPasswordReset);
 router.post('/reset-password', apiKeyAuth, resetPassword);
-router.get('/me', apiKeyAuth, async (c: Context<{ Bindings: ENV }>) => {
-  const db = getDB(c);
-  const jwtPayload = c.get('jwtPayload');
-  const userId = jwtPayload.userId;
-  const user = await db.select().from(users).where(eq(users.id, userId)).limit(1).then(rows => rows[0]);
-  return c.json(user);
-});
+router.get('/me', apiKeyAuth, jwtAuthMiddleware);
 
 // Google OAuth
 router.get('/google/login', async (c: Context<{ Bindings: ENV }>) => {

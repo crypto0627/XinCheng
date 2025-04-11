@@ -1,18 +1,11 @@
 'use client'
 
-import { useAuthStore } from '@/store/useAuthStore'
+import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 
 export default function CheckoutPage() {
-  const { isAuth, logout } = useAuthStore()
+  const { isAuth, user } = useAuth()
   const router = useRouter()
-  
-  useEffect(() => {
-    if (!isAuth) {
-      router.push('/pre-order')
-    }
-  }, [isAuth, router])
   
   const handleLogout = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
@@ -24,7 +17,6 @@ export default function CheckoutPage() {
       },
     })
     if (response.ok) {
-      logout()
       router.push('/pre-order')
     } else {
       throw new Error('Failed to logout')
@@ -32,9 +24,14 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div>
+    <div className='flex flex-col items-center justify-center h-screen'>
       <h1>Checkout</h1>
-      {isAuth && <button onClick={handleLogout}>Logout</button>}
+      {isAuth && 
+      <div className='flex flex-col items-center justify-center'>
+        <p className='text-2xl font-bold'>Welcome, {user.username}</p>
+        <button className='bg-blue-500 text-white p-2 rounded-md' onClick={handleLogout}>Logout</button>
+      </div>
+      }
     </div>
   )
 }
