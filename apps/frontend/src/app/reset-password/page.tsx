@@ -3,6 +3,7 @@
 import { Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Swal from 'sweetalert2'
+import { authService } from '@/services/authService'
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams()
@@ -16,51 +17,30 @@ function ResetPasswordContent() {
       icon: 'error',
       confirmButtonText: 'OK'
     }).then(() => {
-      router.push('/pre-order')
+      router.push('/login')
     })
     return null
   }
 
   const resetPassword = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/reset-password`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || ''
-        },
-        body: JSON.stringify({ token }),
+      await authService.resetPassword({ token })
+      await Swal.fire({
+        title: 'Success!',
+        text: 'Password reset successfully! Redirecting to login...',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
       })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        await Swal.fire({
-          title: 'Success!',
-          text: 'Password reset successfully! Redirecting to login...',
-          icon: 'success',
-          timer: 2000,
-          showConfirmButton: false
-        })
-        router.push('/pre-order')
-      } else {
-        await Swal.fire({
-          title: 'Error',
-          text: data.error || 'Failed to reset password',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        })
-        router.push('/pre-order')
-      }
+      router.push('/login')
     } catch (error) {
       await Swal.fire({
         title: 'Error',
-        text: 'An error occurred while resetting your password',
+        text: error instanceof Error ? error.message : 'Failed to reset password',
         icon: 'error',
         confirmButtonText: 'OK'
       })
-      router.push('/pre-order')
+      router.push('/login')
     }
   }
 

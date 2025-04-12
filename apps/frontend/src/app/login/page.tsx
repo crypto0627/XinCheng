@@ -1,23 +1,32 @@
 'use client'
 
-import { AuthPage } from '@/components/pre-order/auth-page'
+import { AuthPage } from '@/components/login/auth-page'
+import { authService } from '@/services/authService'
 import { useRouter } from 'next/navigation'
-import Swal from 'sweetalert2'
-import { useAuthStore } from '@/store/useAuthStore'
 import { useEffect } from 'react'
+import Swal from 'sweetalert2'
 
-export default function PreOrderPage() {
+export default function LoginPage() {
   const router = useRouter()
-  const { setIsAuth } = useAuthStore()
 
+  useEffect(()=> {
+    const checkAuth = async () => {
+      const user = await authService.getCurrentUser()
+      if (user) {
+        router.push('/main')
+      }
+    }
+    checkAuth()
+  }, [router])
+  
   const handleAuthSuccess = async () => {
     await Swal.fire({
       title: '登入成功',
       icon: 'success',
-      confirmButtonText: '確定'
+      timer: 1500,
+      showConfirmButton: false
     })
-    setIsAuth(true)
-    router.push('/checkout')
+    router.push('/main')
   }
 
   const handleAuthError = async (error: Error) => {
@@ -29,9 +38,6 @@ export default function PreOrderPage() {
     })
   }
 
-  useEffect(()=>{
-    
-  })
   return (
     <main className="pt-24 bg-[#FFF8E7] min-h-screen">
       <div className="container mx-auto px-4">

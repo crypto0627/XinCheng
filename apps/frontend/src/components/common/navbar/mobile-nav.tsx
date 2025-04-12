@@ -34,7 +34,7 @@ export function MobileNav({ isOpen, setIsOpen }: MobileNavProps) {
           關於我們
         </Link>
         <Link
-          href="/pre-order"
+          href="/login"
           onClick={() => setIsOpen(false)}
           className="text-gray-700 hover:text-orange-600 transition-colors duration-200"
         >

@@ -179,7 +179,7 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
     });
 
     // Redirect to frontend
-    return c.redirect(`${c.env.BASE_URL}/checkout`);
+    return c.redirect(`${c.env.BASE_URL}/main`);
   } catch (error) {
     console.error('OAuth callback error:', error);
     return c.text('Internal server error', 500);

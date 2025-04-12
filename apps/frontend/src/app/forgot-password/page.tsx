@@ -4,6 +4,7 @@ import { AuthCard } from '@/components/auth/auth-card'
 import { ForgotPasswordForm } from '@/components/auth/forgot-password-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { authService } from '@/services/authService'
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -18,21 +19,7 @@ export default function ForgotPasswordPage() {
     setMessage(null)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/request-password-reset`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || ''
-        },
-        body: JSON.stringify({ email })
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || '重設密碼請求失敗')
-      }
-
+      await authService.requestPasswordReset(email)
       setMessage({
         text: '重設密碼連結已發送至您的電子郵件，請查收',
         type: 'success'
@@ -55,7 +42,7 @@ export default function ForgotPasswordPage() {
         description="請輸入您的電子郵件，我們將發送重設密碼連結給您"
         footer={{
           text: '返回登入頁面',
-          onClick: () => router.push('/pre-order'),
+          onClick: () => router.push('/login'),
           disabled: isLoading
         }}
       >

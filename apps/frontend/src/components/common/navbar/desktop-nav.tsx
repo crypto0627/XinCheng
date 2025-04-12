@@ -25,7 +25,7 @@ export function DesktopNav() {
         </span>
         <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
       </Link>
-      <Link href="/pre-order" className="relative group">
+      <Link href="/login" className="relative group">
         <span className="text-gray-700 hover:text-orange-600 transition-colors duration-200">
           團購預訂
         </span>

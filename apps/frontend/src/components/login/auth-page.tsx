@@ -16,6 +16,7 @@ import { AuthForm } from './auth-form'
 import { SocialAuthButtons } from './social-auth-buttons'
 import { useRouter } from 'next/navigation'
 import Swal from 'sweetalert2'
+import { authService } from '@/services/authService'
 
 interface AuthPageProps {
   onAuthSuccess: () => void
@@ -41,42 +42,21 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
       }
 
       if (isLogin) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || ''
-          },
-          body: JSON.stringify({ email, password })
-        })
-
-        const data = await response.json()
-
-        if (!response.ok) {
-          throw new Error(data.error || '登入失敗')
-        }
-
+        await authService.login({ email, password })
         onAuthSuccess()
       } else {
         if (!username) {
           throw new Error('請輸入用戶名')
         }
         await handleRegister(email, password, username)
-        await Swal.fire({
-          title: '註冊成功！',
-          text: '請查看您的信箱以驗證電子郵件',
-          icon: 'success',
-          confirmButtonText: '確定'
-        })
-        router.push('/pre-order')
       }
     } catch (error) {
       console.error('處理錯誤:', error)
+      const errorMessage = error instanceof Error ? error.message : '發生未知錯誤'
       onAuthError(error instanceof Error ? error : new Error('未知錯誤'))
       await Swal.fire({
         title: '錯誤',
-        text: error instanceof Error ? error.message : '發生未知錯誤',
+        text: errorMessage,
         icon: 'error',
         confirmButtonText: '確定'
       })
@@ -86,32 +66,42 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
   }
 
   const handleRegister = async (email: string, password: string, username: string) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || ''
-      },
-      body: JSON.stringify({ username, email, password })
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || '註冊失敗')
+    try {
+      await authService.register({ username, email, password })
+      await Swal.fire({
+        title: '註冊成功！',
+        text: '請查看您的信箱以驗證電子郵件',
+        icon: 'success',
+        confirmButtonText: '確定'
+      })
+      setIsLogin(true)
+    } catch (error) {
+      console.error('註冊錯誤:', error)
+      const errorMessage = error instanceof Error ? error.message : '註冊失敗'
+      onAuthError(error instanceof Error ? error : new Error('註冊失敗'))
+      await Swal.fire({
+        title: '錯誤',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: '確定'
+      })
     }
-    setIsLogin(true)
-    return await response.json()
   }
 
   const handleGoogleLogin = async () => {
     setIsLoading(true)
     try {
-      // Google登入
-      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google/login`
+      await authService.googleLogin()
     } catch (error) {
       console.error('Google登入錯誤:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Google登入失敗'
       onAuthError(error instanceof Error ? error : new Error('Google登入失敗'))
+      await Swal.fire({
+        title: '錯誤',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: '確定'
+      })
     } finally {
       setIsLoading(false)
     }
@@ -125,7 +115,14 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
       onAuthSuccess()
     } catch (error) {
       console.error('Passkey驗證錯誤:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Passkey驗證失敗'
       onAuthError(error instanceof Error ? error : new Error('Passkey驗證失敗'))
+      await Swal.fire({
+        title: '錯誤',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: '確定'
+      })
     } finally {
       setIsLoading(false)
     }

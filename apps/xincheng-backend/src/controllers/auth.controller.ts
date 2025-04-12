@@ -55,7 +55,7 @@ export const register = async (c: Context) => {
         html: `
           <h1>Welcome to XinCheng!</h1>
           <p>Please verify your email:</p>
-          <a href="${c.env.BASE_URL}/verify-email?token=${verificationToken}">Verify Email</a>
+          <a href="${c.env.TEST_BASE_URL}/verify-email?token=${verificationToken}">Verify Email</a>
         `
       });
       
@@ -95,11 +95,11 @@ export const login = async (c: Context) => {
   const { email, password } = await c.req.json();
 
   const user = await db.select().from(users).where(eq(users.email, email)).limit(1).then(rows => rows[0]);
-  if (!user) return c.json({ error: 'Invalid credentials' }, 401);
-  if (!user.isVerified) return c.json({ error: 'Email not verified' }, 401);
+  if (!user) return c.json({ error: 'Can not find user' }, 401);
+  if (!user.isVerified) return c.json({ error: 'Email not verified, please verify your email' }, 401);
 
   const isValid = await bcrypt.compare(password, user.passwordHash);
-  if (!isValid) return c.json({ error: 'Invalid credentials' }, 401);
+  if (!isValid) return c.json({ error: 'Password is incorrect, please try again' }, 401);
 
   const token = await sign({
     userId: user.id,
@@ -109,7 +109,7 @@ export const login = async (c: Context) => {
 
   setCookie(c, 'auth_token', token, {
     httpOnly: true,
-    secure: true,
+    secure: false,
     path: '/',
     maxAge: 60 * 60 * 24 * 7,
     sameSite: 'Strict',
@@ -127,6 +127,8 @@ export const login = async (c: Context) => {
 
 // 登出
 export const logout = async (c: Context) => {
+  const token = getCookie(c, 'auth_token');
+  if (!token) return c.json({ error: 'You are not logged in' }, 401);
   deleteCookie(c, 'auth_token');
   return c.json({ message: 'Logged out' });
 };
@@ -172,7 +174,7 @@ export const requestPasswordReset = async (c: Context) => {
     subject: 'Password Reset',
     html: `
       <p>Click below to reset password (expires in 1 hour):</p>
-      <a href="${c.env.BASE_URL}/reset-password?token=${token}">Reset</a>
+      <a href="${c.env.TEST_BASE_URL}/reset-password?token=${token}">Reset</a>
     `
   });
 

@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { authService } from '@/services/authService';
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
@@ -17,7 +18,7 @@ function VerifyEmailContent() {
       icon: 'error',
       confirmButtonText: 'OK'
     }).then(() => {
-      router.push('/pre-order');
+      router.push('/login');
     });
     return null;
   }
@@ -33,44 +34,24 @@ function VerifyEmailContent() {
         }
       });
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || ''
-        },
-        body: JSON.stringify({ token }),
+      await authService.verifyEmail(token);
+
+      await Swal.fire({
+        title: 'Success!',
+        text: 'Email verified successfully! Redirecting to login...',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await Swal.fire({
-          title: 'Success!',
-          text: 'Email verified successfully! Redirecting to login...',
-          icon: 'success',
-          timer: 2000,
-          showConfirmButton: false
-        });
-        router.push('/pre-order');
-      } else {
-        await Swal.fire({
-          title: 'Error',
-          text: data.error || 'Failed to verify email',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-        router.push('/pre-order');
-      }
+      router.push('/login');
     } catch (error) {
       await Swal.fire({
         title: 'Error',
-        text: 'An error occurred while verifying your email',
+        text: error instanceof Error ? error.message : 'Failed to verify email',
         icon: 'error',
         confirmButtonText: 'OK'
       });
-      router.push('/pre-order');
+      router.push('/login');
     }
   };
 

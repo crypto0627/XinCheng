@@ -1,19 +1,22 @@
 import { Context, MiddlewareHandler } from 'hono'
 import { verify } from 'hono/jwt'
 import { getCookie } from 'hono/cookie'
-
-const JWT_SECRET = 'secret' // use env
+import { ENV } from '../config/env.config'
 
 export const jwtAuthMiddleware: MiddlewareHandler = async (c, next) => {
   const token = getCookie(c, 'auth_token') || c.req.header('Authorization')?.replace('Bearer ', '')
 
-  if(!token) return c.json({ error: 'Unauthorized jwt' }, 401)
+  if(!token) {
+    console.error('No token found in request')
+    return c.json({ error: 'Unauthorized jwt' }, 401)
+  }
 
   try {
-    const payload = await verify(token, JWT_SECRET)
-    c.set('userId', payload.userId)
+    const payload = await verify(token, c.env.JWT_SECRET)
+    c.set('jwtPayload', payload)
     await next()
   } catch (error) {
+    console.error('JWT verification failed:', error)
     return c.json({ error: 'Unauthorized' }, 401)
   }
 }
