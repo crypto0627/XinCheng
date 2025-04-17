@@ -2,11 +2,12 @@
 
 import { useRouter } from 'next/navigation'
 import { authService } from '@/services/authService'
-import Swal from 'sweetalert2'
 import { useEffect, useState } from 'react'
 import UserInfo from '@/components/main/user-info'
 import { ProductCard } from '@/components/main/product-card'
 import { ShoppingCartIcon } from 'lucide-react'
+import { CartModal } from '@/components/main/cart-modal'
+import Swal from 'sweetalert2'
 
 type Product = {
   productName: string
@@ -40,6 +41,8 @@ export default function MainPage() {
   const router = useRouter()
   const [quantities, setQuantities] = useState<number[]>(products.map(() => 0))
   const [cartCount, setCartCount] = useState(0)
+  const [cartItems, setCartItems] = useState<{product: Product, quantity: number}[]>([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
 
   const handleIncrease = (index: number) => {
     setQuantities(prev => {
@@ -60,14 +63,48 @@ export default function MainPage() {
   const handleAddToCart = (index: number) => {
     if (quantities[index] > 0) {
       setCartCount(prev => prev + quantities[index])
-    } else {
-      Swal.fire({
-        title: '請選擇數量',
-        text: '請先選擇要購買的數量',
-        icon: 'warning',
-        confirmButtonText: '確定'
+      setCartItems(prev => {
+        const existingItem = prev.find(item => item.product === products[index])
+        const newCartItems = existingItem
+          ? prev.map(item => 
+              item.product === products[index] 
+                ? {...item, quantity: item.quantity + quantities[index]}
+                : item
+            )
+          : [...prev, {product: products[index], quantity: quantities[index]}]
+        
+        // 打印購物車內容
+        console.log('購物車內容：')
+        newCartItems.forEach((item, i) => {
+          console.log(`商品 ${i + 1}:`)
+          console.log(`- 名稱: ${item.product.productName}`)
+          console.log(`- 價格: $${item.product.price}`)
+          console.log(`- 重量: ${item.product.weight}`)
+          console.log(`- 數量: ${item.quantity}`)
+          console.log(`- 小計: $${item.product.price * item.quantity}`)
+          console.log('-------------------')
+        })
+        console.log(`總金額: $${newCartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)}`)
+        
+        return newCartItems
+      })
+      setQuantities(prev => {
+        const newQuantities = [...prev]
+        newQuantities[index] = 0
+        return newQuantities
       })
     }
+  }
+
+  const handleCartClick = () => {
+    if (cartCount === 0) return
+    setIsCartOpen(true)
+  }
+
+  const handleCheckout = () => {
+    setIsCartOpen(false)
+    setCartCount(0)
+    setCartItems([])
   }
 
   useEffect(() => {
@@ -116,9 +153,12 @@ export default function MainPage() {
               ))}
             </div>
           </div>
-          <div className="fixed bottom-2 right-2 p-4">
+          <div className="fixed bottom-2 right-2 p-4 hover:scale-110 transition-transform duration-300">
             <div className="flex justify-center items-center">
-              <button className="bg-orange-500 text-white px-4 py-2 rounded-md relative">
+              <button 
+                className="bg-orange-500 text-white px-4 py-2 rounded-md relative"
+                onClick={handleCartClick}
+              >
                 <ShoppingCartIcon className="w-6 h-6" />
                 {cartCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -130,6 +170,12 @@ export default function MainPage() {
           </div>
         </section>
       </div>
+      <CartModal 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cartItems}
+        onCheckout={handleCheckout}
+      />
     </main>
   )
 }

@@ -11,37 +11,30 @@ import {
 } from '@/components/ui/carousel'
 import Image from 'next/image'
 import Autoplay from 'embla-carousel-autoplay'
+import { useEffect } from 'react'
+import Link from 'next/link'
 
 const images = [
   {
     id: 1,
     src: '/image.png',
-    title: '美味早午餐',
-    description: '開啟美好的一天'
+    title: '加入官方line',
+    description: '開始健康飲食生活',
+    link: 'https://line.me/R/ti/p/@376omnxd?oat_content=url&ts=06010816'
   },
   {
     id: 2,
     src: '/logo.png',
-    title: '週末限定特餐',
-    description: '豐盛的假日饗宴'
+    title: '團購系統新上線',
+    description: '點擊開起團購雞胸肉',
+    link: '/login'
   },
   {
     id: 3,
-    src: '/logo.png',
+    src: '/carousel/origin-chicken-breast.jpg',
     title: '健康輕食選擇',
-    description: '均衡營養的美味'
-  },
-  {
-    id: 4,
-    src: '/logo.png',
-    title: '精選套餐',
-    description: '多樣化的美食選擇'
-  },
-  {
-    id: 5,
-    src: '/logo.png',
-    title: '季節限定',
-    description: '當季新鮮食材'
+    description: '均衡營養的美味',
+    link: '/#menu'
   }
 ]
 
@@ -58,7 +51,7 @@ export default function HeroCarousel() {
     })
   )
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!api) {
       return
     }
@@ -96,20 +89,22 @@ export default function HeroCarousel() {
         <CarouselContent>
           {images.map((image) => (
             <CarouselItem key={image.id}>
-              <div className="relative w-full h-full bg-[#FFF8E7]/80">
-                <Image
-                  src={image.src}
-                  alt={image.title}
-                  width={500}
-                  height={300}
-                  className="w-full h-full object-contain"
-                  priority={image.id === 1}
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent text-white">
-                  <h2 className="text-2xl font-bold mb-1">{image.title}</h2>
-                  <p className="text-base">{image.description}</p>
+              <Link href={image.link} target="_blank">
+                <div className="relative w-full h-full bg-[#FFF8E7]/80">
+                  <Image
+                    src={image.src}
+                    alt={image.title}
+                    width={500}
+                    height={300}
+                    className="w-full h-full object-contain"
+                    priority={image.id === 1}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent text-white">
+                    <h2 className="text-2xl font-bold mb-1">{image.title}</h2>
+                    <p className="text-base">{image.description}</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </CarouselItem>
           ))}
         </CarouselContent>
