@@ -15,9 +15,11 @@ interface CartModalProps {
   onClose: () => void
   cartItems: {product: Product, quantity: number}[]
   onCheckout: () => void
+  onRemoveList: () => void
 }
 
-export function CartModal({ isOpen, onClose, cartItems, onCheckout }: CartModalProps) {
+
+export function CartModal({ isOpen, onClose, cartItems, onCheckout, onRemoveList }: CartModalProps) {
   const totalPrice = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
 
   return (
@@ -48,11 +50,14 @@ export function CartModal({ isOpen, onClose, cartItems, onCheckout }: CartModalP
             </div>
           </div>
           <div className="flex justify-end space-x-2 pt-4">
+            <Button variant="outline" onClick={onRemoveList}>
+              清空購物車
+            </Button>
             <Button variant="outline" onClick={onClose}>
               繼續購物
             </Button>
             <Button onClick={onCheckout} className="bg-orange-500 hover:bg-orange-600">
-              確定送出
+              確認訂單
             </Button>
           </div>
         </div>

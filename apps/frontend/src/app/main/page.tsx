@@ -102,7 +102,25 @@ export default function MainPage() {
   }
 
   const handleCheckout = () => {
-    setIsCartOpen(false)
+    const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+    
+    if (totalQuantity >= 5) {
+      // 將購物車資訊存儲到 localStorage
+      localStorage.setItem('cart', JSON.stringify(cartItems))
+      router.push('/main/checkout')
+    } else {
+      Swal.fire({
+        title: '數量不足',
+        text: '請購買至少五份商品',
+        icon: 'warning',
+        confirmButtonText: '新增商品'
+      })
+      setIsCartOpen(false)
+    }
+  }
+
+  const handleRemoveList = () => {
+    setQuantities(products.map(() => 0))
     setCartCount(0)
     setCartItems([])
   }
@@ -175,6 +193,7 @@ export default function MainPage() {
         onClose={() => setIsCartOpen(false)}
         cartItems={cartItems}
         onCheckout={handleCheckout}
+        onRemoveList={handleRemoveList}
       />
     </main>
   )

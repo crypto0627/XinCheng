@@ -14,14 +14,14 @@ export interface FeaturedItem {
 }
 
 export interface Product {
-  productId: string
-  name: string
-  description: string
+  productName: string
   price: number
-  image: string
+  img: string
+  weight: string
 }
 
-export interface CartItem extends Product {
+export interface CartItem {
+  product: Product
   quantity: number
 }
 

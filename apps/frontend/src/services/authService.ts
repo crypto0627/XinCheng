@@ -1,20 +1,11 @@
+import { LoginCredentials, RegisterCredentials, ResetPasswordData } from "@/types/auth.types"
+
 const API_URL = process.env.NEXT_PUBLIC_TEST_API_URL
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY
 
-interface LoginCredentials {
-  email: string
-  password: string
-}
-
-interface RegisterCredentials {
-  username: string
-  email: string
-  password: string
-}
-
-interface ResetPasswordData {
-  token: string
-  newPassword?: string
+const headers = {
+  'Content-Type': 'application/json',
+  'X-API-KEY': API_KEY || ''
 }
 
 export const authService = {
@@ -22,10 +13,7 @@ export const authService = {
     const response = await fetch(`${API_URL}/api/auth/login`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY || ''
-      },
+      headers,
       body: JSON.stringify(credentials)
     })
 
@@ -42,10 +30,7 @@ export const authService = {
     const response = await fetch(`${API_URL}/api/auth/register`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY || ''
-      },
+      headers,
       body: JSON.stringify(credentials)
     })
 
@@ -61,10 +46,7 @@ export const authService = {
     const response = await fetch(`${API_URL}/api/auth/logout`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY || ''
-      }
+      headers,
     })
 
     if (!response.ok) {
@@ -78,10 +60,7 @@ export const authService = {
     const response = await fetch(`${API_URL}/api/auth/verify-email`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY || ''
-      },
+      headers,
       body: JSON.stringify({ token })
     })
 
@@ -97,10 +76,7 @@ export const authService = {
     const response = await fetch(`${API_URL}/api/auth/request-password-reset`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY || ''
-      },
+      headers,
       body: JSON.stringify({ email })
     })
 
@@ -116,10 +92,7 @@ export const authService = {
     const response = await fetch(`${API_URL}/api/auth/reset-password`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY || ''
-      },
+      headers,
       body: JSON.stringify(data)
     })
 
@@ -135,15 +108,15 @@ export const authService = {
     const response = await fetch(`${API_URL}/api/auth/me`, {
       method: 'GET',
       credentials: 'include',
-      headers: {
-        'X-API-KEY': API_KEY || ''
-      }
+      headers,
     })
 
     const data = await response.json()
     if (!response.ok) {
+      console.error('取得使用者資料失敗', data)
       return null
     }
+
     return data
   },
 

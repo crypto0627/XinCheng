@@ -34,7 +34,7 @@ export function ProductCard({
             src={product.img}
             alt={product.productName}
             fill
-            className="object-cover rounded-t-lg"
+            className="object-fill rounded-t-lg"
           />
         </div>
       </CardHeader>

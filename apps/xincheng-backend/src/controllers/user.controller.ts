@@ -10,7 +10,7 @@ export const deleteUser = async (c: Context) => {
     return c.json({ message: 'User deleted' });
   };
   
-  export const getUser = async (c: Context) => {
+export const getUser = async (c: Context) => {
   const db = getDB(c);
   const { id } = await c.req.json();
   const user = await db.select().from(users).where(eq(users.id, id)).limit(1).then(rows => rows[0]);
