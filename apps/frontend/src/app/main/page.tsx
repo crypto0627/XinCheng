@@ -8,6 +8,7 @@ import { ProductCard } from '@/components/main/product-card'
 import { ShoppingCartIcon } from 'lucide-react'
 import { CartModal } from '@/components/main/cart-modal'
 import Swal from 'sweetalert2'
+import { useAuthStore } from '@/stores/auth.store'
 
 type Product = {
   id: string
@@ -43,10 +44,12 @@ const products: Product[] = [
 
 export default function MainPage() {
   const router = useRouter()
+  const { isAuthenticated, login } = useAuthStore()
   const [quantities, setQuantities] = useState<number[]>(products.map(() => 0))
   const [cartCount, setCartCount] = useState(0)
   const [cartItems, setCartItems] = useState<{product: Product, quantity: number}[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const handleIncrease = (index: number) => {
     setQuantities(prev => {
@@ -116,15 +119,14 @@ export default function MainPage() {
     setCartItems([])
   }
 
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const userData = await authService.getCurrentUser()
-        setUser(userData)
-        if (!userData) {
+        
+        if (userData) {
+          login(userData)
+        } else {
           Swal.fire({
             title: '請先登入',
             text: '您需要登入才能訪問此頁面',
@@ -142,7 +144,7 @@ export default function MainPage() {
     }
     
     checkAuth()
-  }, [router])
+  }, [router, login])
 
   if (loading) return <div className="pt-24 text-center">載入中...</div>
 

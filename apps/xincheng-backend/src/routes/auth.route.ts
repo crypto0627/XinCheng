@@ -175,64 +175,12 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
       httpOnly: true,
       secure: true,
       sameSite: 'None',
-      maxAge: 0
+      maxAge: 0,
+      domain: new URL(c.env.BASE_URL).hostname,
     });
 
-    // 加入延遲後跳轉頁面
-    return new Response(
-      `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>登入成功</title>
-          <script>
-            setTimeout(function() {
-              window.location.href = "${c.env.BASE_URL}/main";
-            }, 1000); // 1秒延遲後跳轉
-          </script>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100vh;
-              margin: 0;
-            }
-            .container {
-              text-align: center;
-            }
-            .spinner {
-              border: 4px solid rgba(0, 0, 0, 0.1);
-              border-radius: 50%;
-              border-top: 4px solid #3498db;
-              width: 30px;
-              height: 30px;
-              animation: spin 1s linear infinite;
-              margin: 20px auto;
-            }
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h2>登入成功</h2>
-            <div class="spinner"></div>
-            <p>正在跳轉到主頁面...</p>
-          </div>
-        </body>
-      </html>
-      `,
-      {
-        headers: {
-          "Content-Type": "text/html; charset=UTF-8",
-        },
-      }
-    );
+    // Redirect to frontend callback page
+    return c.redirect(`${c.env.BASE_URL}/auth/google/callback`);
   } catch (error) {
     console.error('OAuth callback error:', error);
     return c.text('Internal server error', 500);

@@ -128,6 +128,17 @@ export const authService = {
     window.location.href = `${API_URL}/api/auth/google/login`
   },
 
+  // This method will be called when user comes back from Google OAuth
+  async handleGoogleCallback() {
+    try {
+      const user = await this.getCurrentUser()
+      return user
+    } catch (error) {
+      console.error('Google callback error:', error)
+      return null
+    }
+  },
+
   async updateUser(userData: {id: string, name?: string, email?: string, address?: string, passwordHash?: string}) {
     const response = await fetch(`${API_URL}/api/users/update`, {
       method: 'PUT',
