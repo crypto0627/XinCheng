@@ -176,11 +176,11 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
       secure: true,
       sameSite: 'None',
       maxAge: 0,
-      domain: new URL(c.env.BASE_URL).hostname,
+      domain: new URL(c.env.TEST_BASE_URL).hostname,
     });
 
     // Redirect to frontend callback page
-    return c.redirect(`${c.env.BASE_URL}/auth/google/callback`);
+    return c.redirect(`${c.env.TEST_BASE_URL}/auth/google/callback`);
   } catch (error) {
     console.error('OAuth callback error:', error);
     return c.text('Internal server error', 500);

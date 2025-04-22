@@ -29,7 +29,7 @@ export const register = async (c: Context) => {
     
     try {
       // 嘗試發送驗證郵件
-      await authService.sendVerificationEmail(email, verificationToken, c.env.RESEND_API_KEY, c.env.BASE_URL);
+      await authService.sendVerificationEmail(email, verificationToken, c.env.RESEND_API_KEY, c.env.TEST_BASE_URL);
       
       // 郵件發送成功後，再創建用戶
       await authService.createUser(db, id, name, phone, email, address, hash);
@@ -124,7 +124,7 @@ export const requestPasswordReset = async (c: Context) => {
   }
 
   const token = await authService.createPasswordResetToken(db, user.id);
-  await authService.sendPasswordResetEmail(email, token, c.env.RESEND_API_KEY, c.env.BASE_URL);
+  await authService.sendPasswordResetEmail(email, token, c.env.RESEND_API_KEY, c.env.TEST_BASE_URL);
 
   return c.json({ message: 'Password reset email sent' });
 };

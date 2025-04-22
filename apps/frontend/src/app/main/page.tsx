@@ -127,6 +127,7 @@ export default function MainPage() {
         if (userData) {
           login(userData)
         } else {
+          logout()
           Swal.fire({
             title: '請先登入',
             text: '您需要登入才能訪問此頁面',
@@ -194,4 +195,8 @@ export default function MainPage() {
       />
     </main>
   )
+}
+
+function logout() {
+  throw new Error('Function not implemented.')
 }
