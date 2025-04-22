@@ -20,7 +20,7 @@ export default function UserInfo() {
   const [userInfo, setUserInfo] = useState<User | null>(null)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const router = useRouter()
-  const { logout: storeLogout } = useAuthStore()
+  const { logout } = useAuthStore()
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -37,7 +37,7 @@ export default function UserInfo() {
   const handleLogout = async () => {
     try {
       await authService.logout()
-      storeLogout()
+      logout()
       await Swal.fire({
         title: '登出成功',
         icon: 'success',
