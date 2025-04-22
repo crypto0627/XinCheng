@@ -11,7 +11,8 @@ import { Eye, EyeOff } from 'lucide-react'
 
 type User = {
   id: string
-  username: string
+  username?: string
+  name?: string
   email: string
   isVerified: boolean
   address?: string
@@ -34,7 +35,7 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
 
   useEffect(() => {
     if (user) {
-      setUsername(user.username || '')
+      setUsername(user.username || user.name || '')
       setEmail(user.email || '')
       setAddress(user.address || '')
     }
@@ -58,7 +59,9 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
         id: user.id
       }
       
-      if (username !== user.username) updateData.name = username
+      const currentName = user.username || user.name || ''
+      if (username !== currentName) updateData.name = username
+      
       if (email !== user.email) updateData.email = email
       if (address !== user.address) updateData.address = address
       if (password) updateData.passwordHash = password

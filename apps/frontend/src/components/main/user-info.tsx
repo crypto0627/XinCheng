@@ -8,7 +8,8 @@ import ProfileUpdateModal from './profile-update-modal'
 
 type User = {
   id: string;
-  username: string;
+  username?: string;
+  name?: string;
   email: string;
   isVerified: boolean;
   address?: string;
@@ -74,9 +75,12 @@ export default function UserInfo() {
     return null
   }
 
+  // 優先使用 username，如果沒有則使用 name (Google 登入)
+  const displayName = userInfo.username || userInfo.name || '用戶'
+
   return (
     <div className="flex items-center justify-end mb-8">
-      <p className="mr-4">您好，{userInfo.username}</p>
+      <p className="mr-4">您好，{displayName}</p>
       <button
         onClick={handleOpenProfileModal}
         className="px-4 py-2 mr-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"

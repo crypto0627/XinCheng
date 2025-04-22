@@ -9,5 +9,6 @@ export interface ENV {
   GOOGLE_CLIENT_ID: string
   GOOGLE_CLIENT_SECRET: string
   BASE_URL: string
+  TEST_BASE_URL: string
   API_URL: string
 }
