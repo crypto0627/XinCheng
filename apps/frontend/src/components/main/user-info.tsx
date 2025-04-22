@@ -5,6 +5,7 @@ import { authService } from '@/services/authService'
 import { useRouter } from 'next/navigation'
 import Swal from 'sweetalert2'
 import ProfileUpdateModal from './profile-update-modal'
+import { useAuthStore } from '@/stores/auth.store'
 
 type User = {
   id: string;
@@ -19,6 +20,7 @@ export default function UserInfo() {
   const [userInfo, setUserInfo] = useState<User | null>(null)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const router = useRouter()
+  const { logout: storeLogout } = useAuthStore()
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -35,6 +37,7 @@ export default function UserInfo() {
   const handleLogout = async () => {
     try {
       await authService.logout()
+      storeLogout()
       await Swal.fire({
         title: '登出成功',
         icon: 'success',
