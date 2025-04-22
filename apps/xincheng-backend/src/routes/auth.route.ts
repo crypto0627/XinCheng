@@ -160,12 +160,6 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
       'HS256'
     );
 
-    console.log('Setting auth_token cookie:', {
-      jwt: jwt ? 'present' : 'missing',
-      userId,
-      email: user.email
-    });
-
     // 在正式環境中設置 cookie
     setCookie(c, 'auth_token', jwt, {
       path: '/',
@@ -173,7 +167,6 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
       secure: true,
       sameSite: 'None', // 允許跨站點重定向
       maxAge: 60 * 60 * 24 * 7, // 7 days
-      domain: new URL(c.env.BASE_URL).hostname, // 明確設置 cookie 的域名
     });
 
     // Clear the oauth_state cookie as it's no longer needed
@@ -182,17 +175,64 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
       httpOnly: true,
       secure: true,
       sameSite: 'None',
-      maxAge: 0,
-      domain: new URL(c.env.BASE_URL).hostname,
+      maxAge: 0
     });
 
-    // 添加額外的調試信息
-    console.log('Cookies after setting:', c.req.header('set-cookie'));
-    console.log('Redirect URL:', `${c.env.BASE_URL}/main`);
-    console.log('Domain used for cookies:', new URL(c.env.BASE_URL).hostname);
-
-    // Redirect to frontend
-    return c.redirect(`${c.env.BASE_URL}/main`);
+    // 加入延遲後跳轉頁面
+    return new Response(
+      `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>登入成功</title>
+          <script>
+            setTimeout(function() {
+              window.location.href = "${c.env.BASE_URL}/main";
+            }, 1000); // 1秒延遲後跳轉
+          </script>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+              margin: 0;
+            }
+            .container {
+              text-align: center;
+            }
+            .spinner {
+              border: 4px solid rgba(0, 0, 0, 0.1);
+              border-radius: 50%;
+              border-top: 4px solid #3498db;
+              width: 30px;
+              height: 30px;
+              animation: spin 1s linear infinite;
+              margin: 20px auto;
+            }
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h2>登入成功</h2>
+            <div class="spinner"></div>
+            <p>正在跳轉到主頁面...</p>
+          </div>
+        </body>
+      </html>
+      `,
+      {
+        headers: {
+          "Content-Type": "text/html; charset=UTF-8",
+        },
+      }
+    );
   } catch (error) {
     console.error('OAuth callback error:', error);
     return c.text('Internal server error', 500);
