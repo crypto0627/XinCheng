@@ -105,21 +105,15 @@ export const authService = {
 
   async getCurrentUser() {
     try {
-      console.log('getCurrentUser - Making request to:', `${API_URL}/api/auth/me`)
       const response = await fetch(`${API_URL}/api/auth/me`, {
         method: 'GET',
         credentials: 'include',
         headers,
       })
-
-      console.log('getCurrentUser - Response status:', response.status)
-      console.log('getCurrentUser - Response headers:', Object.fromEntries(response.headers.entries()))
       
       const data = await response.json()
-      console.log('getCurrentUser - Response data:', data)
-      
+      console.log(data)
       if (!response.ok) {
-        console.error('getCurrentUser - Error:', data)
         return null
       }
       return data

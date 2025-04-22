@@ -164,8 +164,8 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
     setCookie(c, 'auth_token', jwt, {
       path: '/',
       httpOnly: true,
-      secure: false, // Set to false for localhost
-      sameSite: 'Lax', // Changed to Lax for localhost
+      secure: true, // Set to false for localhost
+      sameSite: 'strict', // Changed to Lax for localhost
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
@@ -175,7 +175,7 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
       httpOnly: true,
       secure: false,
       sameSite: 'Lax',
-      maxAge: 0, // Expire immediately
+      maxAge: 0,
     });
 
     // Redirect to frontend

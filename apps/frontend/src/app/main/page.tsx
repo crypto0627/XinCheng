@@ -124,8 +124,9 @@ export default function MainPage() {
           title: '請先登入',
           text: '您需要登入才能訪問結帳頁面',
           icon: 'warning',
-          showConfirmButton: false,
-          timer: 1500
+          confirmButtonText: '確定'
+          // showConfirmButton: false,
+          // timer: 1500
         })
         router.push('/login')
       }

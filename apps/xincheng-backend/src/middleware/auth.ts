@@ -1,7 +1,6 @@
 import { Context, MiddlewareHandler } from 'hono'
 import { verify } from 'hono/jwt'
 import { getCookie } from 'hono/cookie'
-import { ENV } from '../config/env.config'
 
 export const jwtAuthMiddleware: MiddlewareHandler = async (c, next) => {
   const token = getCookie(c, 'auth_token') || c.req.header('Authorization')?.replace('Bearer ', '')
