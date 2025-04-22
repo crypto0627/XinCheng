@@ -120,5 +120,21 @@ export const authService = {
   // Google OAuth
   async googleLogin() {
     window.location.href = `${API_URL}/api/auth/google/login`
+  },
+
+  async updateUser(userData: {id: string, name?: string, email?: string, address?: string, passwordHash?: string}) {
+    const response = await fetch(`${API_URL}/api/users/update`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers,
+      body: JSON.stringify(userData)
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || '更新用戶資料失敗');
+    }
+
+    return data;
   }
 } 
