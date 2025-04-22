@@ -55,8 +55,8 @@ router.get('/google/login', async (c: Context<{ Bindings: ENV }>) => {
   setCookie(c, 'oauth_state', state, {
     path: '/',
     httpOnly: true,
-    secure: false, // Set to false for localhost
-    sameSite: 'Lax', // Changed to Lax for localhost
+    secure: true,
+    sameSite: 'None', // 允許跨站點請求
     maxAge: 60 * 60 * 24 * 7,
   });
 
@@ -160,23 +160,36 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
       'HS256'
     );
 
-    // Set auth_token cookie
+    console.log('Setting auth_token cookie:', {
+      jwt: jwt ? 'present' : 'missing',
+      userId,
+      email: user.email
+    });
+
+    // 在正式環境中設置 cookie
     setCookie(c, 'auth_token', jwt, {
       path: '/',
       httpOnly: true,
-      secure: true, // Set to false for localhost
-      sameSite: 'strict', // Changed to Lax for localhost
+      secure: true,
+      sameSite: 'None', // 允許跨站點重定向
       maxAge: 60 * 60 * 24 * 7, // 7 days
+      domain: new URL(c.env.BASE_URL).hostname, // 明確設置 cookie 的域名
     });
 
     // Clear the oauth_state cookie as it's no longer needed
     setCookie(c, 'oauth_state', '', {
       path: '/',
       httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
+      secure: true,
+      sameSite: 'None',
       maxAge: 0,
+      domain: new URL(c.env.BASE_URL).hostname,
     });
+
+    // 添加額外的調試信息
+    console.log('Cookies after setting:', c.req.header('set-cookie'));
+    console.log('Redirect URL:', `${c.env.BASE_URL}/main`);
+    console.log('Domain used for cookies:', new URL(c.env.BASE_URL).hostname);
 
     // Redirect to frontend
     return c.redirect(`${c.env.BASE_URL}/main`);

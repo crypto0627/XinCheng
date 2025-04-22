@@ -8,6 +8,7 @@ import { ProductCard } from '@/components/main/product-card'
 import { ShoppingCartIcon } from 'lucide-react'
 import { CartModal } from '@/components/main/cart-modal'
 import Swal from 'sweetalert2'
+import { useAuthStore } from '@/stores/authStore'
 
 type Product = {
   id: string
@@ -115,25 +116,26 @@ export default function MainPage() {
     setCartCount(0)
     setCartItems([])
   }
+  const { user, loading, checkAuth } = useAuthStore()
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const user = await authService.getCurrentUser()
-      if (!user) {
-        await Swal.fire({
-          title: '請先登入',
-          text: '您需要登入才能訪問結帳頁面',
-          icon: 'warning',
-          confirmButtonText: '確定'
-          // showConfirmButton: false,
-          // timer: 1500
-        })
+    if (!loading && !user) {
+      Swal.fire({
+        title: '請先登入',
+        text: '您需要登入才能訪問此頁面',
+        icon: 'warning',
+        confirmButtonText: '確定'
+      }).then(() => {
         router.push('/login')
-      }
+      })
     }
-    checkAuth()
-  }, [router])
+  }, [user, loading, router])
 
+  if (loading) return <div className="pt-24 text-center">載入中...</div>
+  
   return (
     <main className="pt-24 bg-[#FFF8E7] min-h-screen">
       <div className="container mx-auto px-4">
