@@ -137,12 +137,12 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
       userId = uuidv4();
       await db.insert(users).values({
         id: userId,
+        name: user.name,
+        phone: '', // Required field in schema
         email: user.email,
-        username: user.name,
+        address: '', // Required field in schema
         passwordHash: '',
         isVerified: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       });
     } else {
       userId = existingUser.id;

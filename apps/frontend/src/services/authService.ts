@@ -1,6 +1,6 @@
 import { LoginCredentials, RegisterCredentials, ResetPasswordData } from "@/types/auth.types"
 
-const API_URL = process.env.NEXT_PUBLIC_TEST_API_URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY
 
 const headers = {
@@ -22,7 +22,6 @@ export const authService = {
       throw new Error(data.error || '登入失敗')
     }
     
-
     return data
   },
 
@@ -113,10 +112,8 @@ export const authService = {
 
     const data = await response.json()
     if (!response.ok) {
-      console.error('取得使用者資料失敗', data)
       return null
     }
-
     return data
   },
 

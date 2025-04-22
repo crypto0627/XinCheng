@@ -14,6 +14,7 @@ export interface FeaturedItem {
 }
 
 export interface Product {
+  id: string
   productName: string
   price: number
   img: string
@@ -26,11 +27,21 @@ export interface CartItem {
 }
 
 export interface Order {
-  name: string
-  phone: string
   email: string
-  address: string
-  paymentMethod: string
-  items: CartItem[]
   totalAmount: number
+  totalQuantity: number
+  paymentMethod: string
+  status?: 'processing' | 'completed' | 'cancelled'
+  createdAt?: string
+  items: {
+    productId: string
+    productName: string
+    quantity: number
+    price: number
+  }[]
+}
+
+export interface OrderResponse {
+  message: string
+  orderId: string
 }

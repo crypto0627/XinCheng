@@ -1,14 +1,19 @@
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
+export const orderStatusEnum = ['processing', 'completed', 'cancelled'] as const;
+export type OrderStatus = typeof orderStatusEnum[number];
+
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
-  username: text("username").notNull(),
+  name: text("name").notNull(),
+  phone: text("phone").notNull(),
   email: text("email").notNull().unique(),
+  address: text("address").notNull(),
   passwordHash: text("password_hash").notNull(),
-  isVerified: integer("is_verified", { mode: "boolean" }).default(false),
+  isVerified: integer("is_verified", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`)
 });
 
 export const passwordResetTokens = sqliteTable("password_reset_tokens", {
@@ -19,31 +24,22 @@ export const passwordResetTokens = sqliteTable("password_reset_tokens", {
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const products = sqliteTable("products", {
-  id: text("id").primaryKey(),
-  productName: text("product_name").notNull(),
-  price: real("price").notNull(),
-  isActive: integer("is_active", { mode: "boolean" }).default(true),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
-});
-
 export const orders = sqliteTable("orders", {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull(),
-  userEmailSnapshot: text("user_email_snapshot").notNull(),
-  totalPrice: real("total_price").notNull(),
-  status: text("status", { enum: ['processing', 'completed', 'cancelled'] }).notNull(),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  totalAmount: real("total_amount").notNull().default(0),
+  totalQuantity: integer("total_quantity").notNull().default(0),
+  paymentMethod: text("payment_method").notNull(),
+  status: text("status", { enum: orderStatusEnum }).notNull().default("processing"),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  completedAt: text("completed_at"),
+  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`)
 });
 
 export const orderItems = sqliteTable("order_items", {
   id: text("id").primaryKey(),
-  orderId: text("order_id").notNull(),
-  productId: text("product_id").notNull(),
-  productNameSnapshot: text("product_name_snapshot").notNull(),
-  priceSnapshot: real("price_snapshot").notNull(),
-  quantity: integer("quantity").notNull(),
-  subtotal: real("subtotal").notNull(),
+  orderId: text("order_id").notNull().references(() => orders.id, { onDelete: 'cascade' }),
+  productId: text("product_id").notNull(), // 可用來儲存商品代碼、名稱、或其他識別字串
+  productName: text("product_name"), // 商品名稱
+  quantity: integer("quantity").notNull().default(0),
+  price: real("price").notNull().default(0)
 });

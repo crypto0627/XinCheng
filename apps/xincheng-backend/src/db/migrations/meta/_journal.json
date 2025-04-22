@@ -8,6 +8,48 @@
       "when": 1744335854202,
       "tag": "0000_zippy_risque",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1745157268068,
+      "tag": "0001_flat_wonder_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1745158310783,
+      "tag": "0002_sticky_the_spike",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1745294891669,
+      "tag": "0003_aspiring_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1745295103419,
+      "tag": "0004_worried_wasp",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1745295525303,
+      "tag": "0005_amused_silver_samurai",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1745303792548,
+      "tag": "0006_motionless_magik",
+      "breakpoints": true
     }
   ]
 }

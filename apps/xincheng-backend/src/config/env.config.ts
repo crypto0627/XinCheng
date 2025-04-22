@@ -2,10 +2,6 @@ export interface ENV {
   // D1 Database
   DB: D1Database
 
-  // KV Namespaces
-  CART: KVNamespace
-  RESET_TOKEN: KVNamespace
-
   // Environment Variables
   RESEND_API_KEY: string
   API_KEY: string

@@ -10,6 +10,7 @@ import { CartModal } from '@/components/main/cart-modal'
 import Swal from 'sweetalert2'
 
 type Product = {
+  id: string
   productName: string
   price: number
   img: string
@@ -18,18 +19,21 @@ type Product = {
 
 const products: Product[] = [
   {
+    id: '1',
     productName: '原味舒肥雞',
     price: 43,
     img: '/main/item1.jpg',
     weight: '100g'
   },
   {
+    id: '2',
     productName: '麻辣舒肥雞',
     price: 43,
     img: '/main/item2.jpg',
     weight: '100g'
   },
   {
+    id: '3',
     productName: '真空鮭魚',
     price: 120,
     img: '/main/item3.jpg',
@@ -73,19 +77,6 @@ export default function MainPage() {
             )
           : [...prev, {product: products[index], quantity: quantities[index]}]
         
-        // 打印購物車內容
-        console.log('購物車內容：')
-        newCartItems.forEach((item, i) => {
-          console.log(`商品 ${i + 1}:`)
-          console.log(`- 名稱: ${item.product.productName}`)
-          console.log(`- 價格: $${item.product.price}`)
-          console.log(`- 重量: ${item.product.weight}`)
-          console.log(`- 數量: ${item.quantity}`)
-          console.log(`- 小計: $${item.product.price * item.quantity}`)
-          console.log('-------------------')
-        })
-        console.log(`總金額: $${newCartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)}`)
-        
         return newCartItems
       })
       setQuantities(prev => {
@@ -127,18 +118,8 @@ export default function MainPage() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const user = await authService.getCurrentUser()
-        if (!user) {
-          await Swal.fire({
-            title: '請先登入',
-            text: '您需要登入才能訪問結帳頁面',
-            icon: 'warning',
-            confirmButtonText: '前往登入'
-          })
-          router.push('/login')
-        }
-      } catch (error) {
+      const user = await authService.getCurrentUser()
+      if (!user) {
         await Swal.fire({
           title: '請先登入',
           text: '您需要登入才能訪問結帳頁面',
