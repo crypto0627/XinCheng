@@ -3,6 +3,7 @@
   "name": "xincheng-managerment-backend",
   "main": "src/index.ts",
   "compatibility_date": "2025-04-09",
+  "minify": true,
   "compatibility_flags": [
     "nodejs_compat"
   ],
