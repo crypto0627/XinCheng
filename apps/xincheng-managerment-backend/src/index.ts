@@ -10,8 +10,8 @@ import userRoute from './routes/user.route'
 
 const app = new Hono<{ Bindings: ENV }>()
 
-app.use('*', corsMiddleware)
-app.use('*', errorMiddleware)
+app.use(corsMiddleware)
+app.use(errorMiddleware)
 app.use(csrf({ origin: ['https://www.managerment.xincheng-brunch.com'] }))
 
 app.route('/api/auth', authRoute)

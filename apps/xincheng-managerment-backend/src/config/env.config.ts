@@ -7,6 +7,5 @@ export interface ENV {
     API_KEY: string
     JWT_SECRET: string
     BASE_URL: string
-    TEST_BASE_URL: string
     API_URL: string
   }  

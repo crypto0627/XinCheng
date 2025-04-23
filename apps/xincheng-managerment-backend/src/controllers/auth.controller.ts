@@ -232,8 +232,9 @@ export const login = async (c: Context<{ Bindings: ENV }>) => {
       path: '/',
       httpOnly: true,
       secure: true,
-      sameSite: 'Lax',
-      maxAge: 60 * 60 * 24 * 7 // 7 days
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7,
+      domain: 'api.xincheng-brunch.com'
     });
 
     return c.json({
