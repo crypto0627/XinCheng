@@ -1,14 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, lazy, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as authService from "@/services/auth.service";
-import FormInput from "@/components/auth/FormInput";
-import SubmitButton from "@/components/auth/SubmitButton";
 import Swal from "sweetalert2";
 import Link from "next/link";
 
-export default function ResetPasswordPage() {
+// Lazy load components
+const FormInput = lazy(() => import("@/components/auth/FormInput"));
+const SubmitButton = lazy(() => import("@/components/auth/SubmitButton"));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="animate-pulse">
+    <div className="h-10 bg-gray-200 rounded mb-4"></div>
+    <div className="h-10 bg-gray-200 rounded mb-4"></div>
+    <div className="h-10 bg-orange-200 rounded"></div>
+  </div>
+);
+
+// 主要內容組件
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -120,35 +132,37 @@ export default function ResetPasswordPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <FormInput
-            id="newPassword"
-            name="newPassword"
-            label="新密碼"
-            type="password"
-            value={formData.newPassword}
-            onChange={handleChange}
-            placeholder="••••••••"
-            required
-            disabled={loading}
-            showPassword={showPassword}
-            togglePasswordVisibility={togglePasswordVisibility}
-          />
+          <Suspense fallback={<LoadingFallback />}>
+            <FormInput
+              id="newPassword"
+              name="newPassword"
+              label="新密碼"
+              type="password"
+              value={formData.newPassword}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+              disabled={loading}
+              showPassword={showPassword}
+              togglePasswordVisibility={togglePasswordVisibility}
+            />
 
-          <FormInput
-            id="confirmPassword"
-            name="confirmPassword"
-            label="確認密碼"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="••••••••"
-            required
-            disabled={loading}
-            showPassword={showConfirmPassword}
-            togglePasswordVisibility={toggleConfirmPasswordVisibility}
-          />
+            <FormInput
+              id="confirmPassword"
+              name="confirmPassword"
+              label="確認密碼"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+              disabled={loading}
+              showPassword={showConfirmPassword}
+              togglePasswordVisibility={toggleConfirmPasswordVisibility}
+            />
 
-          <SubmitButton loading={loading} text="重置密碼" />
+            <SubmitButton loading={loading} text="重置密碼" />
+          </Suspense>
         </form>
 
         <div className="mt-6 flex flex-col items-center space-y-4">
@@ -161,5 +175,30 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// 頁面组件使用Suspense包裝
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8 border border-orange-100">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold mb-2 text-center text-orange-500">
+              重置密碼
+            </h2>
+            <p className="text-center text-gray-500">
+              正在載入...
+            </p>
+          </div>
+          <div className="flex justify-center py-8">
+            <div className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        </div>
+      </div>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
   );
 } 

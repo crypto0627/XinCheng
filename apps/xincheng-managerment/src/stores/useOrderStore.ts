@@ -3,13 +3,22 @@ import { persist } from 'zustand/middleware';
 import * as orderService from '@/services/order.service';
 
 // 定義類型
-export type TimeRange = "今日" | "本週" | "本月" | "all";
+export type TimeRange = "今日" | "本週" | "本月" | "本季" | "本年" | "all";
 
 export type OrderStats = {
   total: number;
   pending: number;
   completed: number;
   cancelled: number;
+};
+
+// 定義訂單項目的詳細類型
+export type OrderItem = {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  price: string | number;
 };
 
 export type OrderWithItems = {
@@ -20,8 +29,7 @@ export type OrderWithItems = {
   paymentMethod: string;
   status: string;
   createdAt: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  items?: any[];
+  items?: OrderItem[];
   user?: {
     id: string;
     name: string;
@@ -92,6 +100,8 @@ export const useOrderStore = create<OrderStoreState>()(
         "今日": null,
         "本週": null,
         "本月": null,
+        "本季": null,
+        "本年": null,
         "all": null,
       },
       orders: [],
@@ -100,6 +110,8 @@ export const useOrderStore = create<OrderStoreState>()(
         "今日": null,
         "本週": null,
         "本月": null,
+        "本季": null,
+        "本年": null,
         "all": null,
       },
       loading: {
@@ -142,31 +154,66 @@ export const useOrderStore = create<OrderStoreState>()(
         }));
         
         try {
-          const response = await orderService.getRevenue(timeRange, token);
+          // 首先從收入API獲取已完成訂單的數據
+          const revenueResponse = await orderService.getRevenue(timeRange, token);
           
-          if (response && !response.error && response.data) {
-            const data = response.data;
-            const stats: OrderStats = {
-              total: data.stats.total || 0,
-              pending: 0, // API不直接提供，需要額外獲取
-              completed: data.stats.total || 0, // 由於getRevenue只返回已完成的訂單
-              cancelled: 0, // API不直接提供，需要額外獲取
-            };
-            
-            set(state => ({
-              orderStats: { 
-                ...state.orderStats, 
-                [timeRange]: stats 
-              },
-              lastUpdated: { 
-                ...state.lastUpdated, 
-                [cacheKey]: Date.now() 
-              }
-            }));
-            
-            return stats;
+          // 然後獲取所有訂單來計算不同狀態的訂單數量
+          const ordersResponse = await orderService.getAllOrders(1, 100, token);
+          
+          let stats: OrderStats = {
+            total: 0,
+            pending: 0,
+            completed: 0,
+            cancelled: 0
+          };
+          
+          // 處理收入數據
+          if (revenueResponse && !revenueResponse.error && revenueResponse.data) {
+            const revenueData = revenueResponse.data;
+            // 設置已完成訂單數量
+            stats.completed = revenueData.stats?.total || 0;
           }
-          return null;
+          
+          // 處理訂單列表數據
+          if (ordersResponse && !ordersResponse.error && ordersResponse.data) {
+            const orders = ordersResponse.data.orders || [];
+            
+            // 計算不同狀態的訂單數量
+            let pendingCount = 0;
+            let completedCount = 0;
+            let cancelledCount = 0;
+            
+            orders.forEach((order: OrderWithItems) => {
+              if (order.status === 'processing') {
+                pendingCount++;
+              } else if (order.status === 'completed') {
+                completedCount++;
+              } else if (order.status === 'cancelled') {
+                cancelledCount++;
+              }
+            });
+            
+            // 更新訂單統計
+            stats = {
+              total: orders.length,
+              pending: pendingCount,
+              completed: completedCount,
+              cancelled: cancelledCount
+            };
+          }
+          
+          set(state => ({
+            orderStats: { 
+              ...state.orderStats, 
+              [timeRange]: stats 
+            },
+            lastUpdated: { 
+              ...state.lastUpdated, 
+              [cacheKey]: Date.now() 
+            }
+          }));
+          
+          return stats;
         } catch (error) {
           console.error(`Error fetching order stats for ${timeRange}:`, error);
           return null;
@@ -357,6 +404,8 @@ export const useOrderStore = create<OrderStoreState>()(
             "今日": null,
             "本週": null,
             "本月": null,
+            "本季": null,
+            "本年": null,
             "all": null,
           },
           orders: [],
@@ -365,6 +414,8 @@ export const useOrderStore = create<OrderStoreState>()(
             "今日": null,
             "本週": null,
             "本月": null,
+            "本季": null,
+            "本年": null,
             "all": null,
           },
           lastUpdated: {},

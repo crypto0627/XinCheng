@@ -1,17 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useOrderStore, TimeRange } from "@/stores/useOrderStore";
 import * as authService from "@/services/auth.service";
 
+// 導入組件
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { TimeRangeSelector } from "@/components/dashboard/TimeRangeSelector";
+import { RecentOrders } from "@/components/dashboard/RecentOrders";
+import { TopProducts } from "@/components/dashboard/TopProducts";
+
+// 類型定義
 type Order = {
   id: string;
   product: string;
   quantity: number;
   amount: number;
   status: string;
+  items?: { productName: string; productId: string; quantity: number }[];
 };
 
 type Product = {
@@ -20,7 +28,7 @@ type Product = {
   revenue: number;
 };
 
-export default function DashboardPage() {
+function DashboardContent() {
   const router = useRouter();
   const { isLoggedIn, user, token, logout } = useAuthStore();
   const [timeRange, setTimeRange] = useState<TimeRange>("今日");
@@ -53,14 +61,39 @@ export default function DashboardPage() {
       // 獲取最近訂單
       const ordersData = await fetchOrders(1, 4, token);
       if (ordersData && ordersData.length > 0) {
-        const formattedOrders = ordersData.map(order => ({
-          id: order.id,
-          product: order.items && order.items[0] ? order.items[0].productName : "未知商品",
-          quantity: order.totalQuantity || 0,
-          amount: parseFloat(order.totalAmount) || 0,
-          status: order.status === "processing" ? "待出貨" : 
-                 order.status === "completed" ? "已完成" : "已取消"
-        }));
+        const formattedOrders = ordersData.map(order => {
+          // 取得訂單中的商品資訊
+          let productInfo = "未知商品";
+          let productQuantity = 0;
+          
+          // 檢查訂單項目是否存在
+          if (order.items && order.items.length > 0) {
+            // 如果只有一個商品，直接顯示商品名稱
+            if (order.items.length === 1) {
+              const item = order.items[0];
+              productInfo = item.productName || `商品 ${item.productId}`;
+              productQuantity = item.quantity || 0;
+            } 
+            // 如果有多個商品，顯示所有商品
+            else {
+              // 將多個商品格式化為適合在UI中顯示的格式
+              productInfo = order.items.map(item => 
+                `${item.productName || `商品 ${item.productId.substring(0, 8)}`} x ${item.quantity}`
+              ).join('\n');
+              productQuantity = order.totalQuantity || 0;
+            }
+          }
+          
+          return {
+            id: order.id,
+            product: productInfo,
+            quantity: productQuantity,
+            amount: parseFloat(order.totalAmount) || 0,
+            status: order.status === "processing" ? "待出貨" : 
+                  order.status === "completed" ? "已完成" : "已取消",
+            items: order.items
+          };
+        });
         setOrders(formattedOrders);
       }
       
@@ -68,7 +101,7 @@ export default function DashboardPage() {
       const revenueResult = await fetchRevenueData("all", token);
       if (revenueResult && revenueResult.popularProducts) {
         const popularProducts = revenueResult.popularProducts.map(product => ({
-          name: product.productName,
+          name: product.productName || `商品 ${product.productId.substring(0, 8)}`,
           sales: product.quantity || 0,
           revenue: parseFloat(product.revenue) || 0
         }));
@@ -97,153 +130,55 @@ export default function DashboardPage() {
     setTimeRange(range);
   };
 
-  const getTotalAmount = () => {
-    return orders.reduce((total, order) => total + order.amount, 0);
-  };
-
   if (!isLoggedIn || !user) {
     return null; // Will redirect in the useEffect
   }
 
   // 獲取當前時間範圍的訂單統計
-  const currentStats = orderStats[timeRange] || { total: 0, pending: 0, completed: 0, cancelled: 0 };
+  const currentStats = orderStats[timeRange] || null;
   
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 頂部導航欄 */}
-      <div className="bg-white px-4 py-3 shadow-sm sticky top-0 z-10 flex justify-between items-center">
-        <h1 className="font-bold text-orange-500 text-xl">儀表板</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-orange-100 text-orange-500 px-3 py-1 rounded-md text-sm font-medium"
-        >
-          登出
-        </button>
-      </div>
+      <DashboardHeader onLogout={handleLogout} />
       
       <div className="p-4">
-        {/* 時間範圍選擇器 */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
-            {(["今日", "本週", "本月"] as TimeRange[]).map((range) => (
-              <button
-                key={range}
-                onClick={() => handleTimeRangeChange(range)}
-                className={`flex-1 py-2 text-sm font-medium rounded-md ${
-                  timeRange === range
-                    ? "bg-orange-500 text-white"
-                    : "text-gray-500 hover:bg-gray-200"
-                }`}
-              >
-                {range}
-              </button>
-            ))}
-          </div>
-          
-          <div className="mt-4">
-            <div className="flex justify-between items-center">
-              <p className="text-sm text-gray-500">總訂單數</p>
-              {loading.orderStats ? (
-                <p className="text-2xl font-bold text-orange-500">載入中...</p>
-              ) : (
-                <p className="text-2xl font-bold text-orange-500">{currentStats.total}</p>
-              )}
-            </div>
-            
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              <div className="bg-orange-50 p-2 rounded-lg">
-                <p className="text-xs text-gray-500">待出貨</p>
-                <p className="text-lg font-bold text-orange-500">
-                  {loading.orderStats ? "..." : currentStats.pending}
-                </p>
-              </div>
-              <div className="bg-green-50 p-2 rounded-lg">
-                <p className="text-xs text-gray-500">已完成</p>
-                <p className="text-lg font-bold text-green-500">
-                  {loading.orderStats ? "..." : currentStats.completed}
-                </p>
-              </div>
-              <div className="bg-red-50 p-2 rounded-lg">
-                <p className="text-xs text-gray-500">已取消</p>
-                <p className="text-lg font-bold text-red-500">
-                  {loading.orderStats ? "..." : currentStats.cancelled}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* 時間範圍選擇器和訂單統計 */}
+        <TimeRangeSelector 
+          timeRange={timeRange}
+          onTimeRangeChange={handleTimeRangeChange}
+          loading={loading.orderStats}
+          orderStats={currentStats}
+        />
         
         {/* 訂單資訊 */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <h2 className="text-lg font-bold text-gray-800 mb-3">訂單資訊</h2>
-          
-          {loading.orders ? (
-            <p className="text-center py-4 text-gray-500">載入中...</p>
-          ) : orders.length > 0 ? (
-            <div className="space-y-3">
-              {orders.map((order) => (
-                <div key={order.id} className="border border-gray-200 rounded-lg p-3">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-gray-500">{order.id}</span>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      order.status === "待出貨" ? "bg-orange-100 text-orange-500" :
-                      order.status === "已完成" ? "bg-green-100 text-green-500" :
-                      "bg-red-100 text-red-500"
-                    }`}>
-                      {order.status}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-medium">{order.product}</p>
-                      <p className="text-sm text-gray-500">數量: {order.quantity}</p>
-                    </div>
-                    <p className="font-bold text-orange-500">NT$ {order.amount}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center py-4 text-gray-500">暫無訂單資料</p>
-          )}
-          
-          {orders.length > 0 && (
-            <div className="mt-4 flex justify-between items-center border-t border-gray-200 pt-3">
-              <p className="font-medium">總金額</p>
-              <p className="font-bold text-lg text-orange-500">NT$ {getTotalAmount()}</p>
-            </div>
-          )}
-        </div>
+        <RecentOrders 
+          orders={orders}
+          loading={loading.orders}
+        />
         
         {/* 熱銷商品排行 */}
-        <div className="bg-white rounded-lg shadow-sm p-4">
-          <h2 className="text-lg font-bold text-gray-800 mb-3">熱銷商品排行</h2>
-          
-          {loading.revenue ? (
-            <p className="text-center py-4 text-gray-500">載入中...</p>
-          ) : topProducts.length > 0 ? (
-            <div className="space-y-3">
-              {topProducts.map((product, index) => (
-                <div key={index} className="flex items-center border-b border-gray-100 pb-3 last:border-0 last:pb-0">
-                  <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                    index < 3 ? "bg-orange-500 text-white" : "bg-gray-200 text-gray-700"
-                  } mr-3 font-bold text-sm`}>
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium">{product.name}</p>
-                    <p className="text-sm text-gray-500">銷售量: {product.sales} 件</p>
-                  </div>
-                  <p className="font-bold text-orange-500">NT$ {product.revenue}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center py-4 text-gray-500">暫無商品銷售數據</p>
-          )}
-        </div>
+        <TopProducts 
+          products={topProducts}
+          loading={loading.revenue}
+        />
       </div>
     </div>
+  );
+}
+
+// 使用Suspense包裝主要内容
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-xl font-medium text-gray-700">載入儀表板...</h2>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 } 

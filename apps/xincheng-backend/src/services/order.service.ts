@@ -433,9 +433,10 @@ export const getAllOrders = async (db: DrizzleInstance, page: number = 1, limit:
     .limit(limit)
     .offset(offset);
 
-  // 獲取每個訂單的用戶信息
-  const ordersWithUserInfo = await Promise.all(
+  // 獲取每個訂單的用戶信息和訂單項目
+  const ordersWithDetails = await Promise.all(
     ordersList.map(async (order) => {
+      // 獲取用戶信息
       const user = await db
         .select({
           id: users.id,
@@ -445,6 +446,18 @@ export const getAllOrders = async (db: DrizzleInstance, page: number = 1, limit:
         .from(users)
         .where(eq(users.id, order.userId))
         .then(rows => rows[0]);
+
+      // 獲取訂單項目
+      const items = await db
+        .select({
+          id: orderItems.id,
+          productId: orderItems.productId,
+          productName: orderItems.productName,
+          quantity: orderItems.quantity,
+          price: orderItems.price
+        })
+        .from(orderItems)
+        .where(eq(orderItems.orderId, order.id));
 
       // 格式化日期
       const createdAtDate = order.createdAt ? new Date(order.createdAt) : new Date();
@@ -456,17 +469,25 @@ export const getAllOrders = async (db: DrizzleInstance, page: number = 1, limit:
         minute: '2-digit'
       });
 
+      // 處理訂單項目，確保 productName 存在並格式化價格
+      const processedItems = items.map(item => ({
+        ...item,
+        productName: item.productName || `Product ${item.productId.substring(0, 8)}`,
+        price: Number(item.price).toFixed(2)
+      }));
+
       return {
         ...order,
         createdAt: formattedDate,
         totalAmount: Number(order.totalAmount).toFixed(2),
-        user
+        user,
+        items: processedItems
       };
     })
   );
 
   return {
-    orders: ordersWithUserInfo,
+    orders: ordersWithDetails,
     pagination: {
       totalItems: totalCount,
       totalPages,
@@ -491,6 +512,7 @@ export const getRevenueData = async (db: DrizzleInstance, timeRange: string) => 
   // 根據時間範圍設置過濾條件
   switch (timeRange) {
     case 'today':
+    case '今日':
       // 今天
       dateFilter = { from: new Date(now.setHours(0, 0, 0, 0)).toISOString() };
       break;
@@ -504,6 +526,7 @@ export const getRevenueData = async (db: DrizzleInstance, timeRange: string) => 
       dateFilter = { from: yesterday.toISOString(), to: endOfYesterday.toISOString() };
       break;
     case 'week':
+    case '本週':
       // 本週
       const startOfWeek = new Date(now);
       startOfWeek.setDate(now.getDate() - now.getDay()); // 週日作為一週的開始
@@ -511,9 +534,21 @@ export const getRevenueData = async (db: DrizzleInstance, timeRange: string) => 
       dateFilter = { from: startOfWeek.toISOString() };
       break;
     case 'month':
+    case '本月':
       // 本月
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       dateFilter = { from: startOfMonth.toISOString() };
+      break;
+    case '本季':
+      // 本季度
+      const currentQuarter = Math.floor(now.getMonth() / 3);
+      const startOfQuarter = new Date(now.getFullYear(), currentQuarter * 3, 1);
+      dateFilter = { from: startOfQuarter.toISOString() };
+      break;
+    case '本年':
+      // 本年
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      dateFilter = { from: startOfYear.toISOString() };
       break;
     default:
       // 全部時間

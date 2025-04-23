@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { updateUser, deleteUser } from '@/services/user.service'
 import { useRouter } from 'next/navigation'
@@ -22,7 +22,7 @@ const Toast = ({ message, type, onClose }: { message: string, type: 'success' | 
   )
 }
 
-export default function SettingsPage() {
+function SettingsContent() {
   const { user, token, logout } = useAuthStore()
   const router = useRouter()
   
@@ -248,18 +248,18 @@ export default function SettingsPage() {
           ) : (
             <div className="bg-red-50 p-5 rounded-lg border border-red-200">
               <p className="text-red-600 mb-4 font-medium">
-                您確定要刪除您的帳號嗎？此操作無法撤銷。
+                您確定要刪除您的帳號嗎？此操作不可逆。
               </p>
-              <div className="flex">
+              <div className="flex space-x-3">
                 <button
                   onClick={handleDeleteAccount}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-200 mr-4 shadow-md"
+                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-200 shadow-md"
                 >
-                  是的，刪除我的帳號
+                  確認刪除
                 </button>
                 <button
                   onClick={() => setIsDeleting(false)}
-                  className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors duration-200 shadow-sm"
+                  className="bg-white text-red-700 border border-red-500 px-4 py-2 rounded-md hover:bg-red-100 transition-colors duration-200 shadow-sm"
                 >
                   取消
                 </button>
@@ -269,5 +269,18 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+        <p className="ml-3 text-orange-600 font-medium">載入中...</p>
+      </div>
+    }>
+      <SettingsContent />
+    </Suspense>
   )
 }
