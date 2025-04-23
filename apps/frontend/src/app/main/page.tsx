@@ -167,16 +167,16 @@ export default function MainPage() {
               ))}
             </div>
           </div>
-          <div className="fixed bottom-2 right-2 p-4 hover:scale-110 transition-transform duration-300">
+          <div className="fixed bottom-2 right-2 p-4">
             <div className="flex justify-center items-center space-x-2">
               <button 
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:scale-110 transition-transform duration-300"
                 onClick={handleTrackOrder}
               >
                 <PackageSearch className="w-6 h-6" />
               </button>
               <button 
-                className="bg-orange-500 text-white px-4 py-2 rounded-md relative"
+                className="bg-orange-500 text-white px-4 py-2 rounded-md relative hover:scale-110 transition-transform duration-300"
                 onClick={handleCartClick}
               >
                 <ShoppingCartIcon className="w-6 h-6" />
