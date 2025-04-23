@@ -47,7 +47,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
   const showError = (message: string) => {
     Swal.fire({
       icon: 'error',
-      title: 'Registration Error',
+      title: '註冊錯誤',
       text: message,
       confirmButtonColor: '#f97316', // orange-500
     });
@@ -56,10 +56,10 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
   const showSuccess = async (username: string) => {
     // 返回 Promise，確保等待用戶確認後再繼續
     return Swal.fire({
-      title: 'Registration Successful!',
-      text: `Welcome, ${username}! You can now log in using your credentials.`,
+      title: '註冊成功！',
+      text: `歡迎，${username}！您現在可以使用您的憑證登入。`,
       icon: 'success',
-      confirmButtonText: 'Continue to Login',
+      confirmButtonText: '繼續登入',
       confirmButtonColor: '#f97316', // orange-500
       timer: 3000,
       timerProgressBar: true,
@@ -73,14 +73,14 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
     setLoading(true);
 
     try {
-      // Validate passwords
+      // 驗證密碼
       if (formData.password !== formData.confirmPassword) {
-        showError("Passwords do not match");
+        showError("密碼不匹配");
         setLoading(false);
         return;
       }
 
-      // Register user
+      // 註冊用戶
       const response = await authService.register({
         name: formData.name,
         email: formData.email,
@@ -133,7 +133,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
       }
     } catch (err) {
       console.error("註冊過程中發生錯誤:", err);
-      showError("Registration failed. Please try again.");
+      showError("註冊失敗。請再試一次。");
     } finally {
       setLoading(false);
     }
@@ -143,10 +143,10 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
     <div>
       <div className="mb-8">
         <h2 className="text-3xl font-bold mb-2 text-center text-orange-500">
-          Register
+          註冊
         </h2>
         <p className="text-center text-gray-500">
-          Create your account
+          創建您的帳戶
         </p>
       </div>
 
@@ -154,11 +154,11 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
         <FormInput
           id="name"
           name="name"
-          label="Name"
+          label="姓名"
           type="text"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Your name"
+          placeholder="您的姓名"
           required
           disabled={loading}
         />
@@ -166,7 +166,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
         <FormInput
           id="email"
           name="email"
-          label="Email"
+          label="電子郵件"
           type="email"
           value={formData.email}
           onChange={handleChange}
@@ -185,7 +185,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
         <FormInput
           id="password"
           name="password"
-          label="Password"
+          label="密碼"
           type="password"
           value={formData.password}
           onChange={handleChange}
@@ -199,7 +199,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
         <FormInput
           id="confirmPassword"
           name="confirmPassword"
-          label="Confirm Password"
+          label="確認密碼"
           type="password"
           value={formData.confirmPassword}
           onChange={handleChange}
@@ -210,7 +210,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
           togglePasswordVisibility={toggleConfirmPasswordVisibility}
         />
 
-        <SubmitButton loading={loading} text="Create Account" />
+        <SubmitButton loading={loading} text="創建帳戶" />
       </form>
 
       <div className="mt-6 text-center">
@@ -220,7 +220,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
           className="text-orange-500 hover:text-orange-600 hover:underline font-medium transition-colors"
           disabled={loading}
         >
-          Already have an account? Login
+          已有帳戶？登入
         </button>
       </div>
     </div>

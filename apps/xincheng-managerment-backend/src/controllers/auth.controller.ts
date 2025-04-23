@@ -59,7 +59,7 @@ export const register = async (c: Context<{ Bindings: ENV }>) => {
 
     // Send verification email
     const resend = new Resend(c.env.RESEND_API_KEY);
-    const verificationUrl = `${c.env.TEST_BASE_URL}/verify-email?token=${verificationToken}`;
+    const verificationUrl = `${c.env.BASE_URL}/verify-email?token=${verificationToken}`;
     
     await resend.emails.send({
       from: 'xincheng@jakekuo.com',
@@ -162,7 +162,7 @@ export const resendVerification = async (c: Context<{ Bindings: ENV }>) => {
 
     // Send verification email
     const resend = new Resend(c.env.RESEND_API_KEY);
-    const verificationUrl = `${c.env.TEST_BASE_URL}/verify-email?token=${verificationToken}`;
+    const verificationUrl = `${c.env.BASE_URL}/verify-email?token=${verificationToken}`;
     
     await resend.emails.send({
       from: 'xincheng@jakekuo.com',
@@ -287,7 +287,7 @@ export const forgotPassword = async (c: Context<{ Bindings: ENV }>) => {
 
     // Send reset email
     const resend = new Resend(c.env.RESEND_API_KEY);
-    const resetUrl = `${c.env.TEST_BASE_URL}/reset-password?token=${resetToken}`;
+    const resetUrl = `${c.env.BASE_URL}/reset-password?token=${resetToken}`;
     
     await resend.emails.send({
       from: 'xincheng@jakekuo.com',
