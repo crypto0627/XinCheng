@@ -119,27 +119,6 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
     }
   }
 
-  const handlePasskeyLogin = async () => {
-    setIsLoading(true)
-    try {
-      // 模擬Passkey驗證
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      onAuthSuccess()
-    } catch (error) {
-      console.error('Passkey驗證錯誤:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Passkey驗證失敗'
-      onAuthError(error instanceof Error ? error : new Error('Passkey驗證失敗'))
-      await Swal.fire({
-        title: '錯誤',
-        text: errorMessage,
-        icon: 'error',
-        confirmButtonText: '確定'
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const handleForgotPassword = () => {
     router.push('/forgot-password')
   }
@@ -189,7 +168,6 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
           isLogin={isLogin}
           isLoading={isLoading}
           onGoogleLogin={handleGoogleLogin}
-          onPasskeyLogin={handlePasskeyLogin}
         />
       </CardContent>
       <CardFooter className="flex justify-center">

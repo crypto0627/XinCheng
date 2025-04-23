@@ -6,14 +6,12 @@ interface SocialAuthButtonsProps {
   isLogin: boolean
   isLoading: boolean
   onGoogleLogin: () => Promise<void>
-  onPasskeyLogin: () => Promise<void>
 }
 
 export function SocialAuthButtons({
   isLogin,
   isLoading,
   onGoogleLogin,
-  onPasskeyLogin
 }: SocialAuthButtonsProps) {
   return (
     <div className="mt-6">
@@ -36,17 +34,6 @@ export function SocialAuthButtons({
         >
           <Mail className="mr-2 h-5 w-5" />
           使用 Google 帳號{isLogin ? '登入' : '註冊'}
-        </Button>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={onPasskeyLogin}
-          disabled={isLoading}
-        >
-          <Key className="mr-2 h-5 w-5" />
-          使用 Passkey 驗證登入
         </Button>
       </div>
     </div>
