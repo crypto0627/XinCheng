@@ -9,8 +9,8 @@ import { authRoutes, userRoutes, orderRoutes } from './routes'
 
 const app = new Hono<{ Bindings: ENV }>()
 
-app.use('*', corsMiddleware)
-app.use('*', errorMiddleware)
+app.use(corsMiddleware)
+app.use(errorMiddleware)
 app.use(csrf({ origin: ['https://www.xincheng-brunch.com'] }))
 
 app.route('/api/auth', authRoutes)

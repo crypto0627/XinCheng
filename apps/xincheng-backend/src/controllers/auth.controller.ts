@@ -79,6 +79,7 @@ export const login = async (c: Context) => {
     path: '/',
     maxAge: 60 * 60 * 24 * 7,
     sameSite: 'lax',
+    domain: 'api.xincheng-brunch.com',
   });
 
   return c.json({
