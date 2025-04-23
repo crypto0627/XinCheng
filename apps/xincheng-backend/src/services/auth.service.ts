@@ -71,7 +71,7 @@ export const sendVerificationEmail = async (
   const resend = new Resend(resendApiKey);
   
   await resend.emails.send({
-    from: 'xincheng@jakekuo.com',
+    from: 'mail-service-manager@xincheng-brunch.com',
     to: email,
     subject: 'Verify your email',
     html: `
@@ -117,7 +117,7 @@ export const sendPasswordResetEmail = async (
   const resend = new Resend(resendApiKey);
   
   await resend.emails.send({
-    from: 'xincheng@jakekuo.com',
+    from: 'mail-service-manager@xincheng-brunch.com',
     to: email,
     subject: 'Password Reset',
     html: `
