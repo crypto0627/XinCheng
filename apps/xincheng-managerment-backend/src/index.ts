@@ -12,7 +12,7 @@ const app = new Hono<{ Bindings: ENV }>()
 
 app.use('*', corsMiddleware)
 app.use('*', errorMiddleware)
-app.use(csrf({ origin: ['https://www.xincheng-managerment.jakekuo.com', 'http://localhost:3000'] }))
+app.use(csrf({ origin: ['https://www.xincheng-brunch-managerment.com'] }))
 
 app.route('/api/auth', authRoute)
 app.route('/api/user', userRoute)

@@ -78,7 +78,7 @@ export const login = async (c: Context) => {
     secure: true,
     path: '/',
     maxAge: 60 * 60 * 24 * 7,
-    sameSite: 'strict',
+    sameSite: 'lax',
   });
 
   return c.json({
