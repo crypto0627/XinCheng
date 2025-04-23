@@ -153,5 +153,20 @@ export const authService = {
     }
 
     return data;
+  },
+
+  async deleteUser(id: string) {
+    const response = await fetch(`${API_URL}/api/users/deleteUser`, {
+      method: 'POST',
+      credentials: 'include',
+      headers,
+      body: JSON.stringify({ id })
+    })
+
+    const data = await response.json()
+    if(!response.ok) {
+      throw new Error(data.error || '刪除失敗')
+    }
+    return data
   }
 } 

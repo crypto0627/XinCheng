@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { authService } from '@/services/authService'
 import Swal from 'sweetalert2'
 import { Eye, EyeOff } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/stores/auth.store'
 
 type User = {
   id: string
@@ -32,6 +34,8 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const { logout } = useAuthStore()
 
   useEffect(() => {
     if (user) {
@@ -107,6 +111,49 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
     setShowPassword(!showPassword)
   }
 
+  const handleDeleteUser = async () => {
+    if (!user) return
+
+    const result = await Swal.fire({
+      title: '確定要刪除帳號?',
+      text: '此操作無法復原！您的所有資料將被永久刪除。',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: '是，刪除我的帳號',
+      cancelButtonText: '取消'
+    })
+
+    if (result.isConfirmed) {
+      try {
+        setIsSubmitting(true)
+        await authService.deleteUser(user.id)
+        logout()
+        await Swal.fire({
+          title: '帳號已刪除',
+          text: '您的帳號已成功刪除',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        })
+        onClose()
+        router.push('/login')
+      } catch (error) {
+        console.error('刪除帳號失敗:', error)
+        const errorMessage = error instanceof Error ? error.message : '刪除帳號失敗'
+        await Swal.fire({
+          title: '刪除失敗',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: '確定'
+        })
+      } finally {
+        setIsSubmitting(false)
+      }
+    }
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -170,21 +217,35 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
           </div>
           
           <DialogFooter className="mt-6">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
-              取消
-            </Button>
-            <Button
-              type="submit"
-              className="bg-orange-500 hover:bg-orange-600 transition-colors"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? '處理中...' : '更新資料'}
-            </Button>
+            <div className="flex w-full justify-between">
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDeleteUser}
+                disabled={isSubmitting}
+                className="bg-red-500 hover:bg-red-600 transition-colors"
+              >
+                刪除帳號
+              </Button>
+              <div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onClose}
+                  disabled={isSubmitting}
+                  className="mr-2"
+                >
+                  取消
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-orange-500 hover:bg-orange-600 transition-colors"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? '處理中...' : '更新資料'}
+                </Button>
+              </div>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>
