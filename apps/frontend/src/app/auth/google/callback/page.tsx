@@ -3,12 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authService } from '@/services/authService'
-import { useAuthStore } from '@/stores/auth.store'
 import Swal from 'sweetalert2'
 
 export default function GoogleCallback() {
   const router = useRouter()
-  const { googleLogin } = useAuthStore()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -19,7 +17,6 @@ export default function GoogleCallback() {
         
         // 如果成功獲取到用戶資訊，使用 googleLogin 更新 store
         if (userData) {
-          googleLogin(userData)
           router.push('/main')
         } else {
           Swal.fire({
@@ -47,7 +44,7 @@ export default function GoogleCallback() {
     }
 
     handleCallback()
-  }, [router, googleLogin])
+  }, [router])
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">

@@ -108,18 +108,11 @@ export const authService = {
       const response = await fetch(`${API_URL}/api/auth/me`, {
         method: 'GET',
         credentials: 'include',
-        headers,
-      })
-      
-      const data = await response.json()
-      console.log(data)
-      if (!response.ok) {
-        return null
-      }
-      return data
-    } catch (error) {
-      console.error('getCurrentUser - Fetch error:', error)
-      return null
+        headers
+      });
+     return response.json()
+    }catch(error) {
+      throw new Error('Error fetch /me',error as Error)
     }
   },
 
