@@ -57,9 +57,9 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
     // 返回 Promise，確保等待用戶確認後再繼續
     return Swal.fire({
       title: '註冊成功！',
-      text: `歡迎，${username}！您現在可以使用您的憑證登入。`,
+      text: `歡迎，${username}！您現在前往您的mail收取信件，並驗證完成後，才能登入。`,
       icon: 'success',
-      confirmButtonText: '繼續登入',
+      confirmButtonText: '確認',
       confirmButtonColor: '#f97316', // orange-500
       timer: 3000,
       timerProgressBar: true,

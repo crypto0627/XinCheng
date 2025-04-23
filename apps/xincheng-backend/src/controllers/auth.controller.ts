@@ -18,7 +18,7 @@ export const register = async (c: Context) => {
 
     const existingUser = await authService.checkExistingUser(db, email);
     if (existingUser) {
-      return c.json({ error: 'Email already registered' }, 400);
+      return c.json({ error: '此電子郵件已註冊' }, 400);
     }
 
     const id = uuidv4();
@@ -35,22 +35,22 @@ export const register = async (c: Context) => {
       await authService.createUser(db, id, name, phone, email, address, hash);
       
       return c.json({ 
-        message: 'Registration successful. Please check your email to verify your account.',
+        message: '註冊成功。請檢查您的電子郵件以驗證您的帳戶。',
         userId: id
       }, 201);
     } catch (error) {
       console.error('Failed to send verification email:', error);
       // 郵件發送失敗，不創建用戶
       return c.json({ 
-        error: 'Failed to send verification email. Please try again later.',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: '發送驗證郵件失敗。請稍後再試。',
+        details: error instanceof Error ? error.message : '未知錯誤'
       }, 500);
     }
   } catch (error) {
     console.error('Registration error:', error);
     return c.json({ 
-      error: 'An error occurred during registration. Please try again.',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      error: '註冊過程中發生錯誤。請再試一次。',
+      details: error instanceof Error ? error.message : '未知錯誤'
     }, 500);
   }
 };
@@ -61,11 +61,11 @@ export const login = async (c: Context) => {
   const { email, password } = await c.req.json();
 
   const user = await authService.checkExistingUser(db, email);
-  if (!user) return c.json({ error: 'Can not find user' }, 401);
-  if (!user.isVerified) return c.json({ error: 'Email not verified, please verify your email' }, 401);
+  if (!user) return c.json({ error: '找不到用戶' }, 401);
+  if (!user.isVerified) return c.json({ error: '電子郵件尚未驗證，請驗證您的電子郵件' }, 401);
 
   const isValid = await authService.comparePasswords(password, user.passwordHash);
-  if (!isValid) return c.json({ error: 'Password is incorrect, please try again' }, 401);
+  if (!isValid) return c.json({ error: '密碼不正確，請重試' }, 401);
 
   const token = await authService.generateToken({
     userId: user.id,
@@ -83,7 +83,7 @@ export const login = async (c: Context) => {
   });
 
   return c.json({
-    message: 'Login successful',
+    message: '登入成功',
     user: {
       id: user.id,
       email: user.email,
@@ -95,9 +95,9 @@ export const login = async (c: Context) => {
 // 登出
 export const logout = async (c: Context) => {
   const token = getCookie(c, 'auth_token');
-  if (!token) return c.json({ error: 'You are not logged in' }, 401);
+  if (!token) return c.json({ error: '您尚未登入' }, 401);
   deleteCookie(c, 'auth_token');
-  return c.json({ message: 'Logged out' });
+  return c.json({ message: '已登出' });
 };
 
 // 驗證 Email
@@ -108,9 +108,9 @@ export const verifyEmail = async (c: Context) => {
   try {
     const payload = await authService.verifyToken(token, c.env.JWT_SECRET);
     await authService.updateUserVerificationStatus(db, payload.userId as string);
-    return c.json({ message: 'Email verified successfully' });
+    return c.json({ message: '電子郵件驗證成功' });
   } catch {
-    return c.json({ error: 'Invalid or expired token' }, 400);
+    return c.json({ error: '無效或過期的令牌' }, 400);
   }
 };
 
@@ -121,13 +121,13 @@ export const requestPasswordReset = async (c: Context) => {
 
   const user = await authService.checkExistingUser(db, email);
   if (!user) {
-    return c.json({ message: 'If account exists, reset email sent' });
+    return c.json({ message: '如果帳戶存在，重設郵件已發送' });
   }
 
   const token = await authService.createPasswordResetToken(db, user.id);
   await authService.sendPasswordResetEmail(email, token, c.env.RESEND_API_KEY, c.env.BASE_URL);
 
-  return c.json({ message: 'Password reset email sent' });
+  return c.json({ message: '密碼重設郵件已發送' });
 };
 
 // 密碼重設
@@ -136,10 +136,10 @@ export const resetPassword = async (c: Context) => {
   const { token, newPassword } = await c.req.json();
 
   const resetToken = await authService.getPasswordResetToken(db, token);
-  if (!resetToken) return c.json({ error: 'Invalid or expired token' }, 400);
+  if (!resetToken) return c.json({ error: '無效或過期的令牌' }, 400);
 
   const hash = await authService.hashPassword(newPassword);
   await authService.updatePassword(db, resetToken.userId, resetToken.id, hash);
 
-  return c.json({ message: 'Password reset successful' });
+  return c.json({ message: '密碼重設成功' });
 };

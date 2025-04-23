@@ -18,7 +18,7 @@ export const register = async (c: Context<{ Bindings: ENV }>) => {
 
     // Validate input
     if (!name || !email || !password || !role) {
-      return c.json({ error: 'Missing required fields' }, 400);
+      return c.json({ error: '缺少必填欄位' }, 400);
     }
 
     const db = getDB(c);
@@ -26,7 +26,7 @@ export const register = async (c: Context<{ Bindings: ENV }>) => {
     // Check if user already exists
     const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1).then(rows => rows[0]);
     if (existingUser) {
-      return c.json({ error: 'User already exists' }, 409);
+      return c.json({ error: '用戶已存在' }, 409);
     }
 
     // Hash password
@@ -86,12 +86,12 @@ export const register = async (c: Context<{ Bindings: ENV }>) => {
     });
 
     return c.json({ 
-      message: 'User registered successfully. Please check your email to verify your account.',
+      message: '用戶註冊成功。請檢查您的電子郵件以驗證您的帳戶。',
       userId
     }, 201);
   } catch (error) {
     console.error('Error in register:', error);
-    return c.json({ error: 'Internal server error' }, 500);
+    return c.json({ error: '內部伺服器錯誤' }, 500);
   }
 };
 
@@ -103,7 +103,7 @@ export const verifyEmail = async (c: Context<{ Bindings: ENV }>) => {
     const { token } = await c.req.query();
     
     if (!token) {
-      return c.json({ error: 'Verification token is required' }, 400);
+      return c.json({ error: '需要驗證令牌' }, 400);
     }
 
     // Verify token
@@ -111,11 +111,11 @@ export const verifyEmail = async (c: Context<{ Bindings: ENV }>) => {
     try {
       payload = await verify(token, c.env.JWT_SECRET, 'HS256');
     } catch (error) {
-      return c.json({ error: 'Invalid or expired verification token' }, 401);
+      return c.json({ error: '無效或過期的驗證令牌' }, 401);
     }
 
     if (payload.type !== 'email_verification') {
-      return c.json({ error: 'Invalid token type' }, 401);
+      return c.json({ error: '無效的令牌類型' }, 401);
     }
 
     const db = getDB(c);
@@ -129,10 +129,10 @@ export const verifyEmail = async (c: Context<{ Bindings: ENV }>) => {
       })
       .where(eq(users.id, payload.userId as string));
 
-    return c.json({ message: 'Email verified successfully' });
+    return c.json({ message: '電子郵件驗證成功' });
   } catch (error) {
     console.error('Error in verifyEmail:', error);
-    return c.json({ error: 'Internal server error' }, 500);
+    return c.json({ error: '內部伺服器錯誤' }, 500);
   }
 };
 
@@ -144,7 +144,7 @@ export const resendVerification = async (c: Context<{ Bindings: ENV }>) => {
     const { email } = await c.req.json();
 
     if (!email) {
-      return c.json({ error: 'Email is required' }, 400);
+      return c.json({ error: '需要電子郵件地址' }, 400);
     }
 
     const db = getDB(c);
@@ -152,11 +152,11 @@ export const resendVerification = async (c: Context<{ Bindings: ENV }>) => {
     // Find user
     const user = await db.select().from(users).where(eq(users.email, email)).limit(1).then(rows => rows[0]);
     if (!user) {
-      return c.json({ error: 'User not found' }, 404);
+      return c.json({ error: '找不到用戶' }, 404);
     }
 
     if (user.isVerified) {
-      return c.json({ error: 'Email is already verified' }, 400);
+      return c.json({ error: '電子郵件已經驗證' }, 400);
     }
 
     // Generate verification token
@@ -199,10 +199,10 @@ export const resendVerification = async (c: Context<{ Bindings: ENV }>) => {
       `
     });
 
-    return c.json({ message: 'Verification email sent successfully' });
+    return c.json({ message: '驗證郵件發送成功' });
   } catch (error) {
     console.error('Error in resendVerification:', error);
-    return c.json({ error: 'Internal server error' }, 500);
+    return c.json({ error: '內部伺服器錯誤' }, 500);
   }
 };
 
@@ -215,7 +215,7 @@ export const login = async (c: Context<{ Bindings: ENV }>) => {
 
     // Validate input
     if (!email || !password) {
-      return c.json({ error: 'Email and password are required' }, 400);
+      return c.json({ error: '需要電子郵件和密碼' }, 400);
     }
 
     const db = getDB(c);
@@ -223,18 +223,18 @@ export const login = async (c: Context<{ Bindings: ENV }>) => {
     // Find user
     const user = await db.select().from(users).where(eq(users.email, email)).limit(1).then(rows => rows[0]);
     if (!user) {
-      return c.json({ error: 'Can not find user.Please register account!' }, 401);
+      return c.json({ error: '找不到用戶，請註冊帳號！' }, 401);
     }
 
     // Check if user is verified
     if (!user.isVerified) {
-      return c.json({ error: 'Please verify your email before logging in', needsVerification: true }, 403);
+      return c.json({ error: '請在登入前驗證您的電子郵件', needsVerification: true }, 403);
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
-      return c.json({ error: 'Error password' }, 401);
+      return c.json({ error: '密碼錯誤' }, 401);
     }
 
     // Generate JWT token
@@ -260,7 +260,7 @@ export const login = async (c: Context<{ Bindings: ENV }>) => {
     });
 
     return c.json({
-      message: 'Login successful',
+      message: '登入成功',
       user: {
         id: user.id,
         name: user.name,
@@ -272,7 +272,7 @@ export const login = async (c: Context<{ Bindings: ENV }>) => {
     });
   } catch (error) {
     console.error('Error in login:', error);
-    return c.json({ error: 'Internal server error' }, 500);
+    return c.json({ error: '內部伺服器錯誤' }, 500);
   }
 };
 
@@ -284,7 +284,7 @@ export const forgotPassword = async (c: Context<{ Bindings: ENV }>) => {
     const { email } = await c.req.json();
 
     if (!email) {
-      return c.json({ error: 'Email is required' }, 400);
+      return c.json({ error: '需要電子郵件地址' }, 400);
     }
 
     const db = getDB(c);
@@ -293,7 +293,7 @@ export const forgotPassword = async (c: Context<{ Bindings: ENV }>) => {
     const user = await db.select().from(users).where(eq(users.email, email)).limit(1).then(rows => rows[0]);
     if (!user) {
       // Don't reveal that the user doesn't exist for security reasons
-      return c.json({ message: 'If your email is registered, you will receive a password reset link' });
+      return c.json({ message: '如果您的電子郵件已註冊，您將收到密碼重設連結' });
     }
 
     // Generate reset token
@@ -336,10 +336,10 @@ export const forgotPassword = async (c: Context<{ Bindings: ENV }>) => {
       `
     });
 
-    return c.json({ message: 'If your email is registered, you will receive a password reset link' });
+    return c.json({ message: '如果您的電子郵件已註冊，您將收到密碼重設連結' });
   } catch (error) {
     console.error('Error in forgotPassword:', error);
-    return c.json({ error: 'Internal server error' }, 500);
+    return c.json({ error: '內部伺服器錯誤' }, 500);
   }
 };
 
@@ -351,7 +351,7 @@ export const resetPassword = async (c: Context<{ Bindings: ENV }>) => {
     const { token, newPassword } = await c.req.json();
 
     if (!token || !newPassword) {
-      return c.json({ error: 'Token and new password are required' }, 400);
+      return c.json({ error: '需要令牌和新密碼' }, 400);
     }
 
     // Verify token
@@ -359,11 +359,11 @@ export const resetPassword = async (c: Context<{ Bindings: ENV }>) => {
     try {
       payload = await verify(token, c.env.JWT_SECRET, 'HS256');
     } catch (error) {
-      return c.json({ error: 'Invalid or expired reset token' }, 401);
+      return c.json({ error: '無效或過期的重設令牌' }, 401);
     }
 
     if (payload.type !== 'password_reset') {
-      return c.json({ error: 'Invalid token type' }, 401);
+      return c.json({ error: '無效的令牌類型' }, 401);
     }
 
     const db = getDB(c);
@@ -380,10 +380,10 @@ export const resetPassword = async (c: Context<{ Bindings: ENV }>) => {
       })
       .where(eq(users.id, payload.userId as string));
 
-    return c.json({ message: 'Password reset successfully' });
+    return c.json({ message: '密碼重設成功' });
   } catch (error) {
     console.error('Error in resetPassword:', error);
-    return c.json({ error: 'Internal server error' }, 500);
+    return c.json({ error: '內部伺服器錯誤' }, 500);
   }
 };
 
@@ -392,7 +392,7 @@ export const resetPassword = async (c: Context<{ Bindings: ENV }>) => {
  */
 export const logout = async (c: Context<{ Bindings: ENV }>) => {
     const token = getCookie(c, 'auth_token');
-    if (!token) return c.json({ error: 'You are not logged in' }, 401);
+    if (!token) return c.json({ error: '您尚未登入' }, 401);
     deleteCookie(c, 'auth_token');
-    return c.json({ message: 'Logged out' });
+    return c.json({ message: '已登出' });
 };

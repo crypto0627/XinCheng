@@ -10,14 +10,14 @@ export const deleteUser = async (c: Context) => {
         const { id } = await c.req.json();
         
         if (!id) {
-            return c.json({ error: 'Missing user ID' }, 400);
+            return c.json({ error: '缺少用戶ID' }, 400);
         }
         
         await db.delete(users).where(eq(users.id, id));
-        return c.json({ message: 'User deleted' });
+        return c.json({ message: '用戶已刪除' });
     } catch (error) {
         console.error('Error deleting user:', error);
-        return c.json({ error: 'Failed to delete user' }, 500);
+        return c.json({ error: '刪除用戶失敗' }, 500);
     }
 };
 
@@ -27,7 +27,7 @@ export const updateUser = async (c: Context) => {
     const { id, passwordHash, name, email, address } = await c.req.json();
     
     if (!id) {
-      return c.json({ error: 'Missing user ID' }, 400);
+      return c.json({ error: '缺少用戶ID' }, 400);
     }
     
     const updateData: Record<string, string> = {};
@@ -42,16 +42,16 @@ export const updateUser = async (c: Context) => {
     if (address) updateData.address = address;
 
     if (Object.keys(updateData).length === 0) {
-      return c.json({ error: 'No valid fields to update' }, 400);
+      return c.json({ error: '沒有有效的欄位可更新' }, 400);
     }
 
     await db.update(users)
       .set(updateData)
       .where(eq(users.id, id));
         
-    return c.json({ message: 'User updated successfully' });
+    return c.json({ message: '用戶更新成功' });
   } catch (error) {
     console.error('Error updating user:', error);
-    return c.json({ error: 'Failed to update user' }, 500);
+    return c.json({ error: '更新用戶失敗' }, 500);
   }
 };

@@ -35,7 +35,7 @@ export const orderProduct = async (c: Context) => {
     return c.json({ error: 'Email server error, that can not sent mail.' }, 404)
   }
 
-  return c.json({ message: 'Order created successfully', orderId: order.id })
+  return c.json({ message: '訂單創建成功', orderId: order.id })
 }
 
 // order Status
@@ -51,7 +51,7 @@ export const orderStatus = async(c: Context) => {
   }
 
   return c.json({ 
-    message: 'Order status retrieved successfully',
+    message: '訂單狀態獲取成功',
     data: orderData
   })
 }
@@ -65,7 +65,7 @@ export const orderCheck = async(c: Context) => {
     const pendingOrders = await orderService.getPendingOrders(db)
     
     return c.json({
-      message: 'Pending orders retrieved successfully',
+      message: '待處理訂單獲取成功',
       data: pendingOrders
     })
   } catch (error) {
@@ -116,7 +116,7 @@ export const updateOrderStatus = async(c: Context) => {
     }
     
     return c.json({
-      message: 'Order status updated successfully',
+      message: '訂單狀態更新成功',
       data: updatedOrder
     })
   } catch (error) {
@@ -142,7 +142,7 @@ export const getOrderDetails = async(c: Context) => {
     }
     
     return c.json({
-      message: 'Order details retrieved successfully',
+      message: '訂單詳細信息獲取成功',
       data: orderDetails
     })
   } catch (error) {
@@ -160,7 +160,7 @@ export const getAllOrders = async(c: Context) => {
     const allOrders = await orderService.getAllOrders(db, page, limit)
     
     return c.json({
-      message: 'All orders retrieved successfully',
+      message: '所有訂單獲取成功',
       data: allOrders
     })
   } catch (error) {
@@ -178,7 +178,7 @@ export const getRevenue = async(c: Context) => {
     const revenueData = await orderService.getRevenueData(db, timeRange)
     
     return c.json({
-      message: 'Revenue data retrieved successfully',
+      message: '收益數據獲取成功',
       data: revenueData
     })
   } catch (error) {

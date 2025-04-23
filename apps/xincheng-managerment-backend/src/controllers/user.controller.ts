@@ -10,14 +10,14 @@ export const updateUser = async (c: Context) => {
     const { id, name, email, passwordHash, role, isVerified } = await c.req.json();
     
     if (!id) {
-      return c.json({ error: 'Missing user ID' }, 400);
+      return c.json({ error: '缺少用戶ID' }, 400);
     }
     
     // Get the current user data
     const existingUser = await db.select().from(users).where(eq(users.id, id)).get();
     
     if (!existingUser) {
-      return c.json({ error: 'User not found' }, 404);
+      return c.json({ error: '找不到用戶' }, 404);
     }
     
     const updateData: Record<string, any> = {};
@@ -39,10 +39,10 @@ export const updateUser = async (c: Context) => {
       .set(updateData)
       .where(eq(users.id, id));
         
-    return c.json({ message: 'User updated successfully' });
+    return c.json({ message: '用戶更新成功' });
   } catch (error) {
     console.error('Error updating user:', error);
-    return c.json({ error: 'Failed to update user' }, 500);
+    return c.json({ error: '更新用戶失敗' }, 500);
   }
 };
 
@@ -52,19 +52,19 @@ export const deleteUSer = async (c: Context) => {
     const { id } = await c.req.json();
     
     if (!id) {
-      return c.json({ error: 'Missing user ID' }, 400);
+      return c.json({ error: '缺少用戶ID' }, 400);
     }
     
     const existingUser = await db.select().from(users).where(eq(users.id, id)).get();
     
     if (!existingUser) {
-      return c.json({ error: 'User not found' }, 404);
+      return c.json({ error: '找不到用戶' }, 404);
     }
     
     await db.delete(users).where(eq(users.id, id));
-    return c.json({ message: 'User deleted successfully' });
+    return c.json({ message: '用戶刪除成功' });
   } catch (error) {
     console.error('Error deleting user:', error);
-    return c.json({ error: 'Failed to delete user' }, 500);
+    return c.json({ error: '刪除用戶失敗' }, 500);
   }
 };
