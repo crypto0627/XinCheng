@@ -3,29 +3,38 @@
 import { AuthPage } from '@/components/login/auth-page'
 import { authService } from '@/services/authService'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
 
 export default function LoginPage() {
   const router = useRouter()
+  const [isChecking, setIsChecking] = useState(true)
 
-  useEffect(()=> {
+  useEffect(() => {
     const checkAuth = async () => {
-      const user = await authService.getCurrentUser()
-      if (user) {
-        router.push('/main')
+      try {
+        const user = await authService.getCurrentUser()
+        if (user && user.data) {
+          router.push('/main')
+        }
+      } catch (error) {
+        console.error('Auth check error:', error)
+      } finally {
+        setIsChecking(false)
       }
     }
     checkAuth()
   }, [router])
   
   const handleAuthSuccess = async () => {
+
     await Swal.fire({
       title: '登入成功',
       icon: 'success',
       timer: 1500,
       showConfirmButton: false
     })
+    
     router.push('/main')
   }
 
@@ -36,6 +45,16 @@ export default function LoginPage() {
       icon: 'error',
       confirmButtonText: '確定'
     })
+  }
+
+  if (isChecking) {
+    return (
+      <main className="pt-24 bg-[#FFF8E7] min-h-screen">
+        <div className="container mx-auto px-4 flex justify-center items-center">
+          <div className="text-center">載入中...</div>
+        </div>
+      </main>
+    )
   }
 
   return (

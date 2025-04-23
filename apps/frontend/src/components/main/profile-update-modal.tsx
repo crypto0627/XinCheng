@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { authService } from '@/services/authService'
 import { Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/stores/auth.store'
 
 type User = {
   id: string
@@ -134,7 +133,6 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
     type: 'success',
   })
   const router = useRouter()
-  const { logout } = useAuthStore()
 
   useEffect(() => {
     if (user) {
@@ -228,7 +226,6 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
     try {
       setIsSubmitting(true)
       await authService.deleteUser(user.id)
-      logout()
       setIsDeleteModalOpen(false)
       
       showNotification('帳號已刪除', '您的帳號已成功刪除', 'success', () => {

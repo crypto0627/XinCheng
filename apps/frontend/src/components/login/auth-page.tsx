@@ -44,8 +44,17 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
       }
 
       if (isLogin) {
-        await authService.login({ email, password })
-        onAuthSuccess()
+        const response = await authService.login({ email, password })
+        if (response) {
+          onAuthSuccess()
+        } else {
+          Swal.fire({
+            title: '登入失敗',
+            text: '帳號或密碼錯誤，請重新輸入',
+            icon: 'error',
+            confirmButtonText: '確定'
+          })
+        }
       } else {
         if (!username || !phone || !address) {
           throw new Error('請填寫所有必填欄位')
@@ -94,6 +103,7 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
     setIsLoading(true)
     try {
       await authService.googleLogin()
+      // Note: The actual authentication will be handled on callback
     } catch (error) {
       console.error('Google登入錯誤:', error)
       const errorMessage = error instanceof Error ? error.message : 'Google登入失敗'

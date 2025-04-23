@@ -1,14 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { authService } from '@/services/authService'
 import { useEffect, useState } from 'react'
 import UserInfo from '@/components/main/user-info'
 import { ProductCard } from '@/components/main/product-card'
 import { ShoppingCartIcon } from 'lucide-react'
 import { CartModal } from '@/components/main/cart-modal'
 import Swal from 'sweetalert2'
-import { useAuthStore } from '@/stores/auth.store'
+import { authService } from '@/services/authService'
 
 type Product = {
   id: string
@@ -44,12 +43,12 @@ const products: Product[] = [
 
 export default function MainPage() {
   const router = useRouter()
-  const { isAuthenticated, login } = useAuthStore()
   const [quantities, setQuantities] = useState<number[]>(products.map(() => 0))
   const [cartCount, setCartCount] = useState(0)
   const [cartItems, setCartItems] = useState<{product: Product, quantity: number}[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState(null)
 
   const handleIncrease = (index: number) => {
     setQuantities(prev => {
@@ -121,32 +120,27 @@ export default function MainPage() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const userData = await authService.getCurrentUser()
-        
-        if (userData) {
-          login(userData)
-        } else {
-          logout()
-          Swal.fire({
-            title: '請先登入',
-            text: '您需要登入才能訪問此頁面',
-            icon: 'warning',
-            confirmButtonText: '確定'
-          }).then(() => {
-            router.push('/login')
-          })
-        }
-      } catch (error) {
-        console.error(error)
-      } finally {
+      const userData = await authService.getCurrentUser()
+      if(userData){
+        setUser(userData)
         setLoading(false)
+      }else {
+        redirectToLogin()
       }
     }
-    
     checkAuth()
-  }, [router, login])
+  }, [router])
 
+  const redirectToLogin = () => {
+    Swal.fire({
+      title: '請先登入',
+      text: '您需要登入才能訪問此頁面',
+      icon: 'warning',
+      confirmButtonText: '確定'
+    }).then(() => {
+      router.push('/login')
+    })
+  }
   if (loading) return <div className="pt-24 text-center">載入中...</div>
 
   return (
@@ -195,8 +189,4 @@ export default function MainPage() {
       />
     </main>
   )
-}
-
-function logout() {
-  throw new Error('Function not implemented.')
 }
