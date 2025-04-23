@@ -45,7 +45,7 @@ function VerifyEmailContent() {
             confirmButtonColor: "#f97316",
           }).then((result) => {
             if (result.isConfirmed) {
-              router.push("/login");
+              router.push("/");
             }
           });
         }
