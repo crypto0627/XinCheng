@@ -39,9 +39,9 @@ jobs:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
 
-      - name: Build manager-frontend
+      - name: Build xincheng-managerment
         run: pnpm run build
-        working-directory: apps/manager-frontend
+        working-directory: apps/xincheng-managerment
         env:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
