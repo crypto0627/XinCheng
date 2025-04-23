@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useOrderStore, TimeRange } from "@/stores/useOrderStore";
 import * as authService from "@/services/auth.service";
+import { checkAuthAndRedirect } from "@/utils/auth";
+import { FullScreenLoading } from "@/components/ui/loading";
 
 // 導入組件
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
@@ -49,6 +51,11 @@ function DashboardContent() {
   useEffect(() => {
     if (!isLoggedIn || !token) {
       router.push("/");
+      return;
+    }
+    
+    // 檢查用戶權限
+    if (checkAuthAndRedirect(user, router)) {
       return;
     }
     
@@ -110,7 +117,7 @@ function DashboardContent() {
     };
     
     fetchDashboardData();
-  }, [isLoggedIn, router, timeRange, token, fetchOrderStats, fetchOrders, fetchRevenueData]);
+  }, [isLoggedIn, router, timeRange, token, fetchOrderStats, fetchOrders, fetchRevenueData, user]);
 
   const handleLogout = async () => {
     try {
@@ -132,6 +139,11 @@ function DashboardContent() {
 
   if (!isLoggedIn || !user) {
     return null; // Will redirect in the useEffect
+  }
+
+  // 再次檢查權限（防止直接載入）
+  if (checkAuthAndRedirect(user, router)) {
+    return null;
   }
 
   // 獲取當前時間範圍的訂單統計
@@ -170,14 +182,7 @@ function DashboardContent() {
 // 使用Suspense包裝主要内容
 export default function DashboardPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-medium text-gray-700">載入儀表板...</h2>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={<FullScreenLoading message="載入儀表板..." />}>
       <DashboardContent />
     </Suspense>
   );

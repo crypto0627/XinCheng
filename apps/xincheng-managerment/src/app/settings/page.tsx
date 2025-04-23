@@ -4,6 +4,8 @@ import { useState, useEffect, Suspense } from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { updateUser, deleteUser } from '@/services/user.service'
 import { useRouter } from 'next/navigation'
+import { checkAuthAndRedirect } from '@/utils/auth'
+import { FullScreenLoading, InlineLoading } from '@/components/ui/loading'
 
 // Simple toast notification component
 const Toast = ({ message, type, onClose }: { message: string, type: 'success' | 'error', onClose: () => void }) => {
@@ -49,6 +51,11 @@ function SettingsContent() {
     if (!user) {
       router.push('/')
       return
+    }
+    
+    // 檢查用戶權限
+    if (checkAuthAndRedirect(user, router)) {
+      return;
     }
     
     setFormData({
@@ -119,7 +126,12 @@ function SettingsContent() {
   }
   
   if (!user) {
-    return <div className="flex justify-center items-center h-screen">載入中...</div>
+    return <InlineLoading message="載入中..." />
+  }
+  
+  // 再次檢查權限（防止直接載入）
+  if (checkAuthAndRedirect(user, router)) {
+    return null;
   }
   
   return (
@@ -274,12 +286,7 @@ function SettingsContent() {
 
 export default function SettingsPage() {
   return (
-    <Suspense fallback={
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
-        <p className="ml-3 text-orange-600 font-medium">載入中...</p>
-      </div>
-    }>
+    <Suspense fallback={<FullScreenLoading message="載入中..." />}>
       <SettingsContent />
     </Suspense>
   )

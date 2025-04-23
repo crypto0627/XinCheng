@@ -4,6 +4,8 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useOrderStore, TimeRange, OrderWithItems } from "@/stores/useOrderStore";
+import { checkAuthAndRedirect } from "@/utils/auth";
+import { FullScreenLoading } from "@/components/ui/loading";
 import { OrderList } from "@/components/orders/OrderList";
 import { OrderFilters } from "@/components/orders/OrderFilters";
 import { Pagination } from "@/components/ui/pagination";
@@ -27,7 +29,7 @@ const STATUS_OPTIONS = [
 
 function OrderListContent() {
   const router = useRouter();
-  const { isLoggedIn, token } = useAuthStore();
+  const { isLoggedIn, user, token } = useAuthStore();
   
   // 使用訂單狀態存儲
   const { 
@@ -52,13 +54,18 @@ function OrderListContent() {
       return;
     }
     
+    // 檢查用戶權限
+    if (checkAuthAndRedirect(user, router)) {
+      return;
+    }
+    
     const loadOrders = async () => {
       await fetchOrders(currentPage, 20, token);
       await fetchOrderStats(timeRange, token);
     };
     
     loadOrders();
-  }, [isLoggedIn, token, currentPage, timeRange, fetchOrders, fetchOrderStats, router]);
+  }, [isLoggedIn, token, currentPage, timeRange, fetchOrders, fetchOrderStats, router, user]);
   
   // 過濾訂單
   useEffect(() => {
@@ -107,8 +114,13 @@ function OrderListContent() {
     return numPrice.toFixed(2);
   };
   
-  if (!isLoggedIn) {
+  if (!isLoggedIn || !user) {
     return null; // 將在 useEffect 中重定向
+  }
+  
+  // 再次檢查權限（防止直接載入）
+  if (checkAuthAndRedirect(user, router)) {
+    return null;
   }
   
   return (
@@ -167,14 +179,7 @@ function OrderListContent() {
 // 使用Suspense包裝主頁面
 export default function OrderListPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-medium text-gray-700">載入訂單列表...</h2>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={<FullScreenLoading message="載入訂單列表..." />}>
       <OrderListContent />
     </Suspense>
   );
