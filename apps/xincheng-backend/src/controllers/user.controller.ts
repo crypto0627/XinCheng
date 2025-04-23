@@ -21,13 +21,6 @@ export const deleteUser = async (c: Context) => {
     }
 };
 
-export const getUser = async (c: Context) => {
-  const db = getDB(c);
-  const { id } = await c.req.json();
-  const user = await db.select().from(users).where(eq(users.id, id)).limit(1).then(rows => rows[0]);
-  return c.json({ user });
-};
-
 export const updateUser = async (c: Context) => {
   try {
     const db = getDB(c);

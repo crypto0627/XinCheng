@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "xincheng-managerment-backend",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-09",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "xincheng-managerment-db",
+      "database_id": "d1e3d683-80a4-4e55-9491-0f805ab5c24f",
+      "migrations_dir": "src/db/migrations"
+    }
+  ],
+  "vars": {
+    "X_API_KEY": "xincheng-backend-0x12aej2-j3e-ej1-2ej",
+    "JWT_SECRET": "xincheng-managerment-jwt-secret-0712334qewcwer1",
+    "TEST_BASE_URL": "http://localhost:3000",
+    "RESEND_API_KEY": "re_Ftn14WnN_QBuEMja8KJ3nUma2XyG5YAQd",
+  },
+}
