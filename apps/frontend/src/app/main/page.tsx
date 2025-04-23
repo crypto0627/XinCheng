@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import UserInfo from '@/components/main/user-info'
 import { ProductCard } from '@/components/main/product-card'
-import { ShoppingCartIcon } from 'lucide-react'
+import { ShoppingCartIcon, PackageSearch } from 'lucide-react'
 import { CartModal } from '@/components/main/cart-modal'
 import Swal from 'sweetalert2'
 import { authService } from '@/services/authService'
@@ -118,6 +118,10 @@ export default function MainPage() {
     setCartItems([])
   }
 
+  const handleTrackOrder = () => {
+    router.push('/main/checkout/order-info')
+  }
+
   useEffect(() => {
     const checkAuth = async () => {
       const userData = await authService.getCurrentUser()
@@ -164,7 +168,13 @@ export default function MainPage() {
             </div>
           </div>
           <div className="fixed bottom-2 right-2 p-4 hover:scale-110 transition-transform duration-300">
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center space-x-2">
+              <button 
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={handleTrackOrder}
+              >
+                <PackageSearch className="w-6 h-6" />
+              </button>
               <button 
                 className="bg-orange-500 text-white px-4 py-2 rounded-md relative"
                 onClick={handleCartClick}
