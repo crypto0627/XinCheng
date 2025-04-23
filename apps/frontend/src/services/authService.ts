@@ -140,33 +140,48 @@ export const authService = {
   },
 
   async updateUser(userData: {id: string, name?: string, email?: string, address?: string, passwordHash?: string}) {
-    const response = await fetch(`${API_URL}/api/users/update`, {
-      method: 'PUT',
+    const response = await fetch(`${API_URL}/api/user/updateUser`, {
+      method: 'POST',
       credentials: 'include',
       headers,
       body: JSON.stringify(userData)
     });
 
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error || '更新用戶資料失敗');
+    try {
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || '更新用戶資料失敗');
+      }
+      return data;
+    } catch (error) {
+      console.error('JSON parsing error:', error);
+      if (!response.ok) {
+        throw new Error('更新用戶資料失敗 - 伺服器回應錯誤');
+      }
+      throw error;
     }
-
-    return data;
   },
 
   async deleteUser(id: string) {
-    const response = await fetch(`${API_URL}/api/users/deleteUser`, {
+    const response = await fetch(`${API_URL}/api/user/deleteUser`, {
       method: 'POST',
       credentials: 'include',
       headers,
       body: JSON.stringify({ id })
     })
 
-    const data = await response.json()
-    if(!response.ok) {
-      throw new Error(data.error || '刪除失敗')
+    try {
+      const data = await response.json()
+      if(!response.ok) {
+        throw new Error(data.error || '刪除失敗')
+      }
+      return data
+    } catch (error) {
+      console.error('JSON parsing error:', error)
+      if (!response.ok) {
+        throw new Error('刪除失敗 - 伺服器回應錯誤')
+      }
+      throw error
     }
-    return data
   }
 } 
