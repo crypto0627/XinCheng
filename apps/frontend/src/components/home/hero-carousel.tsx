@@ -11,10 +11,18 @@ import {
 } from '@/components/ui/carousel'
 import Image from 'next/image'
 import Autoplay from 'embla-carousel-autoplay'
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import Link from 'next/link'
 
-const images = [
+interface CarouselImage {
+  id: number
+  src: string
+  title: string
+  description: string
+  link: string
+}
+
+const IMAGES: CarouselImage[] = [
   {
     id: 1,
     src: '/image.webp',
@@ -41,7 +49,7 @@ const images = [
 export default function HeroCarousel() {
   const [api, setApi] = React.useState<CarouselApi>()
   const [current, setCurrent] = React.useState(0)
-  const [isLoaded, setIsLoaded] = React.useState(false)
+  const [loadedImages, setLoadedImages] = React.useState<Record<number, boolean>>({})
   
   const plugin = React.useRef(
     Autoplay({
@@ -53,32 +61,32 @@ export default function HeroCarousel() {
     })
   )
 
+  const handleImageLoad = useCallback((id: number) => {
+    setLoadedImages(prev => ({ ...prev, [id]: true }))
+  }, [])
+
   useEffect(() => {
-    if (!api) {
-      return
-    }
+    if (!api) return
 
-    setCurrent(api.selectedScrollSnap())
+    const updateCurrent = () => setCurrent(api.selectedScrollSnap())
+    updateCurrent()
+    api.on('select', updateCurrent)
 
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap())
-    })
-
-    // 監聽滑鼠離開事件來重新啟動自動播放
-    const handleMouseLeave = () => {
-      plugin.current.play()
-    }
-
+    const handleMouseLeave = () => plugin.current.play()
     const root = api.rootNode()
     root.addEventListener('mouseleave', handleMouseLeave)
 
     return () => {
+      api.off('select', updateCurrent)
       root.removeEventListener('mouseleave', handleMouseLeave)
     }
   }, [api])
 
   return (
-    <section className="relative flex items-center justify-center px-[8vw] py-8 text-[#5C4B51] bg-[url('/story.webp')] bg-center">
+    <section 
+      className="relative flex items-center justify-center px-[8vw] py-16 text-[#5C4B51] bg-[url('/story.webp')] bg-center"
+      aria-label="首頁輪播圖"
+    >
       <Carousel
         plugins={[plugin.current]}
         setApi={setApi}
@@ -89,21 +97,27 @@ export default function HeroCarousel() {
         }}
       >
         <CarouselContent>
-          {images.map((image, index) => (
+          {IMAGES.map((image, index) => (
             <CarouselItem key={image.id}>
-              <Link href={image.link} target="_blank">
+              <Link 
+                href={image.link} 
+                target={image.link.startsWith('http') ? '_blank' : '_self'}
+                aria-label={`前往 ${image.title}`}
+              >
                 <div className="relative w-full h-full bg-[#FFF8E7]/80">
                   <Image
                     src={image.src}
                     alt={image.title}
                     width={500}
                     height={300}
-                    className={`w-full h-full object-contain ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
-                    priority={index <= 1} // 優先載入前兩張圖片
+                    className={`w-full h-full object-contain transition-opacity duration-300 ${
+                      loadedImages[image.id] ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    priority={index <= 1}
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, 700px"
                     loading={index <= 1 ? "eager" : "lazy"}
                     quality={90}
-                    onLoad={() => index === current && setIsLoaded(true)}
+                    onLoad={() => handleImageLoad(image.id)}
                     fetchPriority={index === 0 ? "high" : "auto"}
                   />
                   <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent text-white">
@@ -115,17 +129,18 @@ export default function HeroCarousel() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious aria-label="上一張" />
+        <CarouselNext aria-label="下一張" />
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-          {images.map((_, index) => (
+          {IMAGES.map((_, index) => (
             <button
               key={index}
               className={`w-2 h-2 rounded-full transition-colors ${
                 current === index ? 'bg-white' : 'bg-white/50'
               }`}
               onClick={() => api?.scrollTo(index)}
-              aria-label={`Go to slide ${index + 1}`}
+              aria-label={`前往第 ${index + 1} 張輪播圖`}
+              aria-current={current === index}
             />
           ))}
         </div>

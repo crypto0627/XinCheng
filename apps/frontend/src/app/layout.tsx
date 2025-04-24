@@ -41,7 +41,6 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'zh_TW',
   },
-  themeColor: '#ffffff',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
