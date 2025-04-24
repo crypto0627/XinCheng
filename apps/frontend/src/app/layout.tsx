@@ -64,9 +64,6 @@ export default function RootLayout({
   return (
     <html lang="zh-TW">
       <head>
-        {/* 資源優化提示 */}
-        <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        
         {/* Preconnect to essential domains - HTTP/2 優化 */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -78,7 +75,6 @@ export default function RootLayout({
         
         {/* 預加載關鍵資源 */}
         <link rel="preload" as="image" href="/image.webp" />
-        <link rel="preload" as="style" href="/globals.css" />
 
         {/* 指示瀏覽器開始建立與所需資源的連接 */}
         <meta httpEquiv="x-dns-prefetch-control" content="on" />

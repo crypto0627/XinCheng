@@ -51,6 +51,17 @@ export function LazyImage({
     }
   }, [threshold])
 
+  // 驗證 blurHash 是否為有效的 base64 字符串
+  const isValidBlurHash = (hash: string | undefined): boolean => {
+    if (!hash) return false
+    try {
+      const base64Regex = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/
+      return base64Regex.test(hash)
+    } catch {
+      return false
+    }
+  }
+
   return (
     <div 
       ref={imgRef}
@@ -59,7 +70,7 @@ export function LazyImage({
         backgroundColor: '#f8f8f8',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        ...(blurHash && !isLoaded ? { 
+        ...(blurHash && !isLoaded && isValidBlurHash(blurHash) ? { 
           backgroundImage: `url(data:image/svg+xml;base64,${blurHash})` 
         } : {})
       }}
