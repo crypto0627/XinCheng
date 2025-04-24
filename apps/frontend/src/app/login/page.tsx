@@ -1,5 +1,6 @@
 'use client'
 
+import Loading from '@/components/common/loading'
 import { AuthPage } from '@/components/login/auth-page'
 import { authService } from '@/services/authService'
 import { useRouter } from 'next/navigation'
@@ -49,11 +50,7 @@ export default function LoginPage() {
 
   if (isChecking) {
     return (
-      <main className="pt-24 bg-[#FFF8E7] min-h-screen">
-        <div className="container mx-auto px-4 flex justify-center items-center">
-          <div className="text-center">載入中...</div>
-        </div>
-      </main>
+      <Loading/>
     )
   }
 

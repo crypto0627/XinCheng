@@ -8,6 +8,7 @@ import { ShoppingCartIcon, PackageSearch } from 'lucide-react'
 import { CartModal } from '@/components/main/cart-modal'
 import Swal from 'sweetalert2'
 import { authService } from '@/services/authService'
+import Loading from '@/components/common/loading'
 
 type Product = {
   id: string
@@ -145,7 +146,7 @@ export default function MainPage() {
       router.push('/login')
     })
   }
-  if (loading) return <div className="pt-24 text-center">載入中...</div>
+  if (loading) return <Loading/>
 
   return (
     <main className="pt-24 bg-[#FFF8E7] min-h-screen">

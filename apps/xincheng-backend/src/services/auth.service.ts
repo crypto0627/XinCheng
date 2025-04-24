@@ -75,9 +75,16 @@ export const sendVerificationEmail = async (
     to: email,
     subject: 'Verify your email',
     html: `
-      <h1>Welcome to XinCheng!</h1>
-      <p>Please verify your email:</p>
-      <a href="${baseUrl}/verify-email?token=${token}">Verify Email</a>
+      <div style="background: #FF6B35; padding: 20px; color: white; font-family: Arial, sans-serif;">
+        <div style="background: white; padding: 20px; border-radius: 8px;">
+          <h1 style="color: #FF6B35;">Welcome to XinCheng!</h1>
+          <p style="color: #333;">Please verify your email:</p>
+          <a href="${baseUrl}/verify-email?token=${token}" 
+             style="display: inline-block; padding: 10px 20px; background: #FF6B35; color: white; text-decoration: none; border-radius: 4px;">
+            Verify Email
+          </a>
+        </div>
+      </div>
     `
   });
 };
@@ -121,8 +128,15 @@ export const sendPasswordResetEmail = async (
     to: email,
     subject: 'Password Reset',
     html: `
-      <p>Click below to reset password (expires in 1 hour):</p>
-      <a href="${baseUrl}/reset-password?token=${token}">Reset</a>
+      <div style="background: #FF6B35; padding: 20px; color: white; font-family: Arial, sans-serif;">
+        <div style="background: white; padding: 20px; border-radius: 8px;">
+          <p style="color: #333;">Click below to reset password (expires in 1 hour):</p>
+          <a href="${baseUrl}/reset-password?token=${token}" 
+             style="display: inline-block; padding: 10px 20px; background: #FF6B35; color: white; text-decoration: none; border-radius: 4px;">
+            Reset Password
+          </a>
+        </div>
+      </div>
     `
   });
 };
