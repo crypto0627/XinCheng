@@ -35,15 +35,16 @@ export default function FeaturedMenu() {
               <div className="bg-orange-500 text-white p-3">
                 <h3 className="text-xl font-semibold">{item.title}</h3>
               </div>
-              <div className="p-4 relative aspect-[4/1]">
+              <div className="relative aspect-[2/1]">
                 <Image
                   src={item.image}
                   alt={item.alt}
                   width={item.width}
                   height={item.height}
-                  quality={85}
-                  sizes="(max-width: 768px) 400px, 800px"
+                  className="object-cover"
+                  quality={100}
                   priority
+                  sizes="(max-width: 768px) 400px, 800px"
                   aria-hidden="true"
                 />
               </div>
