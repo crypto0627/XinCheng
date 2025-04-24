@@ -10,13 +10,15 @@ export default function FeaturedMenu() {
       id: 1,
       title: '餐盒菜單',
       image: '/home/menu.webp',
-      alt: '餐盒菜單'
+      alt: '餐盒菜單',
+      blurHash: 'L9AB*A%L00%L~q%L00%L~q%L00%L'
     },
     {
       id: 2,
       title: '限定菜單',
       image: '/home/menu2.webp',
-      alt: '限定菜單'
+      alt: '限定菜單',
+      blurHash: 'L9AB*A%L00%L~q%L00%L~q%L00%L'
     }
   ]
   
@@ -42,26 +44,18 @@ export default function FeaturedMenu() {
               <div className="bg-orange-500 text-white p-3">
                 <h3 className="text-xl font-semibold">{item.title}</h3>
               </div>
-              <div className="p-4 relative min-h-[200px]">
-                {/* 使用 LazyImage 組件 */}
+              <div className="p-4 relative min-h-[200px] flex items-center justify-center">
                 <LazyImage
                   src={item.image}
                   alt={item.alt}
-                  width={300}
+                  width={800}
                   height={200}
-                  className="w-full h-auto object-cover"
-                  threshold={0.2}
+                  className="w-full h-auto object-contain"
                   quality={85}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  onLoadingComplete={() => handleImageLoad(item.id)}
+                  sizes="(max-width: 768px) 400px, 800px"
+                  blurHash={item.blurHash}
+                  aria-hidden="true"
                 />
-                
-                {/* 載入動畫 */}
-                {!loadedImages[item.id] && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse">
-                    <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                )}
               </div>
             </div>
           ))}
