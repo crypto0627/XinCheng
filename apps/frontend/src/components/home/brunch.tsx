@@ -8,25 +8,25 @@ const menuCategories = [
     id: 1,
     name: '健康餐盒',
     description: '高蛋白低脂肪，健身愛好者的首選',
-    image: '/home/health-box.jpg'
+    image: '/home/health-box.webp'
   },
   {
     id: 2,
     name: '沙拉',
     description: '適合正在減脂和享受健康的朋友',
-    image: '/home/salad.jpg'
+    image: '/home/salad.webp'
   },
   {
     id: 3,
     name: '吐司',
     description: '現烤吐司搭配新鮮的食材，開啟美好的一天',
-    image: '/home/toast.jpg'
+    image: '/home/toast.webp'
   },
   {
     id: 4,
     name: '漢堡',
     description: '份量十足，一口下去滿滿的肉汁',
-    image: '/home/burger.jpg'
+    image: '/home/burger.webp'
   }
 ]
 
@@ -50,6 +50,7 @@ export default function BrunchSection() {
                     alt={item.name}
                     fill
                     className="object-cover"
+                    priority
                   />
                 </div>
                 <div className="p-6">

@@ -66,6 +66,7 @@ function NotificationModal({ isOpen, onClose, title, message, type }: Notificati
             type="button" 
             onClick={onClose}
             className={type === 'success' ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}
+            aria-label='confirm'
           >
             確定
           </Button>
@@ -94,6 +95,7 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, isLoading }: DeleteCon
             onClick={onClose}
             disabled={isLoading}
             className="mr-2"
+            aria-label='cancel'
           >
             取消
           </Button>
@@ -103,6 +105,7 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, isLoading }: DeleteCon
             onClick={onConfirm}
             disabled={isLoading}
             className="bg-red-500 hover:bg-red-600 transition-colors"
+            aria-label='loading'
           >
             {isLoading ? '處理中...' : '是，刪除我的帳號'}
           </Button>
@@ -299,6 +302,7 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
                   type="button"
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
                   onClick={togglePasswordVisibility}
+                  aria-label='show-password'
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -313,6 +317,7 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
                   onClick={handleDeleteUser}
                   disabled={isSubmitting}
                   className="bg-red-500 hover:bg-red-600 transition-colors"
+                  aria-label='delete-account'
                 >
                   刪除帳號
                 </Button>
@@ -323,6 +328,7 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
                     onClick={onClose}
                     disabled={isSubmitting}
                     className="mr-2"
+                    aria-label='cancel'
                   >
                     取消
                   </Button>
@@ -330,6 +336,7 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
                     type="submit"
                     className="bg-orange-500 hover:bg-orange-600 transition-colors"
                     disabled={isSubmitting}
+                    aria-label='updating'
                   >
                     {isSubmitting ? '處理中...' : '更新資料'}
                   </Button>

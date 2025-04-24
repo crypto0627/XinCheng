@@ -31,6 +31,7 @@ export function SocialAuthButtons({
           className="w-full"
           onClick={onGoogleLogin}
           disabled={isLoading}
+          aria-label='google-login'
         >
           <Mail className="mr-2 h-5 w-5" />
           使用 Google 帳號{isLogin ? '登入' : '註冊'}

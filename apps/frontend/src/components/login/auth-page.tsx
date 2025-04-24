@@ -128,7 +128,7 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
       <CardHeader className="space-y-1">
         <div className="flex justify-center mb-4">
           <Image
-            src="/logo.png"
+            src="/logo.webp"
             alt="星橙 Logo"
             width={80}
             height={80}
@@ -158,6 +158,7 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
               className="text-sm text-orange-600 p-0 h-auto"
               onClick={handleForgotPassword}
               disabled={isLoading}
+              aria-label='forgot-password'
             >
               忘記密碼？
             </Button>
@@ -176,6 +177,7 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
           className={cn('text-orange-600', isLoading && 'pointer-events-none')}
           onClick={() => setIsLogin(!isLogin)}
           disabled={isLoading}
+          aria-label='account'
         >
           {isLogin ? '還沒有帳號？點此註冊' : '已有帳號？點此登入'}
         </Button>

@@ -54,6 +54,7 @@ export default function Navbar() {
                             <button 
                                 onClick={toggleMenu}
                                 className='inline-flex items-center justify-center p-2 rounded-md text-orange-500 hover:text-white hover:bg-orange-500 focus:outline-none'
+                                aria-label='open-menu'
                             >
                                 <span className='sr-only'>Open main menu</span>
                                 {/* Icon when menu is closed */}

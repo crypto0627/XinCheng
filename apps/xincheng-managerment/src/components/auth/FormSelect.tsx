@@ -107,6 +107,7 @@ export default function FormSelect({
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           disabled={disabled}
+          aria-label='expand'
         >
           <span className={value ? "" : "text-gray-400"}>
             {selectedLabel}

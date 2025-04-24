@@ -45,6 +45,7 @@ export function ResetPasswordForm({
           />
           <button
             type="button"
+            aria-label='show-password'
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
             onClick={() => setShowPassword(!showPassword)}
           >
@@ -64,6 +65,7 @@ export function ResetPasswordForm({
           />
           <button
             type="button"
+            aria-label='show-password-confirm'
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           >
@@ -86,6 +88,7 @@ export function ResetPasswordForm({
 
       <Button
         type="submit"
+        aria-label='loading'
         className="w-full bg-orange-600 hover:bg-orange-700"
         disabled={isLoading}
       >

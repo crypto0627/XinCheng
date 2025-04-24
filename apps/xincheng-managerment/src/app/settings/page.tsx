@@ -178,6 +178,7 @@ function SettingsContent() {
               <button
                 onClick={() => setIsEditing(true)}
                 className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors duration-200 shadow-md"
+                aria-label='edit'
               >
                 編輯資訊
               </button>
@@ -233,6 +234,7 @@ function SettingsContent() {
                 <button
                   type="submit"
                   className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors duration-200 mr-4 shadow-md"
+                  aria-label='save'
                 >
                   儲存變更
                 </button>
@@ -240,6 +242,7 @@ function SettingsContent() {
                   type="button"
                   onClick={() => setIsEditing(false)}
                   className="bg-white text-orange-700 border border-orange-500 px-4 py-2 rounded-md hover:bg-orange-100 transition-colors duration-200 shadow-sm"
+                  aria-label='cancel'
                 >
                   取消
                 </button>
@@ -254,6 +257,7 @@ function SettingsContent() {
             <button
               onClick={() => setIsDeleting(true)}
               className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-200 shadow-md"
+              aria-label='delete-account'
             >
               刪除帳號
             </button>
@@ -266,12 +270,14 @@ function SettingsContent() {
                 <button
                   onClick={handleDeleteAccount}
                   className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-200 shadow-md"
+                  aria-label='confirm-delete'
                 >
                   確認刪除
                 </button>
                 <button
                   onClick={() => setIsDeleting(false)}
                   className="bg-white text-red-700 border border-red-500 px-4 py-2 rounded-md hover:bg-red-100 transition-colors duration-200 shadow-sm"
+                  aria-label='cancel'
                 >
                   取消
                 </button>

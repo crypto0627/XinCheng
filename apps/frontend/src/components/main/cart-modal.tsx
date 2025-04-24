@@ -50,13 +50,13 @@ export function CartModal({ isOpen, onClose, cartItems, onCheckout, onRemoveList
             </div>
           </div>
           <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline" onClick={onRemoveList}>
+            <Button variant="outline" onClick={onRemoveList} aria-label='clear-cart'>
               清空購物車
             </Button>
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" onClick={onClose} aria-label='keep-shopping'>
               繼續購物
             </Button>
-            <Button onClick={onCheckout} className="bg-orange-500 hover:bg-orange-600">
+            <Button onClick={onCheckout} className="bg-orange-500 hover:bg-orange-600" aria-label='confirm-order'>
               確認訂單
             </Button>
           </div>

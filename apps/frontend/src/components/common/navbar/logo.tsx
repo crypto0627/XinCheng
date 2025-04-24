@@ -8,7 +8,7 @@ export function Logo() {
       className="flex items-center space-x-2 transition-opacity hover:opacity-80"
     >
       <Image
-        src="/logo.png"
+        src="/logo.webp"
         width={100}
         height={40}
         alt="星橙輕食餐盒"

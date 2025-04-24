@@ -23,21 +23,21 @@ const products: Product[] = [
     id: '1',
     productName: '原味舒肥雞',
     price: 43,
-    img: '/main/item1.jpg',
+    img: '/items/origin-chicken-breast.webp',
     weight: '100g'
   },
   {
     id: '2',
     productName: '麻辣舒肥雞',
     price: 43,
-    img: '/main/item2.jpg',
+    img: '/items/spicy-chicken-breast.webp',
     weight: '100g'
   },
   {
     id: '3',
     productName: '真空鮭魚',
     price: 120,
-    img: '/main/item3.jpg',
+    img: '/items/salmon.webp',
     weight: '180g'
   }
 ]
@@ -173,12 +173,14 @@ export default function MainPage() {
               <button 
                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:scale-110 transition-transform duration-300"
                 onClick={handleTrackOrder}
+                aria-label='package-search'
               >
                 <PackageSearch className="w-6 h-6" />
               </button>
               <button 
                 className="bg-orange-500 text-white px-4 py-2 rounded-md relative hover:scale-110 transition-transform duration-300"
                 onClick={handleCartClick}
+                aria-label='shopping-cart'
               >
                 <ShoppingCartIcon className="w-6 h-6" />
                 {cartCount > 0 && (

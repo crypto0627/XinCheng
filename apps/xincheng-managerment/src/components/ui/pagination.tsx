@@ -35,6 +35,7 @@ export function Pagination({
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : "bg-orange-100 text-orange-500 hover:bg-orange-200"
           }`}
+          aria-label='lastpage'
         >
           上一頁
         </button>
@@ -49,6 +50,7 @@ export function Pagination({
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : "bg-orange-100 text-orange-500 hover:bg-orange-200"
           }`}
+          aria-label='nextpage'
         >
           下一頁
         </button>

@@ -20,6 +20,7 @@ export default function SubmitButton({
           : "bg-orange-500 hover:bg-orange-600 text-white"
       }`}
       disabled={loading}
+      aria-label='loading'
     >
       {loading ? loadingText : text}
     </button>

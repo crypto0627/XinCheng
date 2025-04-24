@@ -8,7 +8,7 @@ export default function Loading() {
           <div className="w-16 h-16 border-4 border-tgi-red border-t-transparent rounded-full animate-spin" />
           <div className="absolute inset-0 flex items-center justify-center">
             <Image
-              src="/logo.png"
+              src="/logo.webp"
               alt="星橙 Logo"
               width={40}
               height={40}
