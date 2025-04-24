@@ -9,7 +9,7 @@ export default function FeaturedMenu() {
       image: '/home/menu.webp',
       alt: '餐盒菜單',
       width: 800,
-      height: 200
+      height: 400
     },
     {
       id: 2,
@@ -17,7 +17,7 @@ export default function FeaturedMenu() {
       image: '/home/menu2.webp',
       alt: '限定菜單',
       width: 800,
-      height: 200
+      height: 400
     }
   ]
 
@@ -41,10 +41,9 @@ export default function FeaturedMenu() {
                   alt={item.alt}
                   width={item.width}
                   height={item.height}
-                  className="w-full h-full object-contain"
                   quality={85}
-                  priority
                   sizes="(max-width: 768px) 400px, 800px"
+                  priority
                   aria-hidden="true"
                 />
               </div>
