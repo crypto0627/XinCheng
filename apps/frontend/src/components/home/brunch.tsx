@@ -8,25 +8,33 @@ const menuCategories = [
     id: 1,
     name: '健康餐盒',
     description: '高蛋白低脂肪，健身愛好者的首選',
-    image: '/home/health-box.webp'
+    image: '/home/health-box.webp',
+    width: 800,
+    height: 600
   },
   {
     id: 2,
     name: '沙拉',
     description: '適合正在減脂和享受健康的朋友',
-    image: '/home/salad.webp'
+    image: '/home/salad.webp',
+    width: 800,
+    height: 600
   },
   {
     id: 3,
     name: '吐司',
     description: '現烤吐司搭配新鮮的食材，開啟美好的一天',
-    image: '/home/toast.webp'
+    image: '/home/toast.webp',
+    width: 800,
+    height: 600
   },
   {
     id: 4,
     name: '漢堡',
     description: '份量十足，一口下去滿滿的肉汁',
-    image: '/home/burger.webp'
+    image: '/home/burger.webp',
+    width: 800,
+    height: 600
   }
 ]
 
@@ -44,13 +52,20 @@ export default function BrunchSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {menuCategories.map((item) => (
               <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 h-full">
-                <div className="relative h-48 w-full">
+                <div className="relative aspect-[4/3] w-full">
                   <Image
                     src={item.image}
                     alt={item.name}
-                    fill
+                    width={item.width}
+                    height={item.height}
                     className="object-cover"
                     priority
+                    style={{
+                      position: 'absolute',
+                      height: '100%',
+                      width: '100%',
+                      inset: 0
+                    }}
                   />
                 </div>
                 <div className="p-6">
