@@ -31,6 +31,7 @@ export default function UnauthorizedPage() {
         <button
           onClick={() => router.push("/")}
           className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors duration-200 shadow-md w-full"
+          aria-label='back-to-home'
         >
           返回首頁
         </button>

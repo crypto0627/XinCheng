@@ -13,7 +13,7 @@ export function AboutIntro() {
         </p>
         <div className="relative h-80 rounded-xl overflow-hidden my-8">
           <Image
-            src="/store.png"
+            src="/store.webp"
             alt="星橙店面"
             fill
             className="object-cover"

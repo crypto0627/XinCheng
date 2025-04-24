@@ -193,6 +193,7 @@ function CarouselPrevious({
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
+      aria-label='arrow-left'
       {...props}
     >
       <ArrowLeft />
@@ -223,6 +224,7 @@ function CarouselNext({
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
+      aria-label='arrow-right'
       {...props}
     >
       <ArrowRight />

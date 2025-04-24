@@ -72,6 +72,7 @@ export function AuthForm({ isLogin, isLoading, onSubmit }: AuthFormProps) {
               type="button"
               className="absolute right-3 top-1/2 transform -translate-y-1/2"
               onClick={togglePasswordVisibility}
+              aria-label='show-password'
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -80,6 +81,7 @@ export function AuthForm({ isLogin, isLoading, onSubmit }: AuthFormProps) {
 
         <Button
           type="submit"
+          aria-label='loading'
           className="w-full bg-orange-600 hover:bg-orange-700"
           disabled={isLoading}
         >
@@ -146,6 +148,7 @@ export function AuthForm({ isLogin, isLoading, onSubmit }: AuthFormProps) {
             />
             <button
               type="button"
+              aria-label='show-password'
               className="absolute right-3 top-1/2 transform -translate-y-1/2"
               onClick={togglePasswordVisibility}
             >
@@ -165,6 +168,7 @@ export function AuthForm({ isLogin, isLoading, onSubmit }: AuthFormProps) {
             />
             <button
               type="button"
+              aria-label='show-confirm-password'
               className="absolute right-3 top-1/2 transform -translate-y-1/2"
               onClick={toggleConfirmPasswordVisibility}
             >
@@ -175,6 +179,7 @@ export function AuthForm({ isLogin, isLoading, onSubmit }: AuthFormProps) {
 
         <Button
           type="submit"
+          aria-label='loading'
           className="w-full bg-orange-600 hover:bg-orange-700"
           disabled={isLoading}
         >

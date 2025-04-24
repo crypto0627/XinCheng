@@ -49,6 +49,7 @@ export function ForgotPasswordForm({
 
       <Button
         type="submit"
+        aria-label='loading'
         className="w-full bg-orange-600 hover:bg-orange-700"
         disabled={isLoading}
       >

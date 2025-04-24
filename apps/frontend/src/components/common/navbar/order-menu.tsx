@@ -10,6 +10,7 @@ export function OrderMenu() {
     <div className="relative">
       <Button
         variant="default"
+        aria-label='order-menu'
         className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
         onClick={() => setIsOrderMenuOpen(!isOrderMenuOpen)}
       >

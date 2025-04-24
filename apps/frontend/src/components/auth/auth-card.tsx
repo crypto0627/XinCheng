@@ -31,7 +31,7 @@ export function AuthCard({
       <CardHeader className="space-y-1">
         <div className="flex justify-center mb-4">
           <Image
-            src="/logo.png"
+            src="/logo.webp"
             alt="星橙 Logo"
             width={80}
             height={80}
@@ -48,6 +48,7 @@ export function AuthCard({
         <CardFooter className="flex justify-center">
           <Button
             variant="link"
+            aria-label='footer-text'
             className="text-orange-600"
             onClick={footer.onClick}
             disabled={footer.disabled}

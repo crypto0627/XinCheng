@@ -17,6 +17,7 @@ export function DashboardHeader({ onLogout }: DashboardHeaderProps) {
         <button
           onClick={() => router.push('/order-list')}
           className="bg-orange-100 hover:bg-orange-200 text-orange-500 px-3 py-1 rounded-md text-sm font-medium flex items-center"
+          aria-label='order-managerment'
         >
           <FiList className="mr-1" />
           訂單管理
@@ -24,6 +25,7 @@ export function DashboardHeader({ onLogout }: DashboardHeaderProps) {
         <button
           onClick={onLogout}
           className="bg-orange-100 hover:bg-orange-200 text-orange-500 px-3 py-1 rounded-md text-sm font-medium flex items-center"
+          aria-label='logout'
         >
           <FiLogOut className="mr-1" />
           登出

@@ -63,6 +63,7 @@ export const OrderStatus = ({ email, initialStatus }: OrderStatusProps) => {
           onClick={handleRefresh}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           disabled={refreshing}
+          aria-label='loading'
         >
           {refreshing ? '加載中...' : '重新加載'}
         </button>
@@ -82,6 +83,7 @@ export const OrderStatus = ({ email, initialStatus }: OrderStatusProps) => {
           onClick={handleRefresh}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
           disabled={refreshing}
+          aria-label='loading'
         >
           {refreshing ? (
             <span className="flex items-center">
@@ -131,6 +133,7 @@ export const OrderStatus = ({ email, initialStatus }: OrderStatusProps) => {
           <button 
             className={`px-4 py-2 rounded transition-colors ${statusFilter === undefined ? 'bg-blue-500 text-white font-bold' : 'bg-gray-200 hover:bg-gray-300'}`}
             onClick={() => handleFilterChange(undefined)}
+            aria-label='all'
           >
             全部
           </button>
@@ -145,6 +148,7 @@ export const OrderStatus = ({ email, initialStatus }: OrderStatusProps) => {
                     : 'bg-gray-200 hover:bg-gray-300'
                 }`}
                 onClick={() => handleFilterChange(status)}
+                aria-label='status-info'
               >
                 {statusInfo.label}
               </button>

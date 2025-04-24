@@ -47,6 +47,7 @@ export function ProductCard({
           <button 
             onClick={onDecrease}
             className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-l-md text-gray-700 font-bold"
+            aria-label='decrease'
           >
             -
           </button>
@@ -59,6 +60,7 @@ export function ProductCard({
           <button 
             onClick={onIncrease}
             className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-r-md text-gray-700 font-bold"
+            aria-label='increase'
           >
             +
           </button>
@@ -68,6 +70,7 @@ export function ProductCard({
         <Button 
           className="w-full bg-orange-500 hover:bg-orange-600"
           onClick={onAddToCart}
+          aria-label='add-cart'
         >
           加入購物車
         </Button>

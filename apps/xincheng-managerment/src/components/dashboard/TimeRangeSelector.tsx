@@ -116,6 +116,7 @@ export function TimeRangeSelector({
                 ? "bg-orange-500 text-white"
                 : "text-gray-500 hover:bg-gray-200"
             }`}
+            aria-label='range'
           >
             {range}
           </button>

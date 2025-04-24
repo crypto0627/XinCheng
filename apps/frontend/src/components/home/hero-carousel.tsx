@@ -17,21 +17,21 @@ import Link from 'next/link'
 const images = [
   {
     id: 1,
-    src: '/image.png',
+    src: '/image.webp',
     title: '加入官方line',
     description: '開始健康飲食生活',
     link: 'https://line.me/R/ti/p/@376omnxd?oat_content=url&ts=06010816'
   },
   {
     id: 2,
-    src: '/logo.png',
+    src: '/logo.webp',
     title: '團購系統新上線',
     description: '點擊開起團購雞胸肉',
     link: '/login'
   },
   {
     id: 3,
-    src: '/carousel/origin-chicken-breast.jpg',
+    src: '/items/origin-chicken-breast.webp',
     title: '健康輕食選擇',
     description: '均衡營養的美味',
     link: '/#menu'
@@ -41,6 +41,8 @@ const images = [
 export default function HeroCarousel() {
   const [api, setApi] = React.useState<CarouselApi>()
   const [current, setCurrent] = React.useState(0)
+  const [isLoaded, setIsLoaded] = React.useState(false)
+  
   const plugin = React.useRef(
     Autoplay({
       delay: 3000,
@@ -76,7 +78,7 @@ export default function HeroCarousel() {
   }, [api])
 
   return (
-    <section className="relative flex items-center justify-center px-[8vw] py-8 text-[#5C4B51] bg-[url('/story.png')] bg-cover bg-center">
+    <section className="relative flex items-center justify-center px-[8vw] py-8 text-[#5C4B51] bg-[url('/story.webp')] bg-center">
       <Carousel
         plugins={[plugin.current]}
         setApi={setApi}
@@ -87,7 +89,7 @@ export default function HeroCarousel() {
         }}
       >
         <CarouselContent>
-          {images.map((image) => (
+          {images.map((image, index) => (
             <CarouselItem key={image.id}>
               <Link href={image.link} target="_blank">
                 <div className="relative w-full h-full bg-[#FFF8E7]/80">
@@ -96,8 +98,13 @@ export default function HeroCarousel() {
                     alt={image.title}
                     width={500}
                     height={300}
-                    className="w-full h-full object-contain"
-                    priority={image.id === 1}
+                    className={`w-full h-full object-contain ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+                    priority={index <= 1} // 優先載入前兩張圖片
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, 700px"
+                    loading={index <= 1 ? "eager" : "lazy"}
+                    quality={90}
+                    onLoad={() => index === current && setIsLoaded(true)}
+                    fetchPriority={index === 0 ? "high" : "auto"}
                   />
                   <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent text-white">
                     <h2 className="text-2xl font-bold mb-1">{image.title}</h2>
@@ -118,6 +125,7 @@ export default function HeroCarousel() {
                 current === index ? 'bg-white' : 'bg-white/50'
               }`}
               onClick={() => api?.scrollTo(index)}
+              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>

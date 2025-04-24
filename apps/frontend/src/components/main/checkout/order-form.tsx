@@ -137,6 +137,7 @@ export function OrderForm({ cartItems, totalAmount, onSubmit }: OrderFormProps) 
           isSubmitting ? 'bg-orange-400 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-600 text-white'
         }`}
         disabled={isSubmitting}
+        aria-label='submit'
       >
         {isSubmitting ? (
           <div className="flex items-center justify-center">

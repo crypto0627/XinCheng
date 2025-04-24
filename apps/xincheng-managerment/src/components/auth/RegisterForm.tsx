@@ -219,6 +219,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
           onClick={onSwitchToLogin}
           className="text-orange-500 hover:text-orange-600 hover:underline font-medium transition-colors"
           disabled={loading}
+          aria-label='login'
         >
           已有帳戶？登入
         </button>
