@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description: '享受美味的餐盒,開啟美好的一天',
   manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/logo.webp',
     apple: [
       { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
     ],
