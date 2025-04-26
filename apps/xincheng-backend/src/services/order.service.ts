@@ -76,7 +76,7 @@ export const sendOrderConfirmationEmail = async (
   await resend.emails.send({
     from: 'mail-service-manager@xincheng-brunch.com',
     to: email,
-    subject: `訂單確認 #${order.id}`,
+    subject: `星橙：訂單成立通知 #${order.id}`,
     html: `
       <div style="background: #f8f9fa; padding: 40px 0; font-family: 'Helvetica Neue', Helvetica, Arial, '微軟正黑體', sans-serif;">
         <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden;">
@@ -241,8 +241,7 @@ export const getPendingOrders = async (db: DrizzleInstance) => {
           id: users.id,
           name: users.name,
           email: users.email,
-          phone: users.phone,
-          address: users.address
+          phone: users.phone
         })
         .from(users)
         .where(eq(users.id, order.userId))
@@ -343,12 +342,12 @@ export const sendOrderCompletionEmail = async (
   await resend.emails.send({
     from: 'xmail-service-manager@xincheng-brunch.com',
     to: email,
-    subject: `訂單已完成 #${order.id}`,
+    subject: `星橙：您的貨到付款訂單已完成 #${order.id}，請至店內取貨！`,
     html: `
       <div style=\"background: #f8f9fa; padding: 40px 0; font-family: 'Helvetica Neue', Helvetica, Arial, '微軟正黑體', sans-serif;\">
         <div style=\"max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden;\">
           <div style=\"background: #FF6B35; padding: 24px; text-align: center;\">
-            <h1 style=\"color: #fff; font-size: 28px; margin: 0; letter-spacing: 2px;\">訂單已完成</h1>
+            <h1 style=\"color: #fff; font-size: 28px; margin: 0; letter-spacing: 2px;\">訂單已完成，請至店內取貨！</h1>
           </div>
           <div style=\"padding: 32px;\">
             <p style=\"font-size: 18px; color: #333; margin-bottom: 16px;\">親愛的 <strong>${user.name}</strong>，</p>
@@ -417,8 +416,7 @@ export const getOrderById = async (db: DrizzleInstance, orderId: string) => {
       id: users.id,
       name: users.name,
       email: users.email,
-      phone: users.phone,
-      address: users.address
+      phone: users.phone
     })
     .from(users)
     .where(eq(users.id, order.userId))
@@ -575,42 +573,45 @@ export const getRevenueData = async (db: DrizzleInstance, timeRange: string) => 
   switch (timeRange) {
     case 'today':
     case '今日':
-      // 今天
-      dateFilter = { from: new Date(now.setHours(0, 0, 0, 0)).toISOString() };
+      // 今天 UTC+8
+      dateFilter = { from: new Date(now.setUTCHours(0, 0, 0, 0) + 8 * 60 * 60 * 1000).toISOString() };
       break;
     case 'yesterday':
-      // 昨天
+      // 昨天 UTC+8
       const yesterday = new Date(now);
-      yesterday.setDate(yesterday.getDate() - 1);
-      yesterday.setHours(0, 0, 0, 0);
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+      yesterday.setUTCHours(0, 0, 0, 0);
       const endOfYesterday = new Date(yesterday);
-      endOfYesterday.setHours(23, 59, 59, 999);
-      dateFilter = { from: yesterday.toISOString(), to: endOfYesterday.toISOString() };
+      endOfYesterday.setUTCHours(23, 59, 59, 999);
+      dateFilter = { 
+        from: new Date(yesterday.getTime() + 8 * 60 * 60 * 1000).toISOString(), 
+        to: new Date(endOfYesterday.getTime() + 8 * 60 * 60 * 1000).toISOString() 
+      };
       break;
     case 'week':
     case '本週':
-      // 本週
+      // 本週 UTC+8
       const startOfWeek = new Date(now);
-      startOfWeek.setDate(now.getDate() - now.getDay()); // 週日作為一週的開始
-      startOfWeek.setHours(0, 0, 0, 0);
-      dateFilter = { from: startOfWeek.toISOString() };
+      startOfWeek.setUTCDate(now.getUTCDate() - now.getUTCDay()); // 週日作為一週的開始
+      startOfWeek.setUTCHours(0, 0, 0, 0);
+      dateFilter = { from: new Date(startOfWeek.getTime() + 8 * 60 * 60 * 1000).toISOString() };
       break;
     case 'month':
     case '本月':
-      // 本月
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      dateFilter = { from: startOfMonth.toISOString() };
+      // 本月 UTC+8
+      const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+      dateFilter = { from: new Date(startOfMonth.getTime() + 8 * 60 * 60 * 1000).toISOString() };
       break;
     case '本季':
-      // 本季度
-      const currentQuarter = Math.floor(now.getMonth() / 3);
-      const startOfQuarter = new Date(now.getFullYear(), currentQuarter * 3, 1);
-      dateFilter = { from: startOfQuarter.toISOString() };
+      // 本季度 UTC+8
+      const currentQuarter = Math.floor(now.getUTCMonth() / 3);
+      const startOfQuarter = new Date(Date.UTC(now.getUTCFullYear(), currentQuarter * 3, 1));
+      dateFilter = { from: new Date(startOfQuarter.getTime() + 8 * 60 * 60 * 1000).toISOString() };
       break;
     case '本年':
-      // 本年
-      const startOfYear = new Date(now.getFullYear(), 0, 1);
-      dateFilter = { from: startOfYear.toISOString() };
+      // 本年 UTC+8
+      const startOfYear = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
+      dateFilter = { from: new Date(startOfYear.getTime() + 8 * 60 * 60 * 1000).toISOString() };
       break;
     default:
       // 全部時間

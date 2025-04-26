@@ -12,8 +12,7 @@ interface AuthFormProps {
     password: string,
     confirmPassword?: string,
     username?: string,
-    phone?: string,
-    address?: string
+    phone?: string
   ) => Promise<void>
 }
 
@@ -23,7 +22,6 @@ export function AuthForm({ isLogin, isLoading, onSubmit }: AuthFormProps) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
-  const [address, setAddress] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
@@ -32,7 +30,7 @@ export function AuthForm({ isLogin, isLoading, onSubmit }: AuthFormProps) {
     if (isLogin) {
       await onSubmit(email, password)
     } else {
-      await onSubmit(email, password, confirmPassword, username, phone, address)
+      await onSubmit(email, password, confirmPassword, username, phone)
     }
   }
 
@@ -123,17 +121,6 @@ export function AuthForm({ isLogin, isLoading, onSubmit }: AuthFormProps) {
             required
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="address">地址</Label>
-          <Input
-            id="address"
-            type="text"
-            placeholder="您的地址"
-            required
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
           />
         </div>
         <div className="space-y-2">

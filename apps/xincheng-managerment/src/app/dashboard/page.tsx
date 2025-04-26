@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useOrderStore, TimeRange } from "@/stores/useOrderStore";
 import * as authService from "@/services/auth.service";
 import { checkAuthAndRedirect } from "@/utils/auth";
-import { FullScreenLoading } from "@/components/ui/loading";
 
 // 導入組件
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
@@ -30,7 +29,7 @@ type Product = {
   revenue: number;
 };
 
-function DashboardContent() {
+export default function DashboardPage() {
   const router = useRouter();
   const { isLoggedIn, user, token, logout } = useAuthStore();
   const [timeRange, setTimeRange] = useState<TimeRange>("今日");
@@ -178,12 +177,3 @@ function DashboardContent() {
     </div>
   );
 }
-
-// 使用Suspense包裝主要内容
-export default function DashboardPage() {
-  return (
-    <Suspense fallback={<FullScreenLoading message="載入儀表板..." />}>
-      <DashboardContent />
-    </Suspense>
-  );
-} 

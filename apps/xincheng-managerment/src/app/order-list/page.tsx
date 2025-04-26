@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useOrderStore, TimeRange, OrderWithItems } from "@/stores/useOrderStore";
 import { checkAuthAndRedirect } from "@/utils/auth";
-import { FullScreenLoading } from "@/components/ui/loading";
 import { OrderList } from "@/components/orders/OrderList";
 import { OrderFilters } from "@/components/orders/OrderFilters";
 import { Pagination } from "@/components/ui/pagination";
@@ -27,7 +26,7 @@ const STATUS_OPTIONS = [
   { label: "已取消", value: "cancelled" },
 ];
 
-function OrderListContent() {
+export default function OrderListPage() {
   const router = useRouter();
   const { isLoggedIn, user, token } = useAuthStore();
   
@@ -174,14 +173,5 @@ function OrderListContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-// 使用Suspense包裝主頁面
-export default function OrderListPage() {
-  return (
-    <Suspense fallback={<FullScreenLoading message="載入訂單列表..." />}>
-      <OrderListContent />
-    </Suspense>
   );
 }

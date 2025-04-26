@@ -15,7 +15,6 @@ type User = {
   name?: string
   email: string
   isVerified: boolean
-  address?: string
 }
 
 interface ProfileUpdateModalProps {
@@ -118,7 +117,6 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, isLoading }: DeleteCon
 export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdated }: ProfileUpdateModalProps) {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
-  const [address, setAddress] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -141,7 +139,6 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
     if (user) {
       setUsername(user.username || user.name || '')
       setEmail(user.email || '')
-      setAddress(user.address || '')
     }
   }, [user])
 
@@ -174,7 +171,6 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
         id: string
         name?: string
         email?: string
-        address?: string
         passwordHash?: string
       } = {
         id: user.id
@@ -184,7 +180,6 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
       if (username !== currentName) updateData.name = username
       
       if (email !== user.email) updateData.email = email
-      if (address !== user.address) updateData.address = address
       
       // Send the raw password - backend will handle hashing
       if (password) {
@@ -272,17 +267,6 @@ export default function ProfileUpdateModal({ isOpen, onClose, user, onUserUpdate
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={isSubmitting}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="address">地址</Label>
-              <Input
-                id="address"
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
                 disabled={isSubmitting}
               />
             </div>

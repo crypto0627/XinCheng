@@ -8,10 +8,10 @@ import { v4 as uuidv4 } from 'uuid';
 export const register = async (c: Context) => {
   try {
     const db = getDB(c);
-    const { name, phone, email, address, password } = await c.req.json();
+    const { name, phone, email, password } = await c.req.json();
 
     // 驗證必要字段
-    const validation = authService.validateRegistrationData(name, phone, email, address, password);
+    const validation = authService.validateRegistrationData(name, phone, email, password);
     if (!validation.valid) {
       return c.json({ error: validation.error }, 400);
     }
@@ -32,7 +32,7 @@ export const register = async (c: Context) => {
       await authService.sendVerificationEmail(email, verificationToken, c.env.RESEND_API_KEY, c.env.BASE_URL);
       
       // 郵件發送成功後，再創建用戶
-      await authService.createUser(db, id, name, phone, email, address, hash);
+      await authService.createUser(db, id, name, phone, email, hash);
       
       return c.json({ 
         message: '註冊成功。請檢查您的電子郵件以驗證您的帳戶。',

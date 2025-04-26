@@ -24,7 +24,7 @@ export const deleteUser = async (c: Context) => {
 export const updateUser = async (c: Context) => {
   try {
     const db = getDB(c);
-    const { id, passwordHash, name, email, address } = await c.req.json();
+    const { id, passwordHash, name, email } = await c.req.json();
     
     if (!id) {
       return c.json({ error: '缺少用戶ID' }, 400);
@@ -39,7 +39,6 @@ export const updateUser = async (c: Context) => {
     
     if (name) updateData.name = name;
     if (email) updateData.email = email;
-    if (address) updateData.address = address;
 
     if (Object.keys(updateData).length === 0) {
       return c.json({ error: '沒有有效的欄位可更新' }, 400);

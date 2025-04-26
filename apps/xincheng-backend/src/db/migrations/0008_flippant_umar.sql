@@ -35,7 +35,6 @@ CREATE TABLE `users` (
 	`name` text NOT NULL,
 	`phone` text NOT NULL,
 	`email` text NOT NULL,
-	`address` text NOT NULL,
 	`password_hash` text NOT NULL,
 	`is_verified` integer DEFAULT false NOT NULL,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP,

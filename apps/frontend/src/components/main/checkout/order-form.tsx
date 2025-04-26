@@ -14,7 +14,6 @@ export function OrderForm({ cartItems, totalAmount, onSubmit }: OrderFormProps) 
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
-  const [address, setAddress] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
@@ -25,7 +24,6 @@ export function OrderForm({ cartItems, totalAmount, onSubmit }: OrderFormProps) 
           if (user.email) setEmail(user.email)
           if (user.name) setName(user.name)
           if (user.phone) setPhone(user.phone)
-          if (user.address) setAddress(user.address)
         }
       } catch (error) {
         console.error('Failed to fetch user data:', error)
@@ -95,19 +93,6 @@ export function OrderForm({ cartItems, totalAmount, onSubmit }: OrderFormProps) 
           id="email" 
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-          required
-          disabled={isSubmitting}
-        />
-      </div>
-      
-      <div>
-        <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">地址</label>
-        <input 
-          type="text" 
-          id="address" 
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
           required
           disabled={isSubmitting}

@@ -9,7 +9,6 @@ export const users = sqliteTable("users", {
   name: text("name").notNull(),
   phone: text("phone").notNull(),
   email: text("email").notNull().unique(),
-  address: text("address").notNull(),
   passwordHash: text("password_hash").notNull(),
   isVerified: integer("is_verified", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),

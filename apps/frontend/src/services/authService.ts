@@ -132,7 +132,7 @@ export const authService = {
     }
   },
 
-  async updateUser(userData: {id: string, name?: string, email?: string, address?: string, passwordHash?: string}) {
+  async updateUser(userData: {id: string, name?: string, email?: string, passwordHash?: string}) {
     const response = await fetch(`${API_URL}/api/user/updateUser`, {
       method: 'POST',
       credentials: 'include',

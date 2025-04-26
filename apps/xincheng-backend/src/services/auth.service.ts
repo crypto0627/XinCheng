@@ -9,11 +9,10 @@ import { DrizzleInstance } from '../types';
 export const validateRegistrationData = (
   name: string, 
   phone: string, 
-  email: string, 
-  address: string, 
+  email: string,
   password: string
 ) => {
-  if (!name || !phone || !email || !address || !password) {
+  if (!name || !phone || !email || !password) {
     return { valid: false, error: '請填寫所有必填欄位' };
   }
 
@@ -44,7 +43,6 @@ export const createUser = async (
   name: string,
   phone: string,
   email: string,
-  address: string,
   passwordHash: string
 ) => {
   await db.insert(users).values({
@@ -52,7 +50,6 @@ export const createUser = async (
     name,
     phone,
     email,
-    address,
     passwordHash,
     isVerified: false
   });

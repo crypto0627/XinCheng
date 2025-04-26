@@ -140,7 +140,6 @@ router.get('/google/callback', async (c: Context<{ Bindings: ENV }>) => {
         name: user.name,
         phone: '', // Required field in schema
         email: user.email,
-        address: '', // Required field in schema
         passwordHash: '',
         isVerified: true,
       });

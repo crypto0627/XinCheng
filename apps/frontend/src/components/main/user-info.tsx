@@ -12,7 +12,6 @@ type User = {
   name?: string;
   email: string;
   isVerified: boolean;
-  address?: string;
 }
 
 export default function UserInfo() {

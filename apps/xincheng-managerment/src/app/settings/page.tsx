@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { updateUser, deleteUser } from '@/services/user.service'
 import { useRouter } from 'next/navigation'
 import { checkAuthAndRedirect } from '@/utils/auth'
-import { FullScreenLoading, InlineLoading } from '@/components/ui/loading'
+import { InlineLoading } from '@/components/ui/loading'
 
 // Simple toast notification component
 const Toast = ({ message, type, onClose }: { message: string, type: 'success' | 'error', onClose: () => void }) => {
@@ -24,7 +24,7 @@ const Toast = ({ message, type, onClose }: { message: string, type: 'success' | 
   )
 }
 
-function SettingsContent() {
+export default function SettingsContent() {
   const { user, token, logout } = useAuthStore()
   const router = useRouter()
   
@@ -287,13 +287,5 @@ function SettingsContent() {
         </div>
       </div>
     </div>
-  )
-}
-
-export default function SettingsPage() {
-  return (
-    <Suspense fallback={<FullScreenLoading message="載入中..." />}>
-      <SettingsContent />
-    </Suspense>
   )
 }

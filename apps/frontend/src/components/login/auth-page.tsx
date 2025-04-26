@@ -33,8 +33,7 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
     password: string,
     confirmPassword?: string,
     username?: string,
-    phone?: string,
-    address?: string
+    phone?: string
   ) => {
     setIsLoading(true)
 
@@ -56,10 +55,10 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
           })
         }
       } else {
-        if (!username || !phone || !address) {
+        if (!username || !phone) {
           throw new Error('請填寫所有必填欄位')
         }
-        await handleRegister(username, phone, email, address, password)
+        await handleRegister(username, phone, email, password)
       }
     } catch (error) {
       console.error('處理錯誤:', error)
@@ -76,9 +75,9 @@ export function AuthPage({ onAuthSuccess, onAuthError }: AuthPageProps) {
     }
   }
 
-  const handleRegister = async (name: string, phone: string, email: string, address: string, password: string) => {
+  const handleRegister = async (name: string, phone: string, email: string, password: string) => {
     try {
-      await authService.register({ name, phone, email, address, password })
+      await authService.register({ name, phone, email, password })
       await Swal.fire({
         title: '註冊成功！',
         text: '請查看您的信箱以驗證電子郵件',
