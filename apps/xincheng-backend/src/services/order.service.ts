@@ -64,9 +64,13 @@ export const sendOrderConfirmationEmail = async (
 ) => {
   const resend = new Resend(resendApiKey);
   
-  // Format items for email
+  // Format items for email (table rows)
   const itemsList = items.map((item: OrderItem) => 
-    `<li>商品: ${item.productName}, 數量: ${item.quantity}, 價格: $${item.price}</li>`
+    `<tr>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #f0f0f0;">${item.productName}</td>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #f0f0f0; text-align: center;">${item.quantity}</td>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #f0f0f0; text-align: right;">$${item.price}</td>
+    </tr>`
   ).join('');
   
   await resend.emails.send({
@@ -74,21 +78,48 @@ export const sendOrderConfirmationEmail = async (
     to: email,
     subject: `訂單確認 #${order.id}`,
     html: `
-      <h1>訂單確認</h1>
-      <p>親愛的 ${user.name}，</p>
-      <p>感謝您的訂購。以下是您的訂單詳情：</p>
-      <p><strong>訂單編號：</strong> ${order.id}</p>
-      <p><strong>訂單日期：</strong> ${new Date().toLocaleDateString()}</p>
-      <p><strong>付款方式：</strong> ${paymentMethod}</p>
-      <h2>訂購商品：</h2>
-      <ul>
-        ${itemsList}
-      </ul>
-      <p><strong>總數量：</strong> ${totalQuantity}</p>
-      <p><strong>總金額：</strong> $${totalAmount}</p>
-      <p>我們將盡快處理您的訂單。訂單完成後會再通知您。</p>
-      <p>如有任何問題，請隨時與我們聯繫。</p>
-      <p>謝謝！</p>
+      <div style="background: #f8f9fa; padding: 40px 0; font-family: 'Helvetica Neue', Helvetica, Arial, '微軟正黑體', sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden;">
+          <div style="background: #FF6B35; padding: 24px; text-align: center;">
+            <h1 style="color: #fff; font-size: 28px; margin: 0; letter-spacing: 2px;">訂單確認</h1>
+          </div>
+          <div style="padding: 32px;">
+            <p style="font-size: 18px; color: #333; margin-bottom: 16px;">親愛的 <strong>${user.name}</strong>，</p>
+            <p style="font-size: 16px; color: #333; margin-bottom: 24px;">感謝您的訂購！以下是您的訂單詳情：</p>
+            <table style="width: 100%; margin-bottom: 20px; font-size: 15px; color: #444;">
+              <tr><td style="padding: 6px 0;">訂單編號：</td><td style="padding: 6px 0;">${order.id}</td></tr>
+              <tr><td style="padding: 6px 0;">訂單日期：</td><td style="padding: 6px 0;">${new Date().toLocaleDateString('zh-TW')}</td></tr>
+              <tr><td style="padding: 6px 0;">付款方式：</td><td style="padding: 6px 0;">${paymentMethod}</td></tr>
+            </table>
+            <h2 style="font-size: 18px; color: #FF6B35; margin: 24px 0 12px 0;">訂購商品</h2>
+            <table style="width: 100%; border-collapse: collapse; background: #fafafa; border-radius: 6px; overflow: hidden;">
+              <thead>
+                <tr style="background: #f0f0f0;">
+                  <th style="padding: 10px 12px; text-align: left;">商品名稱</th>
+                  <th style="padding: 10px 12px; text-align: center;">數量</th>
+                  <th style="padding: 10px 12px; text-align: right;">價格</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsList}
+              </tbody>
+            </table>
+            <table style="width: 100%; margin-top: 20px; font-size: 16px;">
+              <tr>
+                <td style="padding: 6px 0;">總數量：</td>
+                <td style="padding: 6px 0; color: #FF6B35; font-weight: bold;">${totalQuantity}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0;">總金額：</td>
+                <td style="padding: 6px 0; color: #FF6B35; font-weight: bold;">$${totalAmount}</td>
+              </tr>
+            </table>
+            <p style="margin-top: 32px; font-size: 15px; color: #666;">我們將盡快處理您的訂單，完成後會再通知您。</p>
+            <p style="font-size: 15px; color: #666;">如有任何問題，請隨時與我們聯繫。</p>
+            <p style="font-size: 15px; color: #888; margin-top: 32px;">星橙早午餐 敬上</p>
+          </div>
+        </div>
+      </div>
     `
   });
 };
@@ -300,29 +331,60 @@ export const sendOrderCompletionEmail = async (
 ) => {
   const resend = new Resend(resendApiKey);
   
-  // 格式化商品列表
+  // 格式化商品列表 (table rows)
   const itemsList = items.map((item) => 
-    `<li>商品: ${item.productName}, 數量: ${item.quantity}, 價格: $${item.price}</li>`
+    `<tr>
+      <td style=\"padding: 8px 12px; border-bottom: 1px solid #f0f0f0;\">${item.productName}</td>
+      <td style=\"padding: 8px 12px; border-bottom: 1px solid #f0f0f0; text-align: center;\">${item.quantity}</td>
+      <td style=\"padding: 8px 12px; border-bottom: 1px solid #f0f0f0; text-align: right;\">$${item.price}</td>
+    </tr>`
   ).join('');
   
   await resend.emails.send({
-    from: 'xincheng@jakekuo.com',
+    from: 'xmail-service-manager@xincheng-brunch.com',
     to: email,
     subject: `訂單已完成 #${order.id}`,
     html: `
-      <h1>訂單已完成</h1>
-      <p>親愛的 ${user.name}，</p>
-      <p>您的訂單已經完成處理。以下是您的訂單詳情：</p>
-      <p><strong>訂單編號：</strong> ${order.id}</p>
-      <p><strong>付款方式：</strong> ${paymentMethod}</p>
-      <h2>訂購商品：</h2>
-      <ul>
-        ${itemsList}
-      </ul>
-      <p><strong>總數量：</strong> ${totalQuantity}</p>
-      <p><strong>總金額：</strong> $${totalAmount}</p>
-      <p>感謝您的購買！如有任何問題，請隨時與我們聯繫。</p>
-      <p>謝謝！</p>
+      <div style=\"background: #f8f9fa; padding: 40px 0; font-family: 'Helvetica Neue', Helvetica, Arial, '微軟正黑體', sans-serif;\">
+        <div style=\"max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden;\">
+          <div style=\"background: #FF6B35; padding: 24px; text-align: center;\">
+            <h1 style=\"color: #fff; font-size: 28px; margin: 0; letter-spacing: 2px;\">訂單已完成</h1>
+          </div>
+          <div style=\"padding: 32px;\">
+            <p style=\"font-size: 18px; color: #333; margin-bottom: 16px;\">親愛的 <strong>${user.name}</strong>，</p>
+            <p style=\"font-size: 16px; color: #333; margin-bottom: 24px;\">您的訂單已經完成處理。以下是您的訂單詳情：</p>
+            <table style=\"width: 100%; margin-bottom: 20px; font-size: 15px; color: #444;\">
+              <tr><td style=\"padding: 6px 0;\">訂單編號：</td><td style=\"padding: 6px 0;\">${order.id}</td></tr>
+              <tr><td style=\"padding: 6px 0;\">付款方式：</td><td style=\"padding: 6px 0;\">${paymentMethod}</td></tr>
+            </table>
+            <h2 style=\"font-size: 18px; color: #FF6B35; margin: 24px 0 12px 0;\">訂購商品</h2>
+            <table style=\"width: 100%; border-collapse: collapse; background: #fafafa; border-radius: 6px; overflow: hidden;\">
+              <thead>
+                <tr style=\"background: #f0f0f0;\">
+                  <th style=\"padding: 10px 12px; text-align: left;\">商品名稱</th>
+                  <th style=\"padding: 10px 12px; text-align: center;\">數量</th>
+                  <th style=\"padding: 10px 12px; text-align: right;\">價格</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsList}
+              </tbody>
+            </table>
+            <table style=\"width: 100%; margin-top: 20px; font-size: 16px;\">
+              <tr>
+                <td style=\"padding: 6px 0;\">總數量：</td>
+                <td style=\"padding: 6px 0; color: #FF6B35; font-weight: bold;\">${totalQuantity}</td>
+              </tr>
+              <tr>
+                <td style=\"padding: 6px 0;\">總金額：</td>
+                <td style=\"padding: 6px 0; color: #FF6B35; font-weight: bold;\">$${totalAmount}</td>
+              </tr>
+            </table>
+            <p style=\"margin-top: 32px; font-size: 15px; color: #666;\">感謝您的購買！如有任何問題，請隨時與我們聯繫。</p>
+            <p style=\"font-size: 15px; color: #888; margin-top: 32px;\">星橙早午餐 敬上</p>
+          </div>
+        </div>
+      </div>
     `
   });
 };

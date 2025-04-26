@@ -31,7 +31,6 @@ export function useOrderStatus(email: string, initialStatus?: string) {
     setLoading(true);
     try {
       const response = await orderService.monitorStatus(email);
-      console.log(response.data)
       setData(response.data);
       setOrdersByStatus(organizeOrdersByStatus(response.data.orders));
       setError(null);

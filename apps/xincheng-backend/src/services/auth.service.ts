@@ -14,16 +14,16 @@ export const validateRegistrationData = (
   password: string
 ) => {
   if (!name || !phone || !email || !address || !password) {
-    return { valid: false, error: 'Missing required fields' };
+    return { valid: false, error: '請填寫所有必填欄位' };
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return { valid: false, error: 'Invalid email format' };
+    return { valid: false, error: '電子郵件格式不正確' };
   }
 
   if (password.length < 6) {
-    return { valid: false, error: 'Password must be at least 6 characters long' };
+    return { valid: false, error: '密碼長度至少需要6個字元' };
   }
 
   return { valid: true };
@@ -73,16 +73,25 @@ export const sendVerificationEmail = async (
   await resend.emails.send({
     from: 'mail-service-manager@xincheng-brunch.com',
     to: email,
-    subject: 'Verify your email',
+    subject: '請驗證您的電子郵件',
     html: `
-      <div style="background: #FF6B35; padding: 20px; color: white; font-family: Arial, sans-serif;">
-        <div style="background: white; padding: 20px; border-radius: 8px;">
-          <h1 style="color: #FF6B35;">Welcome to XinCheng!</h1>
-          <p style="color: #333;">Please verify your email:</p>
-          <a href="${baseUrl}/verify-email?token=${token}" 
-             style="display: inline-block; padding: 10px 20px; background: #FF6B35; color: white; text-decoration: none; border-radius: 4px;">
-            Verify Email
-          </a>
+      <div style="background: #f8f9fa; padding: 40px 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="background: #FF6B35; padding: 24px; text-align: center;">
+            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">歡迎加入新橙早午餐！</h1>
+          </div>
+          <div style="padding: 32px;">
+            <p style="font-size: 16px; color: #333333; line-height: 1.6; margin-bottom: 24px;">
+              感謝您註冊新成早午餐帳號！請點擊下方按鈕完成電子郵件驗證：
+            </p>
+            <a href="${baseUrl}/verify-email?token=${token}" 
+               style="display: inline-block; padding: 12px 24px; background: #FF6B35; color: #ffffff; text-decoration: none; border-radius: 4px; font-size: 16px; font-weight: 500;">
+              立即驗證
+            </a>
+            <p style="font-size: 14px; color: #666666; margin-top: 24px;">
+              如果您沒有註冊新成早午餐帳號，請忽略此郵件。
+            </p>
+          </div>
         </div>
       </div>
     `
@@ -126,15 +135,25 @@ export const sendPasswordResetEmail = async (
   await resend.emails.send({
     from: 'mail-service-manager@xincheng-brunch.com',
     to: email,
-    subject: 'Password Reset',
+    subject: '重設您的密碼',
     html: `
-      <div style="background: #FF6B35; padding: 20px; color: white; font-family: Arial, sans-serif;">
-        <div style="background: white; padding: 20px; border-radius: 8px;">
-          <p style="color: #333;">Click below to reset password (expires in 1 hour):</p>
-          <a href="${baseUrl}/reset-password?token=${token}" 
-             style="display: inline-block; padding: 10px 20px; background: #FF6B35; color: white; text-decoration: none; border-radius: 4px;">
-            Reset Password
-          </a>
+      <div style="background: #f8f9fa; padding: 40px 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="background: #FF6B35; padding: 24px; text-align: center;">
+            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">重設密碼</h1>
+          </div>
+          <div style="padding: 32px;">
+            <p style="font-size: 16px; color: #333333; line-height: 1.6; margin-bottom: 24px;">
+              我們收到您重設密碼的請求。請點擊下方按鈕來重設您的密碼（此連結將在1小時後失效）：
+            </p>
+            <a href="${baseUrl}/reset-password?token=${token}" 
+               style="display: inline-block; padding: 12px 24px; background: #FF6B35; color: #ffffff; text-decoration: none; border-radius: 4px; font-size: 16px; font-weight: 500;">
+              重設密碼
+            </a>
+            <p style="font-size: 14px; color: #666666; margin-top: 24px;">
+              如果您沒有要求重設密碼，請忽略此郵件。
+            </p>
+          </div>
         </div>
       </div>
     `

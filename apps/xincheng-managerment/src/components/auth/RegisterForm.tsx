@@ -94,9 +94,6 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
         return;
       }
 
-      // 檢查 API 回應內容
-      console.log("註冊 API 回應:", response);
-
       // 即使沒有返回 user 對象，也繼續執行
       const userName = response.user?.name || formData.name;
       
