@@ -1,5 +1,5 @@
 // 允許訪問的電子郵件列表
-export const ALLOWED_EMAILS = ["Puff91337@gmail.com", "jake0627a1@gmail.com"];
+export const ALLOWED_EMAILS = ["puff91337@gmail.com", "jake0627a1@gmail.com"];
 
 /**
  * 檢查用戶是否有權限訪問管理界面

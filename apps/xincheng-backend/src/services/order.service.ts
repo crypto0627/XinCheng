@@ -74,7 +74,7 @@ export const sendOrderConfirmationEmail = async (
   ).join('');
   
   await resend.emails.send({
-    from: 'xincheng@jakekuo.com',
+    from: 'mail-service-manager@xincheng-brunch.com',
     to: email,
     subject: `訂單確認 #${order.id}`,
     html: `
