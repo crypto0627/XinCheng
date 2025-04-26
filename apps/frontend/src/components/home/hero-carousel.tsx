@@ -84,13 +84,17 @@ export default function HeroCarousel() {
 
   return (
     <section 
-      className="relative flex items-center justify-center px-[8vw] py-16 text-[#5C4B51] bg-[url('/story.webp')] bg-center"
+      className="relative flex items-center justify-center px-[8vw] py-16 text-[#5C4B51]"
       aria-label="首頁輪播圖"
     >
+      <div 
+        className="absolute inset-0 bg-[url('/story.webp')] bg-center bg-no-repeat bg-cover"
+        style={{ backgroundSize: '100% 100%' }}
+      />
       <Carousel
         plugins={[plugin.current]}
         setApi={setApi}
-        className="w-full max-w-2xl h-1/2"
+        className="w-full max-w-2xl h-1/2 relative z-10"
         opts={{
           align: 'center',
           loop: true
