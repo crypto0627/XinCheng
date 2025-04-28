@@ -9,14 +9,7 @@ import { CartModal } from '@/components/main/cart-modal'
 import Swal from 'sweetalert2'
 import { authService } from '@/services/authService'
 import Loading from '@/components/common/loading'
-
-type Product = {
-  id: string
-  productName: string
-  price: number
-  img: string
-  weight: string
-}
+import { Product } from '@/types'
 
 const products: Product[] = [
   {
@@ -24,21 +17,32 @@ const products: Product[] = [
     productName: '原味舒肥雞',
     price: 43,
     img: '/items/origin-chicken-breast.webp',
-    weight: '100g'
+    weight: '100g',
+    description: ''
   },
   {
     id: '2',
     productName: '麻辣舒肥雞',
     price: 43,
     img: '/items/spicy-chicken-breast.webp',
-    weight: '100g'
+    weight: '100g',
+    description: ''
   },
   {
     id: '3',
     productName: '真空鮭魚',
     price: 120,
     img: '/items/salmon.webp',
-    weight: '180g'
+    weight: '180g',
+    description: ''
+  },
+  {
+    id: '4',
+    productName: '星橙辣椒醬',
+    price: 90,
+    img: '/items/spicy-sauce.webp',
+    weight: '190ml',
+    description: ''
   }
 ]
 
@@ -98,14 +102,14 @@ export default function MainPage() {
   const handleCheckout = () => {
     const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0)
     
-    if (totalQuantity >= 5) {
+    if (totalQuantity >= 1) {
       // 將購物車資訊存儲到 localStorage
       localStorage.setItem('cart', JSON.stringify(cartItems))
       router.push('/main/checkout')
     } else {
       Swal.fire({
         title: '數量不足',
-        text: '請購買至少五份商品',
+        text: '請購買至少一份商品',
         icon: 'warning',
         confirmButtonText: '新增商品'
       })

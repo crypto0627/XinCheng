@@ -97,7 +97,7 @@ export const sendOrderConfirmationEmail = async (
                 <tr style="background: #f0f0f0;">
                   <th style="padding: 10px 12px; text-align: left;">商品名稱</th>
                   <th style="padding: 10px 12px; text-align: center;">數量</th>
-                  <th style="padding: 10px 12px; text-align: right;">價格</th>
+                  <th style="padding: 10px 12px; text-align: right;">單件價格</th>
                 </tr>
               </thead>
               <tbody>
@@ -215,80 +215,6 @@ export const getOrderStatusByEmail = async (db: DrizzleInstance, email: string) 
   };
 };
 
-// 新增函數 - 獲取所有待處理訂單
-export const getPendingOrders = async (db: DrizzleInstance) => {
-  // 獲取所有狀態為 'processing' 的訂單
-  const pendingOrders = await db
-    .select({
-      id: orders.id,
-      userId: orders.userId,
-      totalAmount: orders.totalAmount,
-      totalQuantity: orders.totalQuantity,
-      paymentMethod: orders.paymentMethod,
-      status: orders.status,
-      createdAt: orders.createdAt
-    })
-    .from(orders)
-    .where(eq(orders.status, 'processing'))
-    .orderBy(orders.createdAt);
-
-  // 獲取每個訂單的用戶信息和訂單項目
-  const ordersWithDetails = await Promise.all(
-    pendingOrders.map(async (order) => {
-      // 獲取用戶信息
-      const user = await db
-        .select({
-          id: users.id,
-          name: users.name,
-          email: users.email,
-          phone: users.phone
-        })
-        .from(users)
-        .where(eq(users.id, order.userId))
-        .then(rows => rows[0]);
-
-      // 獲取訂單項目
-      const items = await db
-        .select({
-          id: orderItems.id,
-          productId: orderItems.productId,
-          productName: orderItems.productName,
-          quantity: orderItems.quantity,
-          price: orderItems.price
-        })
-        .from(orderItems)
-        .where(eq(orderItems.orderId, order.id));
-
-      // 格式化日期
-      const createdAtDate = order.createdAt ? new Date(order.createdAt) : new Date();
-      const formattedDate = createdAtDate.toLocaleDateString('zh-TW', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-
-      // 處理訂單項目，確保 productName 存在並格式化價格
-      const processedItems = items.map(item => ({
-        ...item,
-        productName: item.productName || `Product ${item.productId.substring(0, 8)}`,
-        price: Number(item.price).toFixed(2)
-      }));
-
-      return {
-        ...order,
-        createdAt: formattedDate,
-        totalAmount: Number(order.totalAmount).toFixed(2),
-        user,
-        items: processedItems
-      };
-    })
-  );
-
-  return ordersWithDetails;
-};
-
 // 新增函數 - 更新訂單狀態
 export const updateOrderStatus = async (db: DrizzleInstance, orderId: string, status: string) => {
   // 檢查狀態值是否有效
@@ -340,7 +266,7 @@ export const sendOrderCompletionEmail = async (
   ).join('');
   
   await resend.emails.send({
-    from: 'xmail-service-manager@xincheng-brunch.com',
+    from: 'mail-service-manager@xincheng-brunch.com',
     to: email,
     subject: `星橙：您的貨到付款訂單已完成 #${order.id}，請至店內取貨！`,
     html: `
@@ -362,7 +288,7 @@ export const sendOrderCompletionEmail = async (
                 <tr style=\"background: #f0f0f0;\">
                   <th style=\"padding: 10px 12px; text-align: left;\">商品名稱</th>
                   <th style=\"padding: 10px 12px; text-align: center;\">數量</th>
-                  <th style=\"padding: 10px 12px; text-align: right;\">價格</th>
+                  <th style=\"padding: 10px 12px; text-align: right;\">單件價格</th>
                 </tr>
               </thead>
               <tbody>
@@ -562,208 +488,4 @@ const safeAnd = (a: SQL<unknown>, b: SQL<unknown>): SQL<unknown> => {
   const result = and(a, b);
   // 這是一個安全檢查，實際上 and() 不應該回傳 undefined
   return result || sql`(${a}) AND (${b})`;
-};
-
-// 新增函數 - 獲取收益數據
-export const getRevenueData = async (db: DrizzleInstance, timeRange: string) => {
-  let dateFilter: { from?: string, to?: string } = {};
-  const now = new Date();
-  
-  // 根據時間範圍設置過濾條件
-  switch (timeRange) {
-    case 'today':
-    case '今日':
-      // 今天 UTC+8
-      dateFilter = { from: new Date(now.setUTCHours(0, 0, 0, 0) + 8 * 60 * 60 * 1000).toISOString() };
-      break;
-    case 'yesterday':
-      // 昨天 UTC+8
-      const yesterday = new Date(now);
-      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-      yesterday.setUTCHours(0, 0, 0, 0);
-      const endOfYesterday = new Date(yesterday);
-      endOfYesterday.setUTCHours(23, 59, 59, 999);
-      dateFilter = { 
-        from: new Date(yesterday.getTime() + 8 * 60 * 60 * 1000).toISOString(), 
-        to: new Date(endOfYesterday.getTime() + 8 * 60 * 60 * 1000).toISOString() 
-      };
-      break;
-    case 'week':
-    case '本週':
-      // 本週 UTC+8
-      const startOfWeek = new Date(now);
-      startOfWeek.setUTCDate(now.getUTCDate() - now.getUTCDay()); // 週日作為一週的開始
-      startOfWeek.setUTCHours(0, 0, 0, 0);
-      dateFilter = { from: new Date(startOfWeek.getTime() + 8 * 60 * 60 * 1000).toISOString() };
-      break;
-    case 'month':
-    case '本月':
-      // 本月 UTC+8
-      const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
-      dateFilter = { from: new Date(startOfMonth.getTime() + 8 * 60 * 60 * 1000).toISOString() };
-      break;
-    case '本季':
-      // 本季度 UTC+8
-      const currentQuarter = Math.floor(now.getUTCMonth() / 3);
-      const startOfQuarter = new Date(Date.UTC(now.getUTCFullYear(), currentQuarter * 3, 1));
-      dateFilter = { from: new Date(startOfQuarter.getTime() + 8 * 60 * 60 * 1000).toISOString() };
-      break;
-    case '本年':
-      // 本年 UTC+8
-      const startOfYear = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
-      dateFilter = { from: new Date(startOfYear.getTime() + 8 * 60 * 60 * 1000).toISOString() };
-      break;
-    default:
-      // 全部時間
-      dateFilter = {};
-      break;
-  }
-
-  // 構建查詢條件
-  let whereConditions: SQL<unknown> = eq(orders.status, 'completed'); // 只計算已完成的訂單
-  
-  // 如果有日期過濾條件，添加到查詢中
-  if (dateFilter.from) {
-    const fromCondition = sql`${orders.createdAt} >= ${dateFilter.from}`;
-    whereConditions = safeAnd(whereConditions, fromCondition);
-  }
-  
-  if (dateFilter.to) {
-    const toCondition = sql`${orders.createdAt} <= ${dateFilter.to}`;
-    whereConditions = safeAnd(whereConditions, toCondition);
-  }
-
-  const completedOrders = await db
-    .select({
-      id: orders.id,
-      totalAmount: orders.totalAmount,
-      status: orders.status,
-      createdAt: orders.createdAt
-    })
-    .from(orders)
-    .where(whereConditions);
-
-  // 計算總收益
-  const totalRevenue = completedOrders.reduce((sum, order) => sum + Number(order.totalAmount), 0);
-  
-  // 計算日平均收益
-  const calculateDailyAverage = () => {
-    if (completedOrders.length === 0) return 0;
-    
-    // 根據不同的時間範圍計算天數
-    let dayCount = 1; // 默認為1天
-    
-    if (timeRange === 'week') {
-      // 本週已經過去的天數
-      dayCount = Math.min(now.getDay() + 1, 7);
-    } else if (timeRange === 'month') {
-      // 本月已經過去的天數
-      dayCount = now.getDate();
-    } else if (timeRange === 'all') {
-      // 全部時間計算總天數
-      if (completedOrders.length > 0) {
-        // 找出第一筆訂單的日期
-        const dates = completedOrders.map(order => new Date(order.createdAt || Date.now()));
-        const firstOrderDate = new Date(Math.min(...dates.map(d => d.getTime())));
-        
-        // 計算從第一筆訂單到現在的天數
-        const diffTime = Math.abs(now.getTime() - firstOrderDate.getTime());
-        dayCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        dayCount = Math.max(dayCount, 1); // 至少1天
-      }
-    }
-    
-    return totalRevenue / dayCount;
-  };
-  
-  const dailyAverage = calculateDailyAverage();
-
-  // 獲取訂單數量統計
-  const orderStats = {
-    total: completedOrders.length,
-    totalRevenue: totalRevenue.toFixed(2),
-    dailyAverage: dailyAverage.toFixed(2)
-  };
-
-  // 可選：獲取熱門商品統計
-  const popularProducts = await getPopularProducts(db, dateFilter);
-
-  return {
-    timeRange,
-    stats: orderStats,
-    popularProducts
-  };
-};
-
-// 輔助函數 - 獲取熱門商品
-const getPopularProducts = async (db: DrizzleInstance, dateFilter: { from?: string, to?: string } = {}) => {
-  // 構建查詢條件
-  let whereConditions: SQL<unknown> = eq(orders.status, 'completed');
-  
-  // 添加日期過濾
-  if (dateFilter.from) {
-    const fromCondition = sql`${orders.createdAt} >= ${dateFilter.from}`;
-    whereConditions = safeAnd(whereConditions, fromCondition);
-  }
-  
-  if (dateFilter.to) {
-    const toCondition = sql`${orders.createdAt} <= ${dateFilter.to}`;
-    whereConditions = safeAnd(whereConditions, toCondition);
-  }
-
-  // 獲取已完成訂單的 ID
-  const completedOrderIds = await db
-    .select({ id: orders.id })
-    .from(orders)
-    .where(whereConditions);
-  
-  if (completedOrderIds.length === 0) {
-    return [];
-  }
-
-  // 獲取這些訂單中的所有商品
-  const orderItemsResult = await db
-    .select({
-      productId: orderItems.productId,
-      productName: orderItems.productName,
-      quantity: orderItems.quantity,
-      price: orderItems.price
-    })
-    .from(orderItems)
-    .where(sql`${orderItems.orderId} IN (${completedOrderIds.map(o => o.id).join(',')})`);
-
-  // 計算每個商品的銷售情況
-  const productMap = new Map();
-  
-  orderItemsResult.forEach(item => {
-    const productId = item.productId;
-    const productName = item.productName || `Product ${productId.substring(0, 8)}`;
-    const quantity = Number(item.quantity);
-    const price = Number(item.price);
-    
-    if (productMap.has(productId)) {
-      const existing = productMap.get(productId);
-      existing.quantity += quantity;
-      existing.revenue += price * quantity;
-      productMap.set(productId, existing);
-    } else {
-      productMap.set(productId, {
-        productId,
-        productName,
-        quantity,
-        revenue: price * quantity
-      });
-    }
-  });
-  
-  // 轉換為陣列並排序
-  const popularProducts = Array.from(productMap.values())
-    .sort((a, b) => b.quantity - a.quantity)
-    .slice(0, 10) // 取前10名
-    .map(product => ({
-      ...product,
-      revenue: product.revenue.toFixed(2)
-    }));
-    
-  return popularProducts;
 };

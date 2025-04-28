@@ -11,10 +11,9 @@ export default function Navbar() {
     const pathname = usePathname();
     
     const items_list = [
-        {name: 'dashboard', link: '/'},
-        {name: 'order-list', link: '/order-list'},
-        {name: 'report', link: '/report'},
-        {name: 'settings', link: '/settings'}
+        {name: '訂單管理', link: '/dashboard'},
+        {name: '財務報表', link: '/report'},
+        {name: '設定', link: '/settings'}
     ];
 
     const toggleMenu = () => {

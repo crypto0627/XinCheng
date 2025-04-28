@@ -56,24 +56,6 @@ export const orderStatus = async(c: Context) => {
   })
 }
 
-// 完成 orderCheck API - 獲取待處理的訂單
-export const orderCheck = async(c: Context) => {
-  const db = getDB(c)
-  
-  try {
-    // 獲取所有待處理的訂單
-    const pendingOrders = await orderService.getPendingOrders(db)
-    
-    return c.json({
-      message: '待處理訂單獲取成功',
-      data: pendingOrders
-    })
-  } catch (error) {
-    console.error("Error fetching pending orders:", error)
-    return c.json({ error: 'Failed to retrieve pending orders' }, 500)
-  }
-}
-
 // 新API：更新訂單狀態
 export const updateOrderStatus = async(c: Context) => {
   const db = getDB(c)
@@ -125,32 +107,6 @@ export const updateOrderStatus = async(c: Context) => {
   }
 }
 
-// 新API：獲取訂單詳細信息
-export const getOrderDetails = async(c: Context) => {
-  const db = getDB(c)
-  const { orderId } = await c.req.json()
-  
-  if (!orderId) {
-    return c.json({ error: 'Order ID is required' }, 400)
-  }
-  
-  try {
-    const orderDetails = await orderService.getOrderById(db, orderId)
-    
-    if (!orderDetails) {
-      return c.json({ error: 'Order not found' }, 404)
-    }
-    
-    return c.json({
-      message: '訂單詳細信息獲取成功',
-      data: orderDetails
-    })
-  } catch (error) {
-    console.error("Error fetching order details:", error)
-    return c.json({ error: 'Failed to retrieve order details' }, 500)
-  }
-}
-
 // 新API：獲取所有歷史訂單
 export const getAllOrders = async(c: Context) => {
   const db = getDB(c)
@@ -166,23 +122,5 @@ export const getAllOrders = async(c: Context) => {
   } catch (error) {
     console.error("Error fetching all orders:", error)
     return c.json({ error: 'Failed to retrieve all orders' }, 500)
-  }
-}
-
-// 新API：獲取收益信息
-export const getRevenue = async(c: Context) => {
-  const db = getDB(c)
-  const { timeRange = "all" } = await c.req.json()
-  
-  try {
-    const revenueData = await orderService.getRevenueData(db, timeRange)
-    
-    return c.json({
-      message: '收益數據獲取成功',
-      data: revenueData
-    })
-  } catch (error) {
-    console.error("Error fetching revenue data:", error)
-    return c.json({ error: 'Failed to retrieve revenue data' }, 500)
   }
 }

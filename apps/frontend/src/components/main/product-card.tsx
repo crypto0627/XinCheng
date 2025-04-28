@@ -3,14 +3,7 @@
 import Image from 'next/image'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-
-type Product = {
-  id: string
-  productName: string
-  price: number
-  img: string
-  weight: string
-}
+import { Product } from '@/types'
 
 interface ProductCardProps {
   product: Product

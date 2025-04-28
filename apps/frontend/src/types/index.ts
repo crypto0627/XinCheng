@@ -19,6 +19,7 @@ export interface Product {
   price: number
   img: string
   weight: string
+  description: string
 }
 
 export interface CartItem {

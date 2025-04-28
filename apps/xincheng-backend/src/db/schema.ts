@@ -37,8 +37,8 @@ export const orders = sqliteTable("orders", {
 export const orderItems = sqliteTable("order_items", {
   id: text("id").primaryKey(),
   orderId: text("order_id").notNull().references(() => orders.id, { onDelete: 'cascade' }),
-  productId: text("product_id").notNull(), // 可用來儲存商品代碼、名稱、或其他識別字串
-  productName: text("product_name"), // 商品名稱
+  productId: text("product_id").notNull(),
+  productName: text("product_name"),
   quantity: integer("quantity").notNull().default(0),
   price: real("price").notNull().default(0)
 });

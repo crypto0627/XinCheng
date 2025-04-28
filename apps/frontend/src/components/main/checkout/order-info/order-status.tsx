@@ -231,7 +231,7 @@ export const OrderStatus = ({ email, initialStatus }: OrderStatusProps) => {
                         <tr className="border-b border-gray-300">
                           <th className="text-left py-2 px-2 text-sm font-medium text-gray-500">商品名稱</th>
                           <th className="text-center py-2 px-2 text-sm font-medium text-gray-500">數量</th>
-                          <th className="text-right py-2 px-2 text-sm font-medium text-gray-500">價格</th>
+                          <th className="text-right py-2 px-2 text-sm font-medium text-gray-500">單件價格</th>
                         </tr>
                       </thead>
                       <tbody>
