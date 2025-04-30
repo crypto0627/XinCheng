@@ -45,3 +45,10 @@ jobs:
         env:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
+      
+      - name: Build hygeia-health
+        run: pnpm run build
+        working-directory: apps/hygeia-health
+        env: 
+          DISABLE_ESLINT_PLUGIN: true
+          NEXT_TELEMETRY_DISABLED: 1
