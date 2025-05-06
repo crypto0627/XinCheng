@@ -8,6 +8,7 @@ import FormLayout from "@/components/form-layout"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useAuthStore } from "@/stores/auth-store"
 
 export default function PersonalGoalsPage() {
   const router = useRouter()
@@ -19,6 +20,7 @@ export default function PersonalGoalsPage() {
     exerciseFrequency: "",
     exerciseIntensity: "medium",
   })
+  const { user } = useAuthStore()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -37,7 +39,7 @@ export default function PersonalGoalsPage() {
 
   return (
     <FormLayout
-      title="Personal Goals"
+      title={`Hi ${user?.name},`}
       description="Let's start by understanding your current stats and goals"
       prevStep="/"
       nextStep="/steps/goal-preference"

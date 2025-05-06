@@ -19,6 +19,7 @@ export default function Home() {
 
   // If not authenticated, don't render the content (will redirect)
   if (!isAuthenticated) {
+    
     return null
   }
 
