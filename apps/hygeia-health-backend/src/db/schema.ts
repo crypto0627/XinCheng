@@ -11,10 +11,20 @@ import {
     id: text('id').primaryKey(), // uuid or wallet address
     name: text('name'),
     email: text('email'),
-    loginType: text('login_type'), // 'google' | 'passkey' | 'wallet'
-    createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`)
+    loginType: text('loginType'),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`)
   })
   
+  export const authenticators = sqliteTable('authenticators', {
+    id: text('id').primaryKey(),
+    credentialID: text('credentialID').notNull(),
+    credentialPublicKey: text('credentialPublicKey').notNull(),
+    counter: integer('counter').notNull(),
+    userId: text('userId').notNull().references(() => users.id),
+    transports: text('transports', { mode: 'json' }).$type<string[]>(),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
+  });
+
   // 2. 個人健康檔案（身高、體重等）
   export const healthProfiles = sqliteTable('health_profiles', {
     userId: text('user_id').references(() => users.id),
