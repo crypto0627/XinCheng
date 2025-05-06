@@ -38,7 +38,7 @@ export default function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/steps/personal-goals')
+      router.push('/')
     }
   }, [isAuthenticated, router])
 
