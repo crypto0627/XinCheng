@@ -14,7 +14,7 @@ export default function GoogleCallback() {
       try {
         setLoading(true)
         await checkAuthStatus()
-        router.push('/main')
+        router.push('/')
       } catch (error) {
         console.error('Google callback handling error:', error)
         Swal.fire({

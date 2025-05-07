@@ -3,6 +3,7 @@ import { csrf } from "hono/csrf";
 import { createYoga } from "graphql-yoga";
 import { schema } from './graphql/schema'
 import authRoute from './routes/auth-route'
+import formRoute from './routes/form-route'
 import { corsMiddleware } from "./middleware/cors";
 import { errorMiddleware } from "./middleware/error";
 
@@ -13,7 +14,7 @@ app.use(errorMiddleware)
 app.use(csrf({origin: ['https://www.hygeia-health.jakekuo.com', 'http://localhost:8788']}))
 
 app.route('/api/auth', authRoute)
-
+app.route('/api/form', formRoute)
 // Create Yoga GraphQL handler (uses Fetch API internally)
 const yoga = createYoga({
   schema,

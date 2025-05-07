@@ -3,21 +3,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { sign } from 'hono/jwt';
 import { setCookie, getCookie } from 'hono/cookie';
 import { getDB } from '../db';
-import { users, authenticators } from '../db/schema';
+import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { apiKeyAuth, jwtAuthMiddleware } from '../middleware/auth';
-import { verifyRegistrationResponse } from '@simplewebauthn/server';
-import { verifyAuthenticationResponse } from '../../node_modules/@simplewebauthn/server/script/authentication/verifyAuthenticationResponse';
-import { isoBase64URL } from '@simplewebauthn/server/helpers';
-import type { AuthenticatorTransport } from '@simplewebauthn/types';
 import { WebAuthnService } from '../services/webauthn.service';
-import { errorHandler } from '../middleware/error-handler';
 import { COOKIE_OPTIONS } from '../config/constants';
 
 const router = new Hono<{ Bindings: CloudflareBindings }>();
-
-// Apply error handler middleware
-router.use('*', errorHandler);
 
 router.get('/me', apiKeyAuth, jwtAuthMiddleware, async (c: Context<{Bindings: CloudflareBindings}>) => {
   const db = getDB(c);

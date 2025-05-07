@@ -5,6 +5,7 @@ interface CloudflareBindings {
     webauthn_kv: KVNamespace
     GOOGLE_CLIENT_ID: string
     GOOGLE_CLIENT_SECRET: string
+    ANTHROPIC_API_KEY: string
     API_URL: string
     JWT_SECRET: string
     BASE_URL: string

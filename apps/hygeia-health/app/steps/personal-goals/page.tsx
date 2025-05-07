@@ -20,6 +20,8 @@ export default function PersonalGoalsPage() {
     exerciseFrequency: "",
     exerciseIntensity: "medium",
   })
+  const [isFilled, setIsFilled] = useState(false)
+
   const { user } = useAuthStore()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,9 +31,27 @@ export default function PersonalGoalsPage() {
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }))
+    // Validate all required fields
+    const requiredFields = ['currentWeight', 'height', 'weightLossGoal', 'planDeadline', 'exerciseFrequency']
+    const emptyFields = requiredFields.filter(field => !formData[field as keyof typeof formData])
+    
+    if (emptyFields.length > 0) {
+      setIsFilled(false)
+    }else{
+      setIsFilled(true)
+    }
   }
 
   const handleSubmit = () => {
+    // Validate all required fields
+    const requiredFields = ['currentWeight', 'height', 'weightLossGoal', 'planDeadline', 'exerciseFrequency']
+    const emptyFields = requiredFields.filter(field => !formData[field as keyof typeof formData])
+    
+    if (emptyFields.length > 0) {
+      setIsFilled(false)
+      return
+    }
+    
     // Save to localStorage
     localStorage.setItem("personalGoals", JSON.stringify(formData))
     router.push("/steps/goal-preference")
@@ -44,6 +64,7 @@ export default function PersonalGoalsPage() {
       prevStep="/"
       nextStep="/steps/goal-preference"
       onNext={handleSubmit}
+      warningMessage={!isFilled ? "Please fill in all required fields before proceeding" : ""}
     >
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div className="space-y-2">
