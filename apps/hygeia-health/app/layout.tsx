@@ -8,7 +8,8 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Hygeia Health",
   description: "Get personalized diet and workout plans tailored to your goals",
-  authors: { url: "https://github.com/crypto0627", name : "Jakekuo" }
+  authors: { url: "https://github.com/crypto0627", name : "Jakekuo" },
+  manifest: "/manifest.json"
 }
 
 export default function RootLayout({

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev';
 
 // Import bundle analyzer
 const withBundleAnalyzer = process.env.ANALYZE === 'true'
@@ -49,6 +50,10 @@ const withPWA = require('next-pwa')({
   register: true,
   skipWaiting: true,
 })
+
+if (process.env.NODE_ENV === 'development') {
+  await setupDevPlatform();
+}
 
 // Apply all optimizations
 export default withBundleAnalyzer(withPWA(nextConfig));

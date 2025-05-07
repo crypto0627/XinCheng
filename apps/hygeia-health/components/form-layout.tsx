@@ -15,6 +15,7 @@ interface FormLayoutProps {
   nextButtonText?: string
   isLastStep?: boolean
   onNext?: () => void
+  warningMessage?: string
 }
 
 export default function FormLayout({
@@ -26,6 +27,7 @@ export default function FormLayout({
   nextButtonText = "Next",
   isLastStep = false,
   onNext,
+  warningMessage,
 }: FormLayoutProps) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -38,6 +40,10 @@ export default function FormLayout({
         </div>
 
         <div className="space-y-6">{children}</div>
+
+        {warningMessage && (
+          <p className="text-red-500 text-sm mt-4">{warningMessage}</p>
+        )}
 
         <div className="mt-8 flex justify-between">
           {prevStep ? (
@@ -53,14 +59,18 @@ export default function FormLayout({
           )}
 
           {nextStep ? (
-            <Link
-              href={nextStep}
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                if (onNext) {
+                  onNext()
+                }
+              }}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              onClick={onNext}
             >
               {nextButtonText}
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            </button>
           ) : isLastStep ? (
             <button
               type="submit"

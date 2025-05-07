@@ -6,7 +6,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "hygeia-health-backend",
 	"main": "src/index.ts",
-	"compatibility_date": "2025-04-29",
+	"compatibility_date": "2025-04-24",
 	"assets": {
 		"binding": "ASSETS",
 		"directory": "./public"
@@ -15,47 +15,23 @@
 		"enabled": true
 	},
 	"d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "hygeia-health-db",
-      "database_id": "09c18f0c-64d3-4cd2-80a5-05f5cd895aff"
-    }
+		{
+		"binding": "DB",
+		"database_name": "hygeia-health-db",
+		"database_id": "09c18f0c-64d3-4cd2-80a5-05f5cd895aff"
+		}
 	],
-	/**
-	 * Smart Placement
-	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
-	 */
-	// "placement": { "mode": "smart" },
-
-	/**
-	 * Bindings
-	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
-	 * databases, object storage, AI inference, real-time communication and more.
-	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
-	 */
-
-	/**
-	 * Environment Variables
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-	 */
 	"vars": { 
-		"API_URL": "production_value",
-		"JWT_SECRET": "hygeia-health-jwt-llm-app"
+		"API_URL": "https://ai-api.jakekuo.com",
+		"JWT_SECRET": "hygeia-health-jwt-llm-app",
+		"Base_URL": "https://www.hygeia-health.jakekuo.com",
+		"TEST_BASE_URL": "http://localhost:8788"
 	 },
-	/**
-	 * Note: Use secrets to store sensitive data.
-	 * https://developers.cloudflare.com/workers/configuration/secrets/
-	 */
-
-	/**
-	 * Static Assets
-	 * https://developers.cloudflare.com/workers/static-assets/binding/
-	 */
-	// "assets": { "directory": "./public/", "binding": "ASSETS" },
-
-	/**
-	 * Service Bindings (communicate between multiple Workers)
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
-	 */
-	// "services": [{ "binding": "MY_SERVICE", "service": "my-service" }]
+	 "kv_namespaces": [
+		{
+		"binding": "webauthn_kv",
+		"id": "e80b9c408c0b4fa7aae7d77fc20a83cd",
+		"preview_id": "e80b9c408c0b4fa7aae7d77fc20a83cd"
+		}
+	],
 }

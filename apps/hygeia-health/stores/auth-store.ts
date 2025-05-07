@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { authService } from '@/services/authService'
 
 // Define the types for user data
 type UserData = {
@@ -20,13 +21,15 @@ interface AuthState {
   
   // Auth actions
   loginWithGoogle: () => Promise<void>
-  loginWithPasskey: () => Promise<void>
+  checkUserInfoWithPasskey: (email: string) => Promise<void>
+  loginWithPasskey: (email: string, name: string) => Promise<void>
   loginWithWeb3: (walletAddress: string) => Promise<void>
   logout: () => void
   
   // State setters
   setUser: (user: UserData | null) => void
   setLoading: (isLoading: boolean) => void
+  checkAuthStatus: () => Promise<void>
 }
 
 // Create the auth store with persistence
@@ -42,53 +45,75 @@ export const useAuthStore = create<AuthState>()(
       loginWithGoogle: async () => {
         try {
           set({ isLoading: true })
-          // Implement Google login logic here
-          // This would typically involve redirecting to Google OAuth
-          // and handling the callback with user data
-          
-          // Mock implementation for now
-          const mockUser: UserData = {
-            id: 'google-user-id',
-            name: 'Google User',
-            email: 'user@gmail.com',
-            image: 'https://example.com/avatar.png',
-            provider: 'google'
-          }
-          
-          set({ 
-            user: mockUser,
-            isAuthenticated: true,
-            isLoading: false
-          })
+          await authService.googleLogin()
         } catch (error) {
           console.error('Google login failed:', error)
           set({ isLoading: false })
         }
       },
       
-      loginWithPasskey: async () => {
+      checkUserInfoWithPasskey: async (email: string) => {
         try {
           set({ isLoading: true })
-          // Implement WebAuthn/passkey login logic here
-          // This would involve using the WebAuthn API
-          
-          // Mock implementation for now
-          const mockUser: UserData = {
-            id: 'passkey-user-id',
-            name: 'Passkey User',
-            email: 'passkey-user@example.com',
-            image: null,
-            provider: 'passkey'
+
+          // Call
+          const result = await authService.checkPasskeyRegistered(email)
+          if (result && result.verified) {
+            const userData = await authService.getCurrentUser()
+            if (userData) {
+              set({
+                user: {
+                  id: userData.id,
+                  name: userData.name,
+                  email: userData.email,
+                  image: null,
+                  provider: 'passkey'
+                },
+                isAuthenticated: true,
+                isLoading: false
+              })
+            }
+          } else {
+            throw new Error('Passkey login failed')
           }
-          
-          set({ 
-            user: mockUser,
-            isAuthenticated: true,
-            isLoading: false
-          })
         } catch (error) {
           console.error('Passkey login failed:', error)
           set({ isLoading: false })
+          throw error // Re-throw to allow the UI to handle the error
+        }
+      },
+
+      loginWithPasskey: async (email: string, name: string) => {
+        try {
+          set({ isLoading: true })
+          
+          // Call the auth service to handle passkey registration
+          const result = await authService.handlePasskeyRegister(name, email)
+          
+          if (result && result.verified) {
+            // After successful registration, get the current user
+            const userData = await authService.getCurrentUser()
+            
+            if (userData) {
+              set({ 
+                user: {
+                  id: userData.id,
+                  name: userData.name,
+                  email: userData.email,
+                  image: null,
+                  provider: 'passkey'
+                },
+                isAuthenticated: true,
+                isLoading: false
+              })
+            }
+          } else {
+            throw new Error('Passkey registration failed')
+          }
+        } catch (error) {
+          console.error('Passkey login failed:', error)
+          set({ isLoading: false })
+          throw error // Re-throw to allow the UI to handle the error
         }
       },
       
@@ -133,14 +158,41 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: !!user
       }),
       
-      setLoading: (isLoading) => set({ isLoading })
+      setLoading: (isLoading) => set({ isLoading }),
+      
+      checkAuthStatus: async () => {
+        try {
+          set({ isLoading: true })
+          const userData = await authService.getCurrentUser()
+          if (userData) {
+            set({ 
+              user: userData,
+              isAuthenticated: true,
+              isLoading: false
+            })
+          } else {
+            set({ 
+              user: null,
+              isAuthenticated: false,
+              isLoading: false
+            })
+          }
+        } catch (error) {
+          console.error('Error checking auth status:', error)
+          set({ 
+            user: null,
+            isAuthenticated: false,
+            isLoading: false
+          })
+        }
+      },
     }),
     {
-      name: 'auth-storage', // Name for localStorage key
+      name: 'auth-storage',
       partialize: (state) => ({ 
         user: state.user,
         isAuthenticated: state.isAuthenticated
-      }), // Only persist these fields
+      }),
     }
   )
 )

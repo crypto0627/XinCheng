@@ -5,10 +5,35 @@ import { setCookie, getCookie } from 'hono/cookie';
 import { getDB } from '../db';
 import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
+import { apiKeyAuth, jwtAuthMiddleware } from '../middleware/auth';
+import { WebAuthnService } from '../services/webauthn.service';
+import { COOKIE_OPTIONS } from '../config/constants';
 
 const router = new Hono<{ Bindings: CloudflareBindings }>();
 
-router.get('/google/login', async (c: Context<{ Bindings: CloudflareBindings }>) => {
+router.get('/me', apiKeyAuth, jwtAuthMiddleware, async (c: Context<{Bindings: CloudflareBindings}>) => {
+  const db = getDB(c);
+  const jwtPayload = c.get('jwtPayload');
+  const userId = jwtPayload.userId;
+
+  if (!userId) {
+    return c.json({ error: 'User not found' }, 404);
+  }
+
+  const user = await db.select()
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1)
+    .then(rows => rows[0]);
+
+  if (!user) {
+    return c.json({ error: 'User not found' }, 404);
+  }
+
+  return c.json(user);
+});
+
+router.get('/google/login', apiKeyAuth, async (c: Context<{ Bindings: CloudflareBindings }>) => {
     const clientId = c.env.GOOGLE_CLIENT_ID;
     const redirectUri = `${c.env.API_URL}/api/auth/google/callback`;
     const scope = ['openid', 'email', 'profile', 'https://www.googleapis.com/auth/contacts.readonly'].join(' ');
@@ -35,7 +60,7 @@ router.get('/google/login', async (c: Context<{ Bindings: CloudflareBindings }>)
     return c.redirect(url.toString());
   });
   
-  router.get('/google/callback', async (c: Context<{ Bindings: CloudflareBindings }>) => {
+  router.get('/google/callback', apiKeyAuth, async (c: Context<{ Bindings: CloudflareBindings }>) => {
     const code = c.req.query('code');
     const state = c.req.query('state');
     const savedState = getCookie(c, 'oauth_state');
@@ -146,3 +171,37 @@ router.get('/google/login', async (c: Context<{ Bindings: CloudflareBindings }>)
       return c.text('Internal server error', 500);
     }
   });
+
+  router.post('/webauthn/register/options', apiKeyAuth, async (c: Context<{ Bindings: CloudflareBindings }>) => {
+    const body = await c.req.json();
+    const webauthnService = new WebAuthnService(c);
+    const options = await webauthnService.generateRegistrationOptions(body.name, body.email);
+    return c.json(options, 200);
+  });
+
+  router.post('/webauthn/register/verify', apiKeyAuth, async (c: Context<{ Bindings: CloudflareBindings }>) => {
+    const body = await c.req.json();
+    const webauthnService = new WebAuthnService(c);
+    const jwt = await webauthnService.verifyRegistration(body.userId, body.credential);
+
+    setCookie(c, 'auth_token', jwt, COOKIE_OPTIONS);
+    return c.json({ verified: true });
+  });
+
+  router.post('/webauthn/login/options', apiKeyAuth, async (c: Context<{ Bindings: CloudflareBindings }>) => {
+    const body = await c.req.json();
+    const webauthnService = new WebAuthnService(c);
+    const options = await webauthnService.generateLoginOptions(body.email);
+    return c.json(options, 200);
+  });
+
+  router.post('/webauthn/login/verify', apiKeyAuth, async (c: Context<{ Bindings: CloudflareBindings }>) => {
+    const body = await c.req.json();
+    const webauthnService = new WebAuthnService(c);
+    const jwt = await webauthnService.verifyLogin(body.userId, body.credential);
+
+    setCookie(c, 'auth_token', jwt, COOKIE_OPTIONS);
+    return c.json({ verified: true });
+  });  
+
+export default router
