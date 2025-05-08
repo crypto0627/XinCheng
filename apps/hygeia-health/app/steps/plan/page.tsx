@@ -242,7 +242,7 @@ export default function PlanPage() {
         <MessageCircle className="h-6 w-6" />
       </Button>
 
-      {isChatOpen && <ChatDialog onClose={() => setIsChatOpen(false)} />}
+      {isChatOpen && <ChatDialog open={isChatOpen} onClose={() => setIsChatOpen(false)} />}
     </div>
   )
 }

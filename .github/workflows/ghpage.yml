@@ -1,4 +1,4 @@
-name: Deploy Frontend
+name: Deploy Frontend (Turbo Monorepo)
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-      
+
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -45,28 +45,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+      - uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install
 
-      - name: Build frontend
-        run: pnpm run build
-        working-directory: apps/frontend
+      - name: Build Frontend (Turbo)
+        run: pnpm turbo run build --filter=apps/frontend
         env:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
@@ -79,28 +72,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+      - uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install
 
-      - name: Build xincheng-managerment
-        run: pnpm run build
-        working-directory: apps/xincheng-managerment
+      - name: Build Xincheng (Turbo)
+        run: pnpm turbo run build --filter=apps/xincheng-managerment
         env:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
@@ -113,28 +99,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+      - uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install
 
-      - name: Build hygeia-health
-        run: pnpm run build
-        working-directory: apps/hygeia-health
+      - name: Build Hygeia (Turbo)
+        run: pnpm turbo run build --filter=apps/hygeia-health
         env:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
