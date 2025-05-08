@@ -55,7 +55,7 @@ export default function UserInfo() {
   }
 
   // 優先使用 username，如果沒有則使用 name (Google 登入)
-  const displayName = userData.username || userData.name || '用戶'
+  const displayName = userData?.name || '用戶'
 
   return (
     <div className="flex items-center justify-end mb-8">

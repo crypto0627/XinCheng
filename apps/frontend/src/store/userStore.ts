@@ -3,10 +3,12 @@ import { authService } from '@/services/authService'
 
 interface User {
   id: string;
-  username?: string;
   name?: string;
+  phone?: string;
   email: string;
   isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface UserState {
@@ -25,9 +27,9 @@ export const useUserStore = create<UserState>((set) => ({
   setIsAuth: (isAuth) => set({ isAuth }),
   checkAuth: async () => {
     try {
-      const user = await authService.getCurrentUser()
-      if (user && user.data) {
-        set({ userData: user.data, isAuth: true })
+      const response = await authService.getCurrentUser()
+      if (response && response.id) {
+        set({ userData: response, isAuth: true })
       } else {
         set({ userData: null, isAuth: false })
       }
