@@ -37,13 +37,18 @@ jobs:
             hygeia:
               - 'apps/hygeia-health/**'
 
-  build-frontend:
-    name: Build Frontend
+  build:
+    name: Build Apps
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
-    timeout-minutes: 15
+    if: ${{ needs.changes.outputs.frontend == 'true' || needs.changes.outputs.xincheng == 'true' || needs.changes.outputs.hygeia == 'true' }}
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        app: [
+          { name: 'frontend', path: 'apps/frontend', condition: 'needs.changes.outputs.frontend == "true"' },
+          { name: 'xincheng', path: 'apps/xincheng-managerment', condition: 'needs.changes.outputs.xincheng == "true"' },
+          { name: 'hygeia', path: 'apps/hygeia-health', condition: 'needs.changes.outputs.hygeia == "true"' }
+        ]
     steps:
       - uses: actions/checkout@v4
 
@@ -56,64 +61,12 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
-      - name: Build Frontend (Turbo)
-        run: pnpm turbo run build --filter=apps/frontend
-        env:
-          DISABLE_ESLINT_PLUGIN: true
-          NEXT_TELEMETRY_DISABLED: 1
-
-  build-xincheng:
-    name: Build Xincheng Management
-    needs: changes
-    if: ${{ needs.changes.outputs.xincheng == 'true' }}
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install
-
-      - name: Build Xincheng (Turbo)
-        run: pnpm turbo run build --filter=apps/xincheng-managerment
-        env:
-          DISABLE_ESLINT_PLUGIN: true
-          NEXT_TELEMETRY_DISABLED: 1
-
-  build-hygeia:
-    name: Build Hygeia Health
-    needs: changes
-    if: ${{ needs.changes.outputs.hygeia == 'true' }}
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install
-
-      - name: Build Hygeia (Turbo)
-        run: pnpm turbo run build --filter=apps/hygeia-health
+      - name: Build ${{ matrix.app.name }}
+        if: ${{ matrix.app.condition }}
+        run: pnpm run build --filter=${{ matrix.app.path }}
         env:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
