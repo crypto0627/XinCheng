@@ -2,6 +2,7 @@ export interface ENV {
   // D1 Database
   DB: D1Database
   TOKEN_BLACKLIST: KVNamespace
+  AUTH_KV: KVNamespace
   // Environment Variables
   RESEND_API_KEY: string
   API_KEY: string

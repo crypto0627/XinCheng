@@ -7,51 +7,49 @@ import { v4 as uuidv4 } from 'uuid';
 // 註冊
 export const register = async (c: Context) => {
   try {
-    const db = getDB(c);
     const { name, phone, email, password } = await c.req.json();
+    const kv = c.env.AUTH_KV as KVNamespace;
 
-    // 驗證必要字段
     const validation = authService.validateRegistrationData(name, phone, email, password);
     if (!validation.valid) {
       return c.json({ error: validation.error }, 400);
     }
 
+    const db = getDB(c);
     const existingUser = await authService.checkExistingUser(db, email);
     if (existingUser) {
       return c.json({ error: '此電子郵件已註冊' }, 400);
     }
 
+    const pendingKey = `pending:${email}`;
+    const existingPending = await kv.get(pendingKey);
+    if (existingPending) {
+      return c.json({ error: '您已經申請註冊，請先完成信箱驗證' }, 400);
+    }
+
     const id = uuidv4();
     const hash = await authService.hashPassword(password);
+    const token = await authService.generateToken({ userId: id, email }, c.env.JWT_SECRET);
 
-    // 先創建驗證 token，確保可以發送郵件後再創建用戶
-    const verificationToken = await authService.generateToken({ userId: id }, c.env.JWT_SECRET);
-    
     try {
-      // 嘗試發送驗證郵件
-      await authService.sendVerificationEmail(email, verificationToken, c.env.RESEND_API_KEY, c.env.BASE_URL);
-      
-      // 郵件發送成功後，再創建用戶
-      await authService.createUser(db, id, name, phone, email, hash);
-      
-      return c.json({ 
-        message: '註冊成功。請檢查您的電子郵件以驗證您的帳戶。',
-        userId: id
-      }, 201);
-    } catch (error) {
-      console.error('Failed to send verification email:', error);
-      // 郵件發送失敗，不創建用戶
-      return c.json({ 
-        error: '發送驗證郵件失敗。請稍後再試。',
-        details: error instanceof Error ? error.message : '未知錯誤'
-      }, 500);
+      await authService.sendVerificationEmail(email, token, c.env.RESEND_API_KEY, c.env.BASE_URL);
+
+      // 儲存到 KV 暫存區，TTL 設 10 分鐘（600 秒）
+      await kv.put(pendingKey, JSON.stringify({
+        id,
+        name,
+        phone,
+        email,
+        passwordHash: hash
+      }), { expirationTtl: 600 });
+
+      return c.json({ message: '驗證郵件已寄出，請在 10 分鐘內完成驗證' }, 200);
+    } catch (err) {
+      return c.json({ error: '驗證郵件寄送失敗', details: err instanceof Error ? err.message : '未知錯誤' }, 500);
     }
+
   } catch (error) {
-    console.error('Registration error:', error);
-    return c.json({ 
-      error: '註冊過程中發生錯誤。請再試一次。',
-      details: error instanceof Error ? error.message : '未知錯誤'
-    }, 500);
+    return c.json({ error: '發生錯誤', details: error instanceof Error ? error.message : '未知錯誤' }, 500);
   }
 };
 
@@ -113,14 +111,46 @@ export const logout = async (c: Context) => {
 // 驗證 Email
 export const verifyEmail = async (c: Context) => {
   const db = getDB(c);
+  const kv = c.env.AUTH_KV as KVNamespace;
   const { token } = await c.req.json();
 
   try {
     const payload = await authService.verifyToken(token, c.env.JWT_SECRET);
-    await authService.updateUserVerificationStatus(db, payload.userId as string);
+    const userId = payload.userId as string;
+    const email = payload.email as string;
+
+    // 從 KV 獲取暫存的用戶資料
+    const pendingKey = `pending:${email}`;
+    const pendingData = await kv.get(pendingKey);
+    
+    if (!pendingData) {
+      return c.json({ error: '找不到待驗證的用戶資料' }, 400);
+    }
+
+    const userData = JSON.parse(pendingData);
+
+    // 創建用戶到 D1 資料庫
+    await authService.createUser(
+      db,
+      userData.id,
+      userData.name,
+      userData.phone,
+      userData.email,
+      userData.passwordHash
+    );
+
+    // 更新驗證狀態
+    await authService.updateUserVerificationStatus(db, userId);
+
+    // 刪除 KV 中的暫存資料
+    await kv.delete(pendingKey);
+
     return c.json({ message: '電子郵件驗證成功' });
-  } catch {
-    return c.json({ error: '無效或過期的令牌' }, 400);
+  } catch (error) {
+    return c.json({ 
+      error: '驗證失敗', 
+      details: error instanceof Error ? error.message : '未知錯誤' 
+    }, 400);
   }
 };
 
