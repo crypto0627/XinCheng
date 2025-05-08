@@ -15,7 +15,7 @@ const products: Product[] = [
   {
     id: '1',
     productName: '原味舒肥雞',
-    price: 43,
+    price: 45,
     img: '/items/origin-chicken-breast.webp',
     weight: '100g',
     description: ''
@@ -23,7 +23,7 @@ const products: Product[] = [
   {
     id: '2',
     productName: '麻辣舒肥雞',
-    price: 43,
+    price: 45,
     img: '/items/spicy-chicken-breast.webp',
     weight: '100g',
     description: ''
@@ -31,7 +31,7 @@ const products: Product[] = [
   {
     id: '3',
     productName: '真空鮭魚',
-    price: 120,
+    price: 95,
     img: '/items/salmon.webp',
     weight: '180g',
     description: ''
@@ -39,7 +39,7 @@ const products: Product[] = [
   {
     id: '4',
     productName: '星橙辣椒醬',
-    price: 90,
+    price: 105,
     img: '/items/spicy-sauce.webp',
     weight: '190ml',
     description: ''
