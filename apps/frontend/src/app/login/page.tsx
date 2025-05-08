@@ -6,36 +6,35 @@ import { authService } from '@/services/authService'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
+import { useUserStore } from '@/store/userStore'
 
 export default function LoginPage() {
   const router = useRouter()
   const [isChecking, setIsChecking] = useState(true)
+  const { isAuth, checkAuth } = useUserStore()
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const user = await authService.getCurrentUser()
-        if (user && user.data) {
-          router.push('/main')
-        }
-      } catch (error) {
-        console.error('Auth check error:', error)
-      } finally {
-        setIsChecking(false)
-      }
+    const initAuth = async () => {
+      await checkAuth()
+      setIsChecking(false)
     }
-    checkAuth()
-  }, [router])
+    initAuth()
+  }, [checkAuth])
+
+  useEffect(() => {
+    if (!isChecking && isAuth) {
+      router.push('/main')
+    }
+  }, [isChecking, isAuth, router])
   
   const handleAuthSuccess = async () => {
-
+    await checkAuth()
     await Swal.fire({
       title: '登入成功',
       icon: 'success',
       timer: 1500,
       showConfirmButton: false
     })
-    
     router.push('/main')
   }
 
@@ -49,9 +48,11 @@ export default function LoginPage() {
   }
 
   if (isChecking) {
-    return (
-      <Loading/>
-    )
+    return <Loading />
+  }
+
+  if (isAuth) {
+    return null
   }
 
   return (

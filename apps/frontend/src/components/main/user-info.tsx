@@ -1,39 +1,24 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { authService } from '@/services/authService'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Swal from 'sweetalert2'
 import ProfileUpdateModal from './profile-update-modal'
-
-type User = {
-  id: string;
-  username?: string;
-  name?: string;
-  email: string;
-  isVerified: boolean;
-}
+import { useUserStore } from '@/store/userStore'
+import { useState } from 'react'
 
 export default function UserInfo() {
-  const [userInfo, setUserInfo] = useState<User | null>(null)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const router = useRouter()
+  const { userData, logout, checkAuth } = useUserStore()
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const user = await authService.getCurrentUser()
-        setUserInfo(user)
-      } catch (error) {
-        console.error('獲取用戶信息失敗:', error)
-      }
-    }
     checkAuth()
-  }, [])
+  }, [checkAuth])
 
   const handleLogout = async () => {
     try {
-      await authService.logout()
+      await logout()
       await Swal.fire({
         title: '登出成功',
         icon: 'success',
@@ -62,20 +47,15 @@ export default function UserInfo() {
   }
 
   const handleUserUpdated = async () => {
-    try {
-      const user = await authService.getCurrentUser()
-      setUserInfo(user)
-    } catch (error) {
-      console.error('更新後獲取用戶信息失敗:', error)
-    }
+    await checkAuth()
   }
 
-  if (!userInfo) {
+  if (!userData) {
     return null
   }
 
   // 優先使用 username，如果沒有則使用 name (Google 登入)
-  const displayName = userInfo.username || userInfo.name || '用戶'
+  const displayName = userData.username || userData.name || '用戶'
 
   return (
     <div className="flex items-center justify-end mb-8">
@@ -98,7 +78,7 @@ export default function UserInfo() {
       <ProfileUpdateModal
         isOpen={isProfileModalOpen}
         onClose={handleCloseProfileModal}
-        user={userInfo}
+        user={userData}
         onUserUpdated={handleUserUpdated}
       />
     </div>
