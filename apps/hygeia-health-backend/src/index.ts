@@ -11,7 +11,7 @@ const app = new Hono<{ Bindings: CloudflareBindings }>();
 
 app.use(corsMiddleware)
 app.use(errorMiddleware)
-app.use(csrf({origin: ['https://www.hygeia-health.jakekuo.com', 'http://localhost:8788']}))
+app.use(csrf({origin: ['https://www.hygeia-health.jakekuo.com']}))
 
 app.route('/api/auth', authRoute)
 app.route('/api/form', formRoute)

@@ -7,9 +7,9 @@ import { ProductCard } from '@/components/main/product-card'
 import { ShoppingCartIcon, PackageSearch } from 'lucide-react'
 import { CartModal } from '@/components/main/cart-modal'
 import Swal from 'sweetalert2'
-import { authService } from '@/services/authService'
 import Loading from '@/components/common/loading'
 import { Product } from '@/types'
+import { useUserStore } from '@/store/userStore'
 
 const products: Product[] = [
   {
@@ -53,7 +53,7 @@ export default function MainPage() {
   const [cartItems, setCartItems] = useState<{product: Product, quantity: number}[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState(null)
+  const { isAuth, checkAuth } = useUserStore()
 
   const handleIncrease = (index: number) => {
     setQuantities(prev => {
@@ -128,29 +128,29 @@ export default function MainPage() {
   }
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const userData = await authService.getCurrentUser()
-      if(userData){
-        setUser(userData)
-        setLoading(false)
-      }else {
-        redirectToLogin()
-      }
+    const initAuth = async () => {
+      await checkAuth()
+      setLoading(false)
     }
-    checkAuth()
-  }, [router])
+    initAuth()
+  }, [checkAuth])
 
-  const redirectToLogin = () => {
-    Swal.fire({
-      title: '請先登入',
-      text: '您需要登入才能訪問此頁面',
-      icon: 'warning',
-      confirmButtonText: '確定'
-    }).then(() => {
-      router.push('/login')
-    })
-  }
+  useEffect(() => {
+    if (!loading && !isAuth) {
+      Swal.fire({
+        title: '請先登入',
+        text: '您需要登入才能訪問此頁面',
+        icon: 'warning',
+        confirmButtonText: '確定'
+      }).then(() => {
+        router.push('/login')
+      })
+    }
+  }, [loading, isAuth, router])
+
   if (loading) return <Loading/>
+
+  if (!isAuth) return null
 
   return (
     <main className="pt-24 bg-[#FFF8E7] min-h-screen">
