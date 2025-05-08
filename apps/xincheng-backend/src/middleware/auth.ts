@@ -11,10 +11,10 @@ export const jwtAuthMiddleware: MiddlewareHandler = async (c, next) => {
   }
 
   try {
-    // Check if token is blacklisted
-    const isBlacklisted = await c.env.TOKEN_BLACKLIST.get(token)
-    if (isBlacklisted) {
-      console.error('Token is blacklisted')
+    // Check if token is blacklisted and revoked
+    const tokenStatus = await c.env.TOKEN_BLACKLIST.get(token)
+    if (tokenStatus === 'revoked') {
+      console.error('Token is revoked')
       return c.json({ error: 'Token has been revoked' }, 401)
     }
 

@@ -71,6 +71,9 @@ export const login = async (c: Context) => {
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
   }, c.env.JWT_SECRET);
 
+  // 將新的 token 加入黑名單，但設置為 active 狀態
+  await c.env.TOKEN_BLACKLIST.put(token, 'active', { expirationTtl: 60 * 60 * 24 * 7 }); // 7 days
+
   setCookie(c, 'auth_token', token, {
     httpOnly: true,
     secure: true,
