@@ -15,7 +15,7 @@ export function Protected({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, router])
 
   if (!isAuthenticated) {
-    return null // 或者顯示 loading
+    return null
   }
 
   return <>{children}</>
