@@ -96,7 +96,17 @@ export const login = async (c: Context) => {
 export const logout = async (c: Context) => {
   const token = getCookie(c, 'auth_token');
   if (!token) return c.json({ error: '您尚未登入' }, 401);
-  deleteCookie(c, 'auth_token');
+  
+  // Add token to blacklist
+  await c.env.TOKEN_BLACKLIST.put(token, 'revoked', { expirationTtl: 60 * 60 * 24 * 7 }); // 7 days
+  
+  deleteCookie(c, 'auth_token', {
+    httpOnly: true,
+    secure: true,
+    path: '/',
+    domain: 'api.xincheng-brunch.com',
+    sameSite: 'none'
+  });
   return c.json({ message: '已登出' });
 };
 

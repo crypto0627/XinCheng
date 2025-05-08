@@ -12,10 +12,6 @@ export default function UserInfo() {
   const router = useRouter()
   const { userData, logout, checkAuth } = useUserStore()
 
-  useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
-
   const handleLogout = async () => {
     try {
       await logout()

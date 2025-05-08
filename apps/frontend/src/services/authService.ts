@@ -110,9 +110,16 @@ export const authService = {
         credentials: 'include',
         headers
       });
-     return response.json()
-    }catch(error) {
-      throw new Error('Error fetch /me',error as Error)
+      
+      if (!response.ok) {
+        throw new Error('Unauthorized');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('getCurrentUser error:', error);
+      throw error;
     }
   },
 

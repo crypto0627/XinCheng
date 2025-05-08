@@ -3,12 +3,44 @@ name: Deploy Frontend
 on:
   push:
     branches: ['**']
+    paths:
+      - 'apps/frontend/**'
+      - 'apps/xincheng-managerment/**'
+      - 'apps/hygeia-health/**'
   pull_request:
     types: [opened, synchronize]
+    paths:
+      - 'apps/frontend/**'
+      - 'apps/xincheng-managerment/**'
+      - 'apps/hygeia-health/**'
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      xincheng: ${{ steps.filter.outputs.xincheng }}
+      hygeia: ${{ steps.filter.outputs.hygeia }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'apps/frontend/**'
+            xincheng:
+              - 'apps/xincheng-managerment/**'
+            hygeia:
+              - 'apps/hygeia-health/**'
+
   build-frontend:
     name: Build Frontend
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
 
@@ -39,16 +71,70 @@ jobs:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
 
+  build-xincheng:
+    name: Build Xincheng Management
+    needs: changes
+    if: ${{ needs.changes.outputs.xincheng == 'true' }}
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Build xincheng-managerment
         run: pnpm run build
         working-directory: apps/xincheng-managerment
         env:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
-      
+
+  build-hygeia:
+    name: Build Hygeia Health
+    needs: changes
+    if: ${{ needs.changes.outputs.hygeia == 'true' }}
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Build hygeia-health
         run: pnpm run build
         working-directory: apps/hygeia-health
-        env: 
+        env:
           DISABLE_ESLINT_PLUGIN: true
           NEXT_TELEMETRY_DISABLED: 1
