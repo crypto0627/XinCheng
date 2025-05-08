@@ -45,9 +45,9 @@ jobs:
     strategy:
       matrix:
         app: [
-          { name: 'frontend', path: 'apps/frontend', condition: 'needs.changes.outputs.frontend == "true"' },
-          { name: 'xincheng', path: 'apps/xincheng-managerment', condition: 'needs.changes.outputs.xincheng == "true"' },
-          { name: 'hygeia', path: 'apps/hygeia-health', condition: 'needs.changes.outputs.hygeia == "true"' }
+          { name: 'frontend', path: 'frontend', condition: 'needs.changes.outputs.frontend == "true"' },
+          { name: 'xincheng', path: 'xincheng-managerment', condition: 'needs.changes.outputs.xincheng == "true"' },
+          { name: 'hygeia', path: 'hygeia-health', condition: 'needs.changes.outputs.hygeia == "true"' }
         ]
     steps:
       - uses: actions/checkout@v4
