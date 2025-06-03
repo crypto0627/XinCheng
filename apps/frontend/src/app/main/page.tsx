@@ -27,22 +27,6 @@ const products: Product[] = [
     img: '/items/spicy-chicken-breast.webp',
     weight: '100g',
     description: ''
-  },
-  {
-    id: '3',
-    productName: '真空鮭魚',
-    price: 95,
-    img: '/items/salmon.webp',
-    weight: '180g',
-    description: ''
-  },
-  {
-    id: '4',
-    productName: '星橙辣椒醬',
-    price: 105,
-    img: '/items/spicy-sauce.webp',
-    weight: '190ml',
-    description: ''
   }
 ]
 

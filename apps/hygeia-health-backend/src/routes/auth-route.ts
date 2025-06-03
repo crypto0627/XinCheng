@@ -33,7 +33,7 @@ router.get('/me', apiKeyAuth, jwtAuthMiddleware, async (c: Context<{Bindings: Cl
   return c.json(user);
 });
 
-router.get('/google/login', apiKeyAuth, async (c: Context<{ Bindings: CloudflareBindings }>) => {
+router.get('/google/login', async (c: Context<{ Bindings: CloudflareBindings }>) => {
     const clientId = c.env.GOOGLE_CLIENT_ID;
     const redirectUri = `${c.env.API_URL}/api/auth/google/callback`;
     const scope = ['openid', 'email', 'profile', 'https://www.googleapis.com/auth/contacts.readonly'].join(' ');
@@ -60,7 +60,7 @@ router.get('/google/login', apiKeyAuth, async (c: Context<{ Bindings: Cloudflare
     return c.redirect(url.toString());
   });
   
-  router.get('/google/callback', apiKeyAuth, async (c: Context<{ Bindings: CloudflareBindings }>) => {
+  router.get('/google/callback', async (c: Context<{ Bindings: CloudflareBindings }>) => {
     const code = c.req.query('code');
     const state = c.req.query('state');
     const savedState = getCookie(c, 'oauth_state');
