@@ -24,7 +24,7 @@ export default function FeaturedMenu() {
   return (
     <section id="menu" className="py-20 bg-tgi-gray overflow-hidden">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">Menu 菜單</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 text-orange-800">Menu 菜單</h2>
 
         <div className="flex flex-col md:flex-row gap-8">
           {menuItems.map((item) => (

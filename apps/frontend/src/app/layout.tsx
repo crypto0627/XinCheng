@@ -6,6 +6,7 @@ import type React from 'react'
 import './globals.css'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import Script from 'next/script'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 // 優化字體載入
 const inter = Inter({ 
@@ -79,9 +80,13 @@ export default function RootLayout({
         {/* 指示瀏覽器開始建立與所需資源的連接 */}
         <meta httpEquiv="x-dns-prefetch-control" content="on" />
       </head>
-      <body className={inter.className}>
+      <body className={inter.className + ' bg-[color:var(--background)] text-[color:var(--foreground)]'}>
         <Navbar />
-        <main>{children}</main>
+        <main className="bg-[color:var(--background)]">
+          <GoogleOAuthProvider clientId={process.env.NEXT_PRIVATE_GOOGLE_CLIENT_ID || ''}>
+            {children}
+          </GoogleOAuthProvider>
+        </main>
         <Footer />
         <GoogleAnalytics gaId='G-FEKDYZSNEC' />
         

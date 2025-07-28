@@ -42,9 +42,9 @@ export default function BrunchSection() {
   return (
     <section id="brunch" className="py-16">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#5C4B51] mb-4">精選輕食餐盒</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <div className="text-center mb-12 text-orange-800">
+          <h2 className="text-3xl font-bold mb-4">精選輕食餐盒</h2>
+          <p className="text-lg max-w-2xl mx-auto">
             我們精心準備的健康輕食餐盒，每一份都充滿營養與美味，讓您享受美食的同時保持健康
           </p>
         </div>

@@ -29,11 +29,11 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-50 text-gray-800 py-16">
+    <footer className="bg-[color:var(--background)] text-[color:var(--foreground)] py-16 border-t border-[color:var(--border)]">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-6 text-orange-600">關注我們</h3>
+            <h3 className="text-xl font-bold mb-6 text-[color:var(--primary)]">關注我們</h3>
             <div className="flex space-x-4">
               {socialLinks.map((link, index) => (
                 <Link
@@ -41,16 +41,32 @@ export default function Footer() {
                   href={link.href}
                   target="_blank"
                   aria-label={link.ariaLabel}
-                  className="bg-orange-600 text-white p-3 rounded-full hover:bg-orange-500 transition-colors duration-300"
+                  className="bg-[color:var(--primary)] text-white p-3 rounded-full hover:bg-[color:var(--secondary)] transition-colors duration-300"
                 >
                   {link.icon}
                 </Link>
               ))}
             </div>
           </div>
+          <div>
+            <h3 className="text-xl font-bold mb-4 text-[color:var(--primary)]">營業時間</h3>
+            <div className="space-y-2 text-orange-800">
+              <div className="flex justify-between">
+                <span>週一 至 週六</span>
+                <div className="flex flex-col">
+                  <span>上午10:00 - 下午2:00</span>
+                  <span>下午4:30 - 晚上7:00</span>
+                </div>
+              </div>
+              <div className="flex justify-between">
+                <span>週日</span>
+                <span>公休</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-500">
+        <div className="mt-12 pt-8 border-t border-[color:var(--border)] flex flex-col md:flex-row justify-between items-center">
+          <p className="text-orange-800 font-semibold">
             &copy; 2025 星橙輕食餐盒. All rights reserved.
           </p>
         </div>
