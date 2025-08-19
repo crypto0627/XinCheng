@@ -6,7 +6,7 @@ export default function FeaturedMenu() {
     {
       id: 1,
       title: '餐盒菜單',
-      image: '/home/menu.webp',
+      image: '/home/xincheng-menu.webp',
       alt: '餐盒菜單',
       width: 800,
       height: 400
@@ -14,7 +14,7 @@ export default function FeaturedMenu() {
     {
       id: 2,
       title: '限定菜單',
-      image: '/home/menu2.webp',
+      image: '/home/xincheng-menu2.webp',
       alt: '限定菜單',
       width: 800,
       height: 400
