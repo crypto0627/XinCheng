@@ -6,13 +6,11 @@ on:
     paths:
       - 'apps/frontend/**'
       - 'apps/xincheng-managerment/**'
-      - 'apps/hygeia-health/**'
   pull_request:
     types: [opened, synchronize]
     paths:
       - 'apps/frontend/**'
       - 'apps/xincheng-managerment/**'
-      - 'apps/hygeia-health/**'
 
 jobs:
   changes:
@@ -20,7 +18,6 @@ jobs:
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
       xincheng: ${{ steps.filter.outputs.xincheng }}
-      hygeia: ${{ steps.filter.outputs.hygeia }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,20 +31,17 @@ jobs:
               - 'apps/frontend/**'
             xincheng:
               - 'apps/xincheng-managerment/**'
-            hygeia:
-              - 'apps/hygeia-health/**'
 
   build:
     name: Build Apps
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' || needs.changes.outputs.xincheng == 'true' || needs.changes.outputs.hygeia == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' || needs.changes.outputs.xincheng == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         app: [
           { name: 'frontend', path: 'frontend', condition: 'needs.changes.outputs.frontend == "true"' },
-          { name: 'xincheng', path: 'xincheng-managerment', condition: 'needs.changes.outputs.xincheng == "true"' },
-          { name: 'hygeia', path: 'hygeia-health', condition: 'needs.changes.outputs.hygeia == "true"' }
+          { name: 'xincheng', path: 'xincheng-managerment', condition: 'needs.changes.outputs.xincheng == "true"' }
         ]
     steps:
       - uses: actions/checkout@v4
