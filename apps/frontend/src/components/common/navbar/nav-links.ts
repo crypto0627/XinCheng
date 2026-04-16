@@ -12,7 +12,6 @@ export const navLinks: NavLink[] = [
     external: true
   },
   { label: '關於我們', href: '/about' },
-  { label: '團購預訂', href: '/main' },
   {
     label: '聯絡我們',
     href: 'https://line.me/R/ti/p/@376omnxd?oat_content=url&ts=06010816',
