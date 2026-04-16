@@ -207,7 +207,7 @@
 .logo-carousel-track {
   display: flex;
   width: max-content;
-  animation: logo-scroll 18s linear infinite;
+  animation: logo-scroll 36s linear infinite;
 }
 .logo-carousel-track:hover {
   animation-play-state: paused;

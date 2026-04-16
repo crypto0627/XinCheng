@@ -2,13 +2,19 @@ import { Menu, X } from 'lucide-react'
 
 interface MobileMenuButtonProps {
   isOpen: boolean
-  setIsOpen: (isOpen: boolean) => void
+  onToggle: () => void
 }
 
-export function MobileMenuButton({ isOpen, setIsOpen }: MobileMenuButtonProps) {
+export function MobileMenuButton({ isOpen, onToggle }: MobileMenuButtonProps) {
   return (
-    <button className="md:hidden" onClick={() => setIsOpen(!isOpen)} aria-label='menu'>
+    <button
+      type="button"
+      onClick={onToggle}
+      className="md:hidden"
+      aria-label="menu"
+      aria-expanded={isOpen}
+    >
       {isOpen ? <X size={24} /> : <Menu size={24} />}
     </button>
   )
-} 
+}

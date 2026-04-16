@@ -1,54 +1,40 @@
-name: Deploy Frontend (Turbo Monorepo)
+name: CI (Frontend)
 
 on:
   push:
-    branches: ['**']
+    branches: [main]
     paths:
       - 'apps/frontend/**'
-      - 'apps/xincheng-managerment/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - 'turbo.json'
+      - '.github/workflows/ghpage.yml'
   pull_request:
-    types: [opened, synchronize]
+    branches: [main]
     paths:
       - 'apps/frontend/**'
-      - 'apps/xincheng-managerment/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - 'turbo.json'
+      - '.github/workflows/ghpage.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: 1
 
 jobs:
-  changes:
+  quality:
+    name: Type Check & Build
     runs-on: ubuntu-latest
-    outputs:
-      frontend: ${{ steps.filter.outputs.frontend }}
-      xincheng: ${{ steps.filter.outputs.xincheng }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            frontend:
-              - 'apps/frontend/**'
-            xincheng:
-              - 'apps/xincheng-managerment/**'
-
-  build:
-    name: Build Apps
-    needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' || needs.changes.outputs.xincheng == 'true' }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: [
-          { name: 'frontend', path: 'frontend', condition: 'needs.changes.outputs.frontend == "true"' },
-          { name: 'xincheng', path: 'xincheng-managerment', condition: 'needs.changes.outputs.xincheng == "true"' }
-        ]
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
 
       - uses: actions/setup-node@v4
         with:
@@ -56,11 +42,10 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Build ${{ matrix.app.name }}
-        if: ${{ matrix.app.condition }}
-        run: pnpm run build --filter=${{ matrix.app.path }}
-        env:
-          DISABLE_ESLINT_PLUGIN: true
-          NEXT_TELEMETRY_DISABLED: 1
+      - name: Type check
+        run: pnpm --filter frontend check-types
+
+      - name: Build frontend
+        run: pnpm --filter frontend build

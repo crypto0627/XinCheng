@@ -1,30 +1,27 @@
-'use client'
 import Image from 'next/image'
 
-export default function FeaturedMenu() {
-  const menuItems = [
-    {
-      id: 1,
-      title: '餐盒菜單',
-      image: '/home/xincheng-menu.webp',
-      alt: '餐盒菜單',
-      width: 800,
-      height: 400
-    },
-    {
-      id: 2,
-      title: '限定菜單',
-      image: '/home/xincheng-menu2.webp',
-      alt: '限定菜單',
-      width: 800,
-      height: 400
-    }
-  ]
+const menuItems = [
+  {
+    id: 1,
+    title: '餐盒菜單',
+    image: '/home/xincheng-menu.webp',
+    alt: '餐盒菜單'
+  },
+  {
+    id: 2,
+    title: '限定菜單',
+    image: '/home/xincheng-menu2.webp',
+    alt: '限定菜單'
+  }
+] as const
 
+export default function FeaturedMenu() {
   return (
     <section id="menu" className="py-20 bg-tgi-gray overflow-hidden">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 text-orange-800">Menu 菜單</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 text-orange-800">
+          Menu 菜單
+        </h2>
 
         <div className="flex flex-col md:flex-row gap-8">
           {menuItems.map((item) => (
@@ -39,13 +36,10 @@ export default function FeaturedMenu() {
                 <Image
                   src={item.image}
                   alt={item.alt}
-                  width={item.width}
-                  height={item.height}
+                  fill
                   className="object-cover"
-                  quality={100}
-                  priority
-                  sizes="(max-width: 768px) 400px, 800px"
-                  aria-hidden="true"
+                  quality={90}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
             </div>

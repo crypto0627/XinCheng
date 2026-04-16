@@ -1,6 +1,3 @@
-'use client'
-
-import * as React from 'react'
 import Image from 'next/image'
 
 const menuCategories = [
@@ -8,35 +5,27 @@ const menuCategories = [
     id: 1,
     name: '健康餐盒',
     description: '高蛋白低脂肪，健身愛好者的首選',
-    image: '/home/health-box.webp',
-    width: 800,
-    height: 600
+    image: '/home/health-box.webp'
   },
   {
     id: 2,
     name: '沙拉',
     description: '適合正在減脂和享受健康的朋友',
-    image: '/home/salad.webp',
-    width: 800,
-    height: 600
+    image: '/home/salad.webp'
   },
   {
     id: 3,
     name: '吐司',
     description: '現烤吐司搭配新鮮的食材，開啟美好的一天',
-    image: '/home/toast.webp',
-    width: 800,
-    height: 600
+    image: '/home/toast.webp'
   },
   {
     id: 4,
     name: '漢堡',
     description: '份量十足，一口下去滿滿的肉汁',
-    image: '/home/burger.webp',
-    width: 800,
-    height: 600
+    image: '/home/burger.webp'
   }
-]
+] as const
 
 export default function BrunchSection() {
   return (
@@ -51,28 +40,26 @@ export default function BrunchSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {menuCategories.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 h-full">
-                <div className="relative aspect-[4/3] w-full">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    width={item.width}
-                    height={item.height}
-                    className="object-cover"
-                    priority
-                    style={{
-                      position: 'absolute',
-                      height: '100%',
-                      width: '100%',
-                      inset: 0
-                    }}
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-[#5C4B51] mb-2">{item.name}</h3>
-                  <p className="text-gray-600">{item.description}</p>
-                </div>
+            <div
+              key={item.id}
+              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 h-full"
+            >
+              <div className="relative aspect-[4/3] w-full">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                />
               </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-[#5C4B51] mb-2">
+                  {item.name}
+                </h3>
+                <p className="text-gray-600">{item.description}</p>
+              </div>
+            </div>
           ))}
         </div>
       </div>
